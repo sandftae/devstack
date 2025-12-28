@@ -91,23 +91,9 @@ This tools provide two ways to manage your environment based on your workflow pr
    # git service files/folders,and devstack`s *.md files  
    rm -rf *.md LICENSE .editorconfig .git .gitigonre
     ```
-2. **Configure Environment Variables**
+2. **Configure Environment Variables** [``optional step``]
 
-You can customize your devstack by editing the `env/.env`. It is optional step.
-
-> [!NOTE]
-> 
-> If you do not modify these, the devstack will use predefined values. Changing this after the env is built requires you
-> to run ``make rebuild-project`` command. It will recreate images/containers, without changing compose file
-
-| Variable                         | Allowed Values                                                                           | Description / Note                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
-|----------------------------------|:-----------------------------------------------------------------------------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `ADOBE_COMMERCE_MODE`            | `developer`,<br/>  `production`                                                          | Sets the Adobe Commerce mode. If changed manually, you must rebuild Nginx.<br/>  Use: <br/> - `make mode-developer` to set ``developer mode`` <br/> - `make mode-production` to set ``production mode``<br/><br/>  Both command will automatically recreate ``nginx`` service, so no needs to do extra work                                                                                                                                                                |
-| `DEVELOPER_MODE_BYPASS_VARNISH`  | `"true"`, <br/> `"false"`                                                                | **``"true"``**: varnish ``is "bypassed"`` (direct upstream to ``nginx`` service) <br>  **``"false"``** : varnish ``is not "bypassed"`` and the data is taken from cache<br/><br/>  You can set it for both Adobe Commerce modes ``production`` and ``developer``, but keep in mind it will lead you to very strange cache results for ``developer mode``.<br/><br/> **Please, use it only with the**  ``production mode`` **to test cache results and cache-related bugs** |
-| `NODE_VERSION`                   | `16-alpine`,<br/> `17-alpine`,<br/> `18-alpine`,<br/>  `20-alpine`,<br/> `{N}-alpine`    | Defines the ``node.js`` version for the `web-app` container                                                                                                                                                                                                                                                                                                                                                                                                                |
-| `NODE_OPTIONS_OPEN_SSL`          | `--openssl-legacy-provider`<br/>  or *empty*, means just<br/> ``NODE_OPTIONS_OPEN_SSL=`` | For ``node >= 17`` (default):<br/> - ``NODE_OPTIONS_OPEN_SSL=--openssl-legacy-provider`` <br/> For ``node < 17``:<br/> - ``NODE_OPTIONS_OPEN_SSL=``<a id="node-option-open-ssl"></a>                                                                                                                                                                                                                                                                                       |
-| `XDEBUG_ENABLED`                 | `true`, `false`                                                                          | Enables or disables the Xdebug. It is enabled by default.                                                                                                                                                                                                                                                                                                                                                                                                                  |
-
+You can customize your devstack by editing the `env/.env`. See [details](docs/github/mds/ENVIRONMENT.md)
 
 3. **Launch the DEVSTACK GUI**
     ```bash
