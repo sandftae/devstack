@@ -1,0 +1,7 @@
+1) install venia storefront
+    - https://developer.adobe.com/commerce/pwa-studio/tutorials/setup-storefront/
+
+2) install venia sample data
+    - composer config repositories.venia-sample-data composer https://repo.magento.com
+    - composer require magento/venia-sample-data:*
+    - bin/magento indexer:reindex && bin/magento cache:flush
