@@ -50,14 +50,12 @@ For a full breakdown of which PHP, MySQL, OpenSearch, etc. versions are paired w
     * **Env-Init:** Resolves Linux permission mismatches between your host user and the Docker containers. It relates to `php-app` and `web-app` containers only
 * **Service Dashboard:** A static HTML page is generated with direct links to all your active service GUIs (phpMyAdmin, Mailpit, etc.)
 
-## Important Limitations
+## 
 
 > [!CAUTION]
-> ### Development Areas
+> ### Development Limitations
 > This devstack is created specifically for **local development and testing**. It contains configurations designed for debugging, performance monitoring, and are **not secure** for production or staging.
-
-
-> [!NOTE]
+>
 > ### Infrastructure vs. Application
 > This tool builds the **"house"** (the services, etc). You are responsible for bringing the **"furniture"**. It means cloning your source code, managing `auth.json` credentials, and executing application-level installs like `composer install` or `yarn install`, and etc.
 
@@ -89,38 +87,34 @@ This tools provide two ways to manage your environment based on your workflow pr
    
     cd devstack
     
-   # optional cleaning action, be sure you are deleting devstack`s git service files/folders,
-   # and devstack`s *.md files  
+   # optional cleaning action, be sure you are deleting devstack`s 
+   # git service files/folders,and devstack`s *.md files  
    rm -rf *.md LICENSE .editorconfig .git .gitigonre
     ```
-2. **Configure Environment Variables by .env**
+2. **Configure Environment Variables**
 
-Before running the devstack builder, you can customize your devstack by editing the `env/.env`. It is optional step.
+You can customize your devstack by editing the `env/.env`. It is optional step.
 
 > [!NOTE]
 > 
 > If you do not modify these, the devstack will use predefined values. Changing this after the env is built requires you
 > to run ``make rebuild-project`` command. It will recreate images/containers, without changing compose file
 
-
-| Variable                         | Allowed Values                                                                           | Description / Note                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
-|----------------------------------|:-----------------------------------------------------------------------------------------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `ADOBE_COMMERCE_MODE`            | `developer`,<br/>  `production`                                                          | Sets the Adobe Commerce mode. If changed manually, you must rebuild Nginx.<br/>  Use: <br/> - `make mode-developer` to set ``developer mode`` <br/> - `make mode-production` to set ``production mode``<br/><br/>  Both command will automatically recreate ``nginx`` service, so no needs to do extra work                                                                                                                                                                 |
-| `DEVELOPER_MODE_BYPASS_VARNISH`  | `"true"`, <br/> `"false"`                                                                | **``"true"``**: varnish ``is "bypassed"`` (direct upstream to ``nginx`` service) <br>  **``"false"``** : varnish ``is not "bypassed"`` and the is taken from cache<br/><br/>  You can set it for both Adobe Commerce modes ``production`` and ``developer``,<br/>  but keep in mind it will lead you to very strange cache results for ``developer mode``.<br/><br/> **Please, use it only with the**  ``production mode`` **to test cache results and cache-related bugs** |
-| `NODE_VERSION`                   | `16-alpine`,<br/> `17-alpine`,<br/> `18-alpine`,<br/>  `20-alpine`,<br/> `{N}-alpine`    | Defines the ``node.js`` version for the `web-app` container                                                                                                                                                                                                                                                                                                                                                                                                                 |
-| `NODE_OPTIONS_OPEN_SSL`          | `--openssl-legacy-provider`<br/>  or *empty*, means just<br/> ``NODE_OPTIONS_OPEN_SSL=`` | **REQUIRED** for ``node >= 17`` (currently, it is default settings).  Keep empty if you downgrade to ``node < 17``                                                                                                                                                                                                                                                                                                                                                          |
-| `XDEBUG_ENABLED`                 | `true`, `false`                                                                          | Enables or disables the Xdebug extension in the `php-app` container. It is enabled by default.                                                                                                                                                                                                                                                                                                                                                                              |
+| Variable                         | Allowed Values                                                                           | Description / Note                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+|----------------------------------|:-----------------------------------------------------------------------------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `ADOBE_COMMERCE_MODE`            | `developer`,<br/>  `production`                                                          | Sets the Adobe Commerce mode. If changed manually, you must rebuild Nginx.<br/>  Use: <br/> - `make mode-developer` to set ``developer mode`` <br/> - `make mode-production` to set ``production mode``<br/><br/>  Both command will automatically recreate ``nginx`` service, so no needs to do extra work                                                                                                                                                                |
+| `DEVELOPER_MODE_BYPASS_VARNISH`  | `"true"`, <br/> `"false"`                                                                | **``"true"``**: varnish ``is "bypassed"`` (direct upstream to ``nginx`` service) <br>  **``"false"``** : varnish ``is not "bypassed"`` and the data is taken from cache<br/><br/>  You can set it for both Adobe Commerce modes ``production`` and ``developer``, but keep in mind it will lead you to very strange cache results for ``developer mode``.<br/><br/> **Please, use it only with the**  ``production mode`` **to test cache results and cache-related bugs** |
+| `NODE_VERSION`                   | `16-alpine`,<br/> `17-alpine`,<br/> `18-alpine`,<br/>  `20-alpine`,<br/> `{N}-alpine`    | Defines the ``node.js`` version for the `web-app` container                                                                                                                                                                                                                                                                                                                                                                                                                |
+| `NODE_OPTIONS_OPEN_SSL`          | `--openssl-legacy-provider`<br/>  or *empty*, means just<br/> ``NODE_OPTIONS_OPEN_SSL=`` | For ``node >= 17`` (default):<br/> - ``NODE_OPTIONS_OPEN_SSL=--openssl-legacy-provider`` <br/> For ``node < 17``:<br/> - ``NODE_OPTIONS_OPEN_SSL=``<a id="node-option-open-ssl"></a>                                                                                                                                                                                                                                                                                       |
+| `XDEBUG_ENABLED`                 | `true`, `false`                                                                          | Enables or disables the Xdebug. It is enabled by default.                                                                                                                                                                                                                                                                                                                                                                                                                  |
 
 
 3. **Launch the DEVSTACK GUI**
     ```bash
    make magma-build 
    ```
-> [!NOTE]
->
-> Follow the Bash Dialog prompts to select your Adobe Commerce version and services. The devstack will build and start automatically
 
-## Application Setup (User Task)
+## Your Application Setup (User Task)
 The DevStack provides the environment, but you must manually populate the source folders inside the containers.
 
 1. **Backend (Adobe Commerce)**
@@ -134,7 +128,7 @@ The DevStack provides the environment, but you must manually populate the source
     ```
 > [!IMPORTANT]
 >
-> No extra sub-folders! Your **pub** folder must be located **directly in the php-app** directory
+> Your **pub** folder must be located **directly in the php-app** directory
 
 
 2. **Frontend (Default / Monolith)**
@@ -155,33 +149,22 @@ The DevStack provides the environment, but you must manually populate the source
 By default, ``web-app headless`` container is packed with the ``node v.20``.  If you need to ``upgrade/downgrade`` version then:
 - go to ``env/.env`` file
 - find ``NODE_VERSION`` variable
-- change it from this ``NODE_VERSION=20-alpine`` to this ``NODE_VERSION=[16 or 17 or etc]-alpine``
-- for ``node version >= 17`` set this variable
-```
-NODE_OPTIONS_OPEN_SSL=--openssl-legacy-provider
-```
-- for ``node version < 17`` set this variable empty
-```
-NODE_OPTIONS_OPEN_SSL=
-```
-- run
-```bash
-  make down && make up
-  ```
+- change node version ``NODE_VERSION=[16, or 17, or 18, or 20, or etc]-alpine``
+- set ``NODE_OPTIONS_OPEN_SSL`` value for node version. See [this](#node-option-open-ssl)
+- run ``make down && make up``
 
 > [!NOTE]
 >
-> Depending on the use case you may need to delete the ``web-app`` image for the corresponding node.js version and rebuild it.
-> This is worth doing if a ``web-app`` image for the corresponding node.js version has already been built.
+> Depending on the use case you may need to delete the ``web-app`` image. This is worth doing if a ``web-app`` image for the node version has already been built
 
 ## 🛠 Usage
-| Base commands        | Description                                        |
-|----------------------|----------------------------------------------------|
-| ``make up``          | Start the docker environment                       |
-| ``make down``        | Stop and shutdown the environment                  |
-| ``make php-app``     | Enter PHP-app container (Interactive Shell)        |
-| ``make web-app``     | Enter Web-app (Node) container (Interactive Shell) |
-| ``make magma-build`` | Run/Re-run the GUI configuration builder           |
+| Base commands        | Description                         |
+|----------------------|-------------------------------------|
+| ``make up``          | start the docker environment        |
+| ``make down``        | stop and shutdown the environment   |
+| ``make php-app``     | enter PHP-app container             |
+| ``make web-app``     | enter Web-app container             |
+| ``make magma-build`` | run/re-run the GUI devstack builder |
 
 > [!TIP]
 >
@@ -192,12 +175,12 @@ NODE_OPTIONS_OPEN_SSL=
 Once the containers are running, you can access the various parts of your environment using the URLs below.
 
 ### 🛍 Storefronts & Backend
-| Service                  | Local URL                                         | Note                              |
-|:-------------------------|:--------------------------------------------------|:----------------------------------|
-| **Monolith Frontend**    | http://dev-env.localhost/                         | Default Adobe Commerce storefront |
-| **Adobe Commerce Admin** | http://dev-env.localhost/<your-admin-secret-url>  | Use your custom admin url         |
-| **Vue Storefront**       | http://localhost:3000/                            | Default Vue storefront            |
-| **PWA Studio**           | http://0.0.0.0:3000/                              | Default PWA storefront            |
+| Service                  | Local URL                      | Note                              |
+|:-------------------------|:-------------------------------|:----------------------------------|
+| **Monolith Frontend**    | http://dev-env.localhost/      | Default Adobe Commerce storefront |
+| **Adobe Commerce Admin** | http://dev-env.localhost/<key> | Use your custom admin url         |
+| **Vue Storefront**       | http://localhost:3000/         | Default Vue storefront            |
+| **PWA Studio**           | http://0.0.0.0:3000/           | Default PWA storefront            |
 
 
 ### 🛠 DEVSTACK Service Dashboard
@@ -210,8 +193,10 @@ Once the containers are running, you can access the various parts of your enviro
 
 **The Service Dashboard** view:
 
-<img src="docs/github/media/service_dashboard.png" width="250" height="125" alt="Service Dashboard"/>
-<img src="docs/github/media/service_credentials.png" width="250" height="125" alt="Service Credentials"/>
+<div align="center">
+  <img src="docs/github/media/service_dashboard.png" width="45%" alt="Service Dashboard"/>
+  <img src="docs/github/media/service_credentials.png" width="45%" alt="Service Credentials"/>
+</div>
 
 ---
 

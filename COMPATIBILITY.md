@@ -4,12 +4,12 @@ This document outlines the software versions automatically provisioned by the **
 
 ## 📊 Core Stack Mapping
 
-| Magento Version   | PHP Version  | MySQL/MariaDB  | OpenSearch   | Elasticsearch* |
-|:------------------|:-------------|:---------------|:-------------|:---------------|
-| **2.4.5**         | 8.1          | 10.6 (MariaDB) | 1.2          | 7.17           |
-| **2.4.6**         | 8.1 / 8.2    | 8.0 (MySQL)    | 2.5          | 7.17           |
-| **2.4.7**         | 8.2 / 8.3    | 8.0 (MySQL)    | 2.11         | N/A            |
-| **2.4.8**         | 8.3          | 8.0 (MySQL)    | 2.12+        | N/A            |
+| Adobe Commerce Version | PHP Version  | MySQL/MariaDB  | OpenSearch   | Elasticsearch* |
+|:-----------------------|:-------------|:---------------|:-------------|:---------------|
+| **2.4.5**              | 8.1          | 10.6 (MariaDB) | 1.2          | 7.17           |
+| **2.4.6**              | 8.1 / 8.2    | 8.0 (MySQL)    | 2.5          | 7.17           |
+| **2.4.7**              | 8.2 / 8.3    | 8.0 (MySQL)    | 2.11         | N/A            |
+| **2.4.8**              | 8.3          | 8.0 (MySQL)    | 2.12+        | N/A            |
 
 > [!NOTE]
 > Elasticsearch support is being phased out in newer DevStack presets in favor of OpenSearch.
@@ -19,7 +19,7 @@ This document outlines the software versions automatically provisioned by the **
 ## 🏗 Infrastructure Details
 
 ### PHP-FPM
-The PHP containers are built on **Alpine Linux** to keep the footprint small. They include critical Magento extensions pre-installed:
+The PHP containers are built on **Alpine Linux** to keep the footprint small. They include critical Adobe Commerce extensions pre-installed:
 * `bcmath`, `gd`, `intl`, `mysqli`, `pdo_mysql`, `soap`, `xsl`, `zip`, `sockets`.
 * **Xdebug 3** is included and enabled by default. It can be toggled via the `.env` file:
   * set ``XDEBUG_ENABLED=false``
@@ -38,11 +38,11 @@ All supported versions use a unified caching strategy:
 
 ## 🌐 Frontend Compatibility
 
-| Frontend Tech      | Node.js Version |  Recommended For   |
-|:-------------------|:----------------|:-------------------|
-| **PWA Studio**     | 18 / 20         | Headless Magento   |
-| **Vue Storefront** | 16 / 18         | Headless eCommerce |
-| **Hyvä Themes**    | N/A (PHP based) | Modern Monolith    |
+| Frontend Tech      | Node.js Version | Recommended For         |
+|:-------------------|:----------------|:------------------------|
+| **PWA Studio**     | 18 / 20         | Headless Adobe Commerce |
+| **Vue Storefront** | 16 / 18         | Headless eCommerce      |
+| **Hyvä Themes**    | N/A (PHP based) | Modern Monolith         |
 
 > [!TIP]
 > 
