@@ -1,5 +1,7 @@
 #### ENV file configuration variables 
 
+The ``.env`` file is located on this path: ``env/.env``
+
 > [!NOTE]
 >
 > If you do not modify .env, the devstack will use ``default`` values. Changing those after the env is built requires you to run ``make rebuild-project`` command. It will recreate images/containers, without changing compose file

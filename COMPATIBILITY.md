@@ -23,7 +23,7 @@ The PHP containers are built on **Alpine Linux** to keep the footprint small. Th
 * `bcmath`, `gd`, `intl`, `mysqli`, `pdo_mysql`, `soap`, `xsl`, `zip`, `sockets`.
 * **Xdebug 3** is included and enabled by default. It can be toggled via the `.env` file:
   * set ``XDEBUG_ENABLED=false``
-  * run ``make down && make up``
+  * run ``make rebuild-project``
 
 ### Search Engines
 * **OpenSearch:** Selected as the default search engine for all 2.4.x installs.
@@ -38,15 +38,17 @@ All supported versions use a unified caching strategy:
 
 ## 🌐 Frontend Compatibility
 
-| Frontend Tech      | Node.js Version | Recommended For         |
-|:-------------------|:----------------|:------------------------|
-| **PWA Studio**     | 18 / 20         | Headless Adobe Commerce |
-| **Vue Storefront** | 16 / 18         | Headless eCommerce      |
-| **Hyvä Themes**    | N/A (PHP based) | Modern Monolith         |
+| Frontend Tech          | Node.js Version         | Recommended For          |
+|:-----------------------|:------------------------|:-------------------------|
+| **PWA Studio**         | 18 / 20                 | Headless Adobe Commerce  |
+| **Vue Storefront**     | 16 / 18                 | Headless Adobe Commerce  |
+| **Hyvä Themes**        | depends on Hyvä version | Headless Adobe Commerce  |
+| **Default / Monolith** | N/A (PHP based)         | Default OOTB Monolith    |
 
 > [!TIP]
 > 
-> If your specific project requires a version not listed above, you can manually override these in the `env/.env` file after running `make magma-build`.
+> You can specify node version on the `env/.env` file.
+> See details [here](docs/github/mds/ENVIRONMENT.md)
 
 ---
 

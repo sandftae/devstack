@@ -87,13 +87,13 @@ This tools provide two ways to manage your environment based on your workflow pr
    
     cd devstack
     
-   # optional cleaning action, be sure you are deleting devstack`s 
-   # git service files/folders,and devstack`s *.md files  
+   # optional cleaning action; be sure you are deleting devstack`s 
+   # git service files/folders, and devstack`s *.md files  
    rm -rf *.md LICENSE .editorconfig .git .gitigonre
     ```
 2. **Configure Environment Variables** [``optional step``]
 
-You can customize your devstack by editing the `env/.env`. See [details](docs/github/mds/ENVIRONMENT.md)
+You can customize your devstack ``on-demand`` by editing the `env/.env`. See [details](docs/github/mds/ENVIRONMENT.md)
 
 3. **Launch the DEVSTACK GUI**
     ```bash
@@ -101,9 +101,12 @@ You can customize your devstack by editing the `env/.env`. See [details](docs/gi
    ```
 
 ## Your Application Setup (User Task)
-The DevStack provides the environment, but you must manually populate the source folders inside the containers.
+> [!NOTE]
+> Once the environment build is complete, you will see that several new files and folders [have been added](#-project-structure)
 
-1. **Backend (Adobe Commerce)**
+The DEVSTACK provides the ``environment``, but you must manually populate the source folders inside the containers.
+
+1. **Backend**
     - get into the PHP container
     ```bash
     make php-app
@@ -122,21 +125,21 @@ The DevStack provides the environment, but you must manually populate the source
     - only ``headless`` frontend has separate ``web-app`` container
 
 
-3. **Frontend (Headless / PWA)**
-    - enter the ``node`` container
+3. **Frontend (Headless)**
+    - enter the ``web-app`` container
     ```bash
     make web-app 
    ```
-    - clone the web project
-    - run ``npm install`` or ``yarn install``
+    - ``clone`` the web project and run ``npm install`` or ``yarn install``
 
-4. **Node.js version upgrade/downgrade**
+
+
+### ``node`` version upgrade/downgrade
 
 By default, ``web-app headless`` container is packed with the ``node v.20``.  If you need to ``upgrade/downgrade`` version then:
 - go to ``env/.env`` file
-- find ``NODE_VERSION`` variable
-- change node version ``NODE_VERSION=[16, or 17, or 18, or 20, or etc]-alpine``
-- set ``NODE_OPTIONS_OPEN_SSL`` value for node version. See [this](#node-option-open-ssl)
+- set ``NODE_VERSION`` value (see [this](docs/github/mds/ENVIRONMENT.md))
+- set ``NODE_OPTIONS_OPEN_SSL`` value (see [this](docs/github/mds/ENVIRONMENT.md))
 - run ``make down && make up``
 
 > [!NOTE]
