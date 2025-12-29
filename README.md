@@ -10,13 +10,13 @@
 ![Compose: V2](https://img.shields.io/badge/Compose-V2-blue?logo=docker&logoColor=white)
 
 
-**A modular, GUI-driven Docker devstack for Adobe Commerce, designed to orchestrate monolithic or headless environments (Vue, PWA, Hyvä) on Linux with built-in telemetry and simplified service management.**
+**A modular, GUI-driven DEVSTACK tool for Adobe Commerce, designed to orchestrate monolithic or headless apps on Linux with built-in telemetry and simplified service management.**
 
 ## 📖 Table of Contents
 - [About](#about)
 - [Key Features](#key-features)
 - [Available Services](#available-services)
-- [The Two-Tier Makefile Strategy](#-the-two-tier-makefile-strategy)
+- [The Two-Tier Makefile Strategy](#the-two-tier-makefile-strategy)
 - [Getting Started](#-getting-started)
     - [Prerequisites](#prerequisites)
     - [Infrastructure Installation](#infrastructure-installation)
@@ -31,52 +31,52 @@
 ---
 
 ## About
-This **DEVSTACK** is a bash-powered orchestration tool designed specifically for Adobe Commerce developers. Instead of a "one-size-fits-all" approach, this tool uses an interactive **Bash GUI** to help you build a dev environment tailored to your specific project needs.
+The **DEVSTACK** is a bash-powered orchestration tool designed specifically for Adobe Commerce developers. Instead of a "one-size-fits-all" approach, this tool uses an interactive **Bash GUI** to help you build a dev environment tailored to your specific project needs.
 
-It handles the complex networking and service dependencies required for modern Adobe Commerce development, including full support for headless frontends.
+It handles the complex networking and service dependencies required for Adobe Commerce development, including support for headless frontends.
 
 ## Compatibility Matrix
-For a full breakdown of which PHP, MySQL, OpenSearch, etc. versions are paired with each Adobe Commerce version, please refer to the: **[Service Compatibility Guide](COMPATIBILITY.md)**
+For a full breakdown of which PHP, MySQL, OpenSearch, etc. versions are paired with each Adobe Commerce version, please refer to the **[Service Compatibility Guide](COMPATIBILITY.md)**
 
 ## Key Features
-* **Interactive GUI Configuration:** Select services via Bash Dialog with summary before starting deployment
-* **SSL (HTTP/HTTPS):** Automatically generates SSL allows to test frontend over `https://` locally
-* **Version-Specific DEVSTACK:** Configure compatible versions of services based on targeted Adobe Commerce version
+* **Interactive GUI:** select services via dialog GUI
+* **SSL (HTTP/HTTPS):** automatically generated SSL certs allows to test app over `https://` locally
+* **Version-Specific:** configure compatible versions of services based on targeted Adobe Commerce version
 * **Headless Isolation:** `php` and `node` apps are kept in separate containers (`php-app` and `web-app`)
-* **Headless Configuration:** Allows to predefine which `node` version to use
-* **On-Demand Nginx Modes:** Toggle between `developer` and `production` app modes to test Varnish caching and bugs
-* **Telemetry & Monitoring:** Integrated Grafana, Prometheus, and cAdvisor for real-time container performance tracking
+* **Headless Configuration:** allows to easy change `node` versions
+* **On-Demand Modes:** toggle between `developer` and `production` app modes to test Varnish caching and bugs
+* **Telemetry & Monitoring:** Grafana, Prometheus, and cAdvisor ``palyground`` allows to test high-level monitoring
 * **Developer Utilities:**
-    * **SFTP Server:** Local SFTP access to test Adobe Commerce crons and file third-party modules synchronizations
-    * **Centralized Logging:** Aggregate logs from all containers into a single searchable view
-    * **Env-Init:** Resolves Linux permission mismatches between host and the Docker containers
-* **Service Dashboard:** **DEVSTACK** Service Dashboard to address direct links to active services GUIs
+    * **SFTP Server:** local SFTP access to test Adobe Commerce crons and file third-party modules syncs
+    * **Centralized Logging:** aggregate logs from all containers into a single searchable view
+    * **Env-Init:** resolves Linux permission mismatches between host and the Docker containers
+* **Service Dashboard:** **DEVSTACK** service Dashboard to address direct links to active services GUIs
 
 ---
 
 ## Available Services
-The **DEVSTACK** consists of over 15 services. While the core services are required, many components like monitoring and headless tools are optional.
+The **DEVSTACK** consists of over 15 services. While the core services are required, many components like monitoring and headless tools ``are optional`.
 
  **Please, view the full service list available** **[here](docs/github/mds/SERVICES.md)**
 
 ---
 > [!CAUTION]
 > ### Development Limitations
-> This devstack is created specifically for **local development and testing**. It contains configurations designed for debugging, performance monitoring, and are **not secure** for production or staging.
+> This tool is created specifically for **local development and testing**. It contains configurations designed for debugging, performance monitoring, and are **not secure** for production or staging.
 >
 > ### Infrastructure vs. Application
 > This tool builds the **"house"** (the services, etc). You are responsible for bringing the **"furniture"**. It means cloning your source code, managing `auth.json` credentials, and executing application-level installs like `composer install` or `yarn install`, and etc.
 
 ---
 
-## ⚡ The Two-Tier Makefile Strategy
-This tools provide two ways to manage your environment based on your workflow preference:
+## The Two-Tier Makefile Strategy
+This tools provide two ways to manage environment based on workflow preferences:
 
-1.  **Makefile (Base):** Minimalist. Only contains core commands to build, start, stop, and enter containers
+1.  **Makefile (OOTB):** Minimalist. Only contains core commands to `build`, `start`, `stop`, and `enter` containers
 2.  **Powermake:** Extended Makefile. Includes dozens of "power" commands for Adobe Commerce and docker
 
 > [!TIP]
-> If you want more power, simply copy specific commands (or the whole file) from `Powermake` into your main `Makefile
+> If you want more power, simply copy specific commands (or the whole file) from `Powermake` into your main Makefile
 
 ---
 
@@ -104,7 +104,7 @@ This tools provide two ways to manage your environment based on your workflow pr
 
 2. **Database Seed and/or Database Import** [``optional step``]
 
-Set *database_dump.sql* to import before `make magma-build`. See [this](#-database-importexport) for more details.
+Set *database_dump.sql* to import before run `make magma-build`. See [this](#-database-importexport) for more details.
 
 3. **Launch the DEVSTACK GUI**
     ```bash
@@ -117,33 +117,33 @@ Set *database_dump.sql* to import before `make magma-build`. See [this](#-databa
 
 ## Adobe Commerce Installation
 
-The **DEVSTACK** provides the ``environment``, but you need to populate project's source itself.
+The **DEVSTACK** provides a `development environment`, but you need to fill in the project source code yourself.
 
-Before go further run this:
+0. **Start Environment**
+
+Before go further, lets start docker environment if not yet:
+
 ```shell
 make up
 ```
 
-This command **starts** the Docker environment if it is not already running.
-
 1. **Backend**
+
+    > [!IMPORTANT]
+    > Your **pub** folder must be located **directly in the php-app** directory
+
     - get into the PHP container
     ```bash
     make php-app
    ```
-    - `create` database and `import` data into it **manually**, see [details](#-database-importexport)
+    - `create` database and `import` data into it **manually**, see [Database Import/Export](#-database-importexport) section
     - clone your project repository **inside** the container and run composer
    ```bash
     composer install
     ```
-> [!IMPORTANT]
->
-> Your **pub** folder must be located **directly in the php-app** directory
 
 2. **Frontend (Default / Monolith)**
     - default Adobe Commerce frontend is located in the ``php-app`` folder
-    - only ``headless`` frontend has separate ``web-app`` container
-
 
 3. **Frontend (Headless)**
     
@@ -158,7 +158,7 @@ This command **starts** the Docker environment if it is not already running.
 
 ### ``node`` version upgrade/downgrade
 
-The ``web-app`` **headless** container is packed with the ``node v.20``.  If you need to ``upgrade/downgrade`` version run this command:
+The ``web-app`` container is packed with the ``node v.20``.  If you need to ``upgrade/downgrade`` version run this command:
 ```shell
 # major node version like 16, 18, 20, etc.
 make node-set version=MAJOR_NODE_VERSION
@@ -177,11 +177,11 @@ make node-set version=MAJOR_NODE_VERSION
 
 > [!TIP]
 >
-> Check ``Powermake`` for extended list of cli commands to manage magento instance, docker, metrics, project root, and access. It has more commands to use the base makefile. See [Two-Tier Makefile Strategy](#-the-two-tier-makefile-strategy) section to gain more understanding
+> Check ``Powermake`` for extended list of cli commands to manage `magento instance`, `docker`, `metrics`, `project root`, and `access`. It has more commands to use then base `makefile`. See [Two-Tier Makefile Strategy](#the-two-tier-makefile-strategy) section to gain more understanding
 ---
 ## 🗄️ Database Import/Export
 
-First of all, the default Adobe Commerce database is **devstack_magento**. It is created automatically by the `mysql` container. Please, keep reading to see how to do `create|drop|mport|export` database operations yourself.
+The default Adobe Commerce database is **devstack_magento**. It is created automatically by the `mysql` container. Please, keep reading to see how to do `create|drop|mport|export` database operations yourself.
 
 The **DEVSTACK** provides a robust system for handling Adobe Commerce data, split between **Automated Initialization** and **Manual CLI Import/Export**. All SQL files are managed within the `env/dumps/` directory.
 
