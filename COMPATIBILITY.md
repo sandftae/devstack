@@ -20,10 +20,13 @@ This document outlines the software versions automatically provisioned by the **
 
 ### PHP-FPM
 The PHP containers are built on **Alpine Linux** to keep the footprint small. They include critical Adobe Commerce extensions pre-installed:
-* `bcmath`, `gd`, `intl`, `mysqli`, `pdo_mysql`, `soap`, `xsl`, `zip`, `sockets`.
+* `bcmath`, `gd`, `intl`, `mysqli`, `pdo_mysql`, `soap`, `xsl`, `zip`, `sockets`, etc.
 * **Xdebug 3** is included and enabled by default. It can be toggled via the `.env` file:
   * set ``XDEBUG_ENABLED=false``
-  * run ``make rebuild-project``
+  * run:
+```shell
+make rebuild-image name=php-app
+```
 
 ### Search Engines
 * **OpenSearch:** Selected as the default search engine for all 2.4.x installs.
