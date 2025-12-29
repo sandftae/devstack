@@ -1,0 +1,29 @@
+# project root files and folder to be fully excluded
+log/
+src/
+archive/
+sources/
+.dockerignore
+
+# exclude specific subfolders inside env folder
+env/image/
+env/static/
+env/volume/
+
+# exclude all database dumps and seeds except for documentation
+env/dumps/**/*
+!env/dumps/seed/README.txt
+!env/dumps/import/README.txt
+!env/dumps/export/README.txt
+
+# exclude specific compose files inside env folder
+env/compose.yml
+env/compose.php.yml
+env/compose.common.yml
+
+# exclude etc/env specific subfolders
+env/etc/build/
+env/etc/runtime/
+
+# exclude etc/env specific files
+env/.env
