@@ -1,6 +1,6 @@
-# DevStack Services Matrix
+# DEVSTACK Services Matrix
 
-This document provides a comprehensive list of all services available within the DEVSTACK orchestration. You can enable or disable optional services during the `make magma-build` process.
+This document provides a comprehensive list of all services available within the **DEVSTACK** orchestration. You can enable or disable optional services during the `make magma-build` process.
 
 | Service             | Type          | Short Description (Purpose)                                                                                              |
 |:--------------------|:--------------|:-------------------------------------------------------------------------------------------------------------------------|

@@ -1,6 +1,6 @@
 # 🛠 Adobe Commerce & Service Compatibility Matrix
 
-This document outlines the software versions automatically provisioned by the **DevStack** GUI based on your selected Adobe Commerce version.
+This document outlines the software versions automatically provisioned by the **DEVSTACK** GUI based on your selected Adobe Commerce version.
 
 ## 📊 Core Stack Mapping
 
@@ -12,7 +12,7 @@ This document outlines the software versions automatically provisioned by the **
 | **2.4.8**              | 8.3          | 8.0 (MySQL)    | 2.12+        | N/A            |
 
 > [!NOTE]
-> Elasticsearch support is being phased out in newer DevStack presets in favor of OpenSearch.
+> Elasticsearch support is being phased out in newer **DEVSTACK** presets in favor of OpenSearch.
 
 ---
 
@@ -34,8 +34,8 @@ make rebuild-image name=php-app
 
 ### Cache & Session
 All supported versions use a unified caching strategy:
-* **Redis/ValKey:** Used for both Session storage and Backend Cache.
-* **Varnish:** Configured for Full Page Cache (FPC). Use the `make mode-production` command in **Powermake** to test Varnish effectively.
+* **Redis/ValKey:** Used for both Session storage and Backend Cache
+* **Varnish:** Configured for Full Page Cache (FPC). Use the `make mode-production` command in **Powermake** to test Varnish effectively
 
 ---
 
@@ -47,11 +47,6 @@ All supported versions use a unified caching strategy:
 | **Vue Storefront**     | 16 / 18                 | Headless Adobe Commerce  |
 | **Hyvä Themes**        | depends on Hyvä version | Headless Adobe Commerce  |
 | **Default / Monolith** | N/A (PHP based)         | Default OOTB Monolith    |
-
-> [!TIP]
-> 
-> You can specify node version on the `env/.env` file.
-> See details [here](docs/github/mds/ENVIRONMENT.md)
 
 ---
 
