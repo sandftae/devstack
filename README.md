@@ -22,7 +22,7 @@
     - [Adobe Commerce Installation](#adobe-commerce-installation)
 - [Usage](#-usage)
 - [Database Import/Export](#-database-importexport)
-- [Accessing the DevStack](#-accessing-the-devstack)
+- [Accessing the DEVSTACK](#-accessing-the-devstack)
 - [Default Credentials](#-default-credentials)
 - [Project Structure](#-project-structure)
 - [License](#-license)
@@ -105,15 +105,12 @@ This tools provide two ways to manage your environment based on your workflow pr
    # git service files/folders, and devstack`s *.md files  
    rm -rf *.md LICENSE .editorconfig .git .gitigonre .editorconfig docs/github
     ```
-2. **Configure Environment Variables** [``optional step``]
 
-You can customize your devstack ``on-demand`` by editing the `env/.env`. See [details](docs/github/mds/ENVIRONMENT.md)
+2. **Database Seed and/or Database Import** [``optional step``]
 
-3. **Database Seed and/or Database Import** [``optional step``]
+Set *database_dump.sql* to import before `make magma-build`. See [this](#-database-importexport) for more details.
 
-See [this](#-database-importexport) for more details
-
-5. **Launch the DEVSTACK GUI**
+3. **Launch the DEVSTACK GUI**
     ```bash
    make magma-build 
    ```
@@ -124,7 +121,7 @@ See [this](#-database-importexport) for more details
 
 ## Adobe Commerce Installation
 
-The DEVSTACK provides the ``environment``, but you need to populate project's source itself.
+The **DEVSTACK** provides the ``environment``, but you need to populate project's source itself.
 
 1. **Backend**
     - get into the PHP container
@@ -160,7 +157,7 @@ The DEVSTACK provides the ``environment``, but you need to populate project's so
 The ``web-app`` **headless** container is packed with the ``node v.20``.  If you need to ``upgrade/downgrade`` version run this command:
 ```shell
 # major node version like 16, 18, 20, etc.
-make node-set version=NODE_TAG_VERSION
+make node-set version=MAJOR_NODE_VERSION
 ```
 
 ---
@@ -180,7 +177,9 @@ make node-set version=NODE_TAG_VERSION
 ---
 ## 🗄️ Database Import/Export
 
-The DEVSTACK provides a robust system for handling Adobe Commerce data, split between **Automated Initialization** and **Manual CLI Import/Export**. All SQL files are managed within the `env/dumps/` directory.
+First of all default Adobe Commerce database is **devstack_magento**. It creates automatically by the `mysql` container. Please, keep reading to see how to do `create/drop/import/export` database operations.
+
+The **DEVSTACK** provides a robust system for handling Adobe Commerce data, split between **Automated Initialization** and **Manual CLI Import/Export**. All SQL files are managed within the `env/dumps/` directory.
 
 ### Automated Seeds (Initialization)
 SQL files placed in the `env/dumps/seed` folder are handled by the native Docker-entrypoint logic. The logic behind is similar to the ``laravel seeds``.
@@ -196,7 +195,7 @@ It is good to use for the ``quick local deployment`` strategy or if you deploy t
 > [!WARNING]
 > Running `rm -rf env/volume/mysql` you will remove all databases of the project
 
-### Manual Import/Export (Makefile)
+### Manual CLI Import/Export (Makefile)
 Use these commands for daily development tasks like importing dumps, creating backups, or creating new database.
 
 | Command                                          | Description                                                |
