@@ -3,10 +3,11 @@
 ![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)
 ![Version](https://img.shields.io/badge/version-1.0.0--beta-orange.svg)
 ![Environment: Local Only](https://img.shields.io/badge/Environment-local%20only-red.svg)
-![Docker: >20](https://img.shields.io/badge/Docker-%3E20-blue?logo=docker&logoColor=white)
-![Compose: V2](https://img.shields.io/badge/Compose-V2-blue?logo=docker&logoColor=white)
+![Adobe Commerce: >=2.4.5](https://img.shields.io/badge/Adobe%20Commerce-%E2%89%A52.4.5-red?logo=adobe&logoColor=white)
 ![OS: Linux Only](https://img.shields.io/badge/OS-Linux%20Only-yellow?logo=linux&logoColor=white)
 ![Build: Makefile](https://img.shields.io/badge/Build-Makefile-4EAA25?logo=gnuterminal&logoColor=white)
+![Docker: >20](https://img.shields.io/badge/Docker-%3E20-blue?logo=docker&logoColor=white)
+![Compose: V2](https://img.shields.io/badge/Compose-V2-blue?logo=docker&logoColor=white)
 
 
 **A modular, GUI-driven Docker devstack for Adobe Commerce, designed to orchestrate monolithic or headless environments (Vue, PWA, Hyvä) on Linux with built-in telemetry and simplified service management.**
@@ -30,36 +31,31 @@
 ---
 
 ## About
-This DEVSTACK is a bash-powered orchestration tool designed specifically for Adobe Commerce developers. Instead of a "one-size-fits-all" approach, this tool uses an interactive **Bash GUI** to help you build a dev environment tailored to your specific project needs.
+This **DEVSTACK** is a bash-powered orchestration tool designed specifically for Adobe Commerce developers. Instead of a "one-size-fits-all" approach, this tool uses an interactive **Bash GUI** to help you build a dev environment tailored to your specific project needs.
 
 It handles the complex networking and service dependencies required for modern Adobe Commerce development, including full support for headless frontends.
-
-### Supported Adobe Commerce Versions
-The devstack includes automated configuration presets for the following:
-* **Adobe Commerce: 2.4.5, 2.4.6, 2.4.7, 2.4.8**
-
 
 ## Compatibility Matrix
 For a full breakdown of which PHP, MySQL, OpenSearch, etc. versions are paired with each Adobe Commerce version, please refer to the: **[Service Compatibility Guide](COMPATIBILITY.md)**
 
 ## Key Features
-* **Interactive GUI Configuration:** Built with Bash Dialog; select services (OpenSearch, RabbitMQ, Mailpit, etc.) and view a configuration summary before deployment
-* **SSL (HTTP/HTTPS):** The devstack automatically generates local SSL certificates within the Docker environment. This allows you to test Adobe Commerce and Headless frontends over `https://` locally
-* **Version-Specific Devstacks:** Automatically configures compatible versions of PHP, MySQL, OpenSearch, etc. based on targeted Adobe Commerce version
-* **Headless Isolation:** PHP and Node.js environments are kept in separate containers (`php-app` and `web-app`) to prevent conflicts
-* **Headless Configuration:** You can predefine which node js version to use. Also `web-app` container has installed `yarn` and `npm` toolset
-* **On-Demand Nginx Modes:** Toggle between `developer` and `production` Adobe Commerce modes to test Varnish caching and debug production-only bugs
-* **Telemetry & Monitoring:** Integrated Grafana, Prometheus, and cAdvisor for real-time container performance tracking. **These are OPTIONAL services** and are not installed by default. You will need to configure them in the service`s admin
+* **Interactive GUI Configuration:** Select services via Bash Dialog with summary before starting deployment
+* **SSL (HTTP/HTTPS):** Automatically generates SSL allows to test frontend over `https://` locally
+* **Version-Specific DEVSTACK:** Configure compatible versions of services based on targeted Adobe Commerce version
+* **Headless Isolation:** `php` and `node` apps are kept in separate containers (`php-app` and `web-app`)
+* **Headless Configuration:** Allows to predefine which `node` version to use
+* **On-Demand Nginx Modes:** Toggle between `developer` and `production` app modes to test Varnish caching and bugs
+* **Telemetry & Monitoring:** Integrated Grafana, Prometheus, and cAdvisor for real-time container performance tracking
 * **Developer Utilities:**
-    * **SFTP Server:** Local SFTP access to test Adobe Commerce crons and file synchronization via FileZilla. This is useful if you need to test third-party modules
+    * **SFTP Server:** Local SFTP access to test Adobe Commerce crons and file third-party modules synchronizations
     * **Centralized Logging:** Aggregate logs from all containers into a single searchable view
-    * **Env-Init:** Resolves Linux permission mismatches between your host user and the Docker containers. It relates to `php-app` and `web-app` containers only
-* **Service Dashboard:** A static HTML page is generated with direct links to all your active service GUIs (phpMyAdmin, Mailpit, etc.)
+    * **Env-Init:** Resolves Linux permission mismatches between host and the Docker containers
+* **Service Dashboard:** **DEVSTACK** Service Dashboard to address direct links to active services GUIs
 
 ---
 
 ## Available Services
-The DEVSTACK consists of over 15 services. While the core services are required, many components like monitoring and headless tools are optional.
+The **DEVSTACK** consists of over 15 services. While the core services are required, many components like monitoring and headless tools are optional.
 
  **Please, view the full service list available** **[here](docs/github/mds/SERVICES.md)**
 
@@ -123,11 +119,19 @@ Set *database_dump.sql* to import before `make magma-build`. See [this](#-databa
 
 The **DEVSTACK** provides the ``environment``, but you need to populate project's source itself.
 
+Before go further run this:
+```shell
+make up
+```
+
+This command **starts** the Docker environment if it is not already running.
+
 1. **Backend**
     - get into the PHP container
     ```bash
     make php-app
    ```
+    - `create` database and `import` data into it **manually**, see [details](#-database-importexport)
     - clone your project repository **inside** the container and run composer
    ```bash
     composer install
@@ -177,14 +181,28 @@ make node-set version=MAJOR_NODE_VERSION
 ---
 ## 🗄️ Database Import/Export
 
-First of all default Adobe Commerce database is **devstack_magento**. It creates automatically by the `mysql` container. Please, keep reading to see how to do `create/drop/import/export` database operations.
+First of all, the default Adobe Commerce database is **devstack_magento**. It is created automatically by the `mysql` container. Please, keep reading to see how to do `create|drop|mport|export` database operations yourself.
 
 The **DEVSTACK** provides a robust system for handling Adobe Commerce data, split between **Automated Initialization** and **Manual CLI Import/Export**. All SQL files are managed within the `env/dumps/` directory.
 
 ### Automated Seeds (Initialization)
-SQL files placed in the `env/dumps/seed` folder are handled by the native Docker-entrypoint logic. The logic behind is similar to the ``laravel seeds``.
-These sql ONLY run if the MySQL data directory (``volume/mysql``) is empty. If the database already exists (from a previous ``make up``), files in this folder will be **IGNORED**.
-It is good to use for the ``quick local deployment`` strategy or if you deploy the project for ``the first time``
+
+The system is designed to **"seed"** (auto-populate) your database using SQL files found in `env/dumps/seed/`. However, this process follows strict Docker logic to protect your data.
+
+#### How it works:
+
+ - **the ``"first run"`` rule**: automated import happens **only once** - the very first time the MySQL container is created (either after `amke magma-build`, or `make up` commands) 
+
+ - **the ``"empty volume"`` requirement**: for the import to trigger, your local `volume/mysql` directory must be empty
+
+ - **target database**: files are automatically imported into the default ``devstack_magento`` database
+
+#### When will it be IGNORED?
+If you **have already run** `make up` previously and a database exists on your disk, the system will skip these files. This is a safety feature to prevent accidental overwriting of your current work.
+
+> [!NOTE]
+>
+> Automated import is a **Quick Start** strategy. If your environment is already initialized, you must perform imports manually, or remove all mysql volumes
 
 * **Location:** `env/dumps/seed/`
 * **Behavior:** files (`.sql`, `.sql.gz`, or `.sh`) are executed **ONLY** when the database container is created for the very first time (i.e., when the `env/volume/mysql` directory is empty)
@@ -211,7 +229,7 @@ Use these commands for daily development tasks like importing dumps, creating ba
 
 | Folder Path         | Usage         | Behavior                                                     |
 |:--------------------|:--------------|:-------------------------------------------------------------|
-| `env/dumps/seed/`   | **automatic** | scripts run on DEVSTACK env **first-boot**                   |
+| `env/dumps/seed/`   | **automatic** | scripts run on **DEVSTACK** env **first-boot**               |
 | `env/dumps/import/` | **manual**    | place external dumps here to use with `make import-database` |
 | `env/dumps/export/` | **manual**    | destination for dumps created via `make dump-database`       |
 
