@@ -10,8 +10,8 @@
 ![Compose: V2](https://img.shields.io/badge/Compose-V2-blue?logo=docker&logoColor=white)
 
 
-**A modular, GUI-driven tool for Adobe Commerce, designed to orchestrate monolithic and headless apps on Linux with 
-built-in telemetry and simplified service management.**
+An interactive, GUI-driven orchestrator designed to build modular Adobe Commerce environments for monolithic or headless development.
+Easily toggle between optional services, monitor performance, and manage your entire local infrastructure from a single interface.
 
 <div align="left">
   <img src="docs/github/media/devstack_up.png" alt="Devstack Session"/>
@@ -55,7 +55,7 @@ For a full breakdown of which PHP, MySQL, OpenSearch, etc. versions are paired w
 * **Headless Isolation:** `php` and `node` apps are kept in separate containers
 * **Headless Configuration:** allows to easy change `node` versions
 * **On-Demand Modes:** toggle between `developer` and `production` app modes to test Varnish bugs
-* **Telemetry & Monitoring:** Grafana, Prometheus, and cAdvisor ``palyground`` allows to test high-level monitoring
+* **Telemetry & Monitoring:** Grafana, Prometheus, and cAdvisor for `play-around` testing 
 * **Developer Utilities:**
     * **SFTP Server:** local SFTP access to test Adobe Commerce crons and third-party modules syncs
     * **Centralized Logging:** aggregate logs from all containers into a single searchable view
