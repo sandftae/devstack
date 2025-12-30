@@ -58,12 +58,11 @@ help: ## show command list
 # ==============================================================================
 .PHONY: up
 up: magma-pre-check ## up docker environment
+	@GREETING="$(GET_UI_GREETING)"; \
+	echo -e "$(value HEADER_ART)" | sed "s/{{GREETING}}/$$GREETING/"
 	@export HOST_UID=$(HOST_UID) HOST_GID=$(HOST_GID) && \
 	docker compose -f $(DOCKER_COMPOSER_FILE) up -d
-	@printf "\n"
-	@printf "\033[1;32m[%s]\033[0m %s\n" "BECOMING" "Good Vibrating!"
-	@printf "\033[1;32m[%s]\033[0m %s\n" "BECOMING" "You already have it!"
-	@printf "\n"
+	@echo -e "\n$(FOOTER_ART)"
 
 .PHONY: down
 down: ## down docker environment
@@ -170,11 +169,16 @@ mode-production: ## run bin/magento deploy:mode:set production and rebuild NGINX
 		docker exec -u php $(PHP_CONTAINER) sh -c '$(BIN_MAGENTO_SET_DEPLOY_MODE_PRODUCTION)' ; \
 		printf "$(_SUCCESS)" "2" "Magento deploy mode changed to PRODUCTION successfully!" ; \
 		printf "$(_SUCCESS)" "3" "Changing NGINX MAGE_MODE [fastcgi_param] to PRODUCTION..." ; \
-		sed -i '' -e 's/$(COMMERCE_MODE_VARIABLE)=.*/$(COMMERCE_MODE_VARIABLE)=$(PRODUCTION_MODE)/g' ./env/.env ; \
+        sed -i 's/$(COMMERCE_MODE_VARIABLE)=.*/$(COMMERCE_MODE_VARIABLE)=$(PRODUCTION_MODE)/g' ./env/.env ; \
+        sed -i 's/$(BYPASS_VARNISH)=.*/$(BYPASS_VARNISH)="false"/g' ./env/.env ; \
 		printf "$(_SUCCESS)" "4" "NGINX MAGE_MODE changed to PRODUCTION successfully!" ; \
 		printf "$(_SUCCESS)" "5" "Rebuilding NGINX image..." ; \
+		export HOST_UID=$(shell id -u) && \
+		export HOST_GID=$(shell id -g) && \
 		docker compose -f $(COMPOSE_FILE) --project-directory $(COMPOSE_DIR) up -d --build  $(NGINX_IMAGE) > /dev/null 2>&1 ; \
 		printf "$(_SUCCESS)" "6" "NGINX image successfully rebuilt!" ; \
+		docker compose -f $(COMPOSE_FILE) --project-directory $(COMPOSE_DIR) up -d --build  $(SSL_PROXY_IMAGE) > /dev/null 2>&1 ; \
+		printf "$(_SUCCESS)" "7" "PROXY and VARNISH are aligned with new NGINX configuration!" ; \
 		printf "$(_SUCCESS)" "OK" "Great! All is Done!" ; \
 		printf "$(_SUCCESS)" "OK" "If the mode hasn't changed, try restarting your Docker environment." ; \
 	fi
@@ -189,11 +193,16 @@ mode-developer: ## run bin/magento deploy:mode:set developer and rebuild NGINX i
 		docker exec -u php $(PHP_CONTAINER) sh -c '$(BIN_MAGENTO_SET_DEPLOY_MODE_DEVELOPER)' > /dev/null 2>&1 ; \
 		printf "$(_SUCCESS)" "2" "Magento deploy mode changed to DEVELOPER successfully!" ; \
 		printf "$(_SUCCESS)" "3" "Changing NGINX MAGE_MODE [fastcgi_param] to DEVELOPER..." ; \
-        sed -i'' -e 's/$(COMMERCE_MODE_VARIABLE)=.*/$(COMMERCE_MODE_VARIABLE)=$(DEVELOPER_MODE)/g' ./env/.env ; \
+	 	sed -i 's/$(COMMERCE_MODE_VARIABLE)=.*/$(COMMERCE_MODE_VARIABLE)=$(DEVELOPER_MODE)/g' ./env/.env ; \
+		sed -i 's/$(BYPASS_VARNISH)=.*/$(BYPASS_VARNISH)="true"/g' ./env/.env ; \
 		printf "$(_SUCCESS)" "4" "NGINX MAGE_MODE changed to DEVELOPER successfully!" ; \
 		printf "$(_SUCCESS)" "5" "Rebuilding NGINX image..." ; \
+		export HOST_UID=$(shell id -u) && \
+		export HOST_GID=$(shell id -g) && \
 		docker compose -f $(COMPOSE_FILE) --project-directory $(COMPOSE_DIR) up -d --build  $(NGINX_IMAGE) > /dev/null 2>&1 ; \
 		printf "$(_SUCCESS)" "6" "NGINX image successfully rebuilt!" ; \
+		docker compose -f $(COMPOSE_FILE) --project-directory $(COMPOSE_DIR) up -d --build  $(SSL_PROXY_IMAGE) > /dev/null 2>&1 ; \
+		printf "$(_SUCCESS)" "7" "PROXY and VARNISH are aligned with new NGINX configuration!" ; \
 		printf "$(_SUCCESS)" "OK" "Great! All is Done!" ; \
 		printf "$(_SUCCESS)" "OK" "If the mode hasn't changed, try restarting your Docker environment." ; \
 	fi
@@ -341,6 +350,8 @@ composer-update: ## run composer update
 # @@ magma docker environment builder
 # ==============================================================================
 .PHONY: magma-build
+
+.PHONY: magma-build
 magma-build: ## helper command is used to up docker environment builder
 	@export HOST_UID=$(shell id -u) && \
 	export HOST_GID=$(shell id -g) && \
@@ -353,9 +364,7 @@ magma-build: ## helper command is used to up docker environment builder
 	magma bash launcher && \
 	docker compose -f ./env/compose.yml up -d --build
 	@printf "\n"
-	@printf "\033[1;32m[%s]\033[0m %s\n" "BECOMING" "Good Vibrating!"
-	@printf "\033[1;32m[%s]\033[0m %s\n" "BECOMING" "You already have it!"
-	@printf "\n"
+	@echo -e "\n$(FOOTER_ART)\n"
 
 .PHONY: magma-pre-check
 magma-pre-check: ## helper that runs the bash function

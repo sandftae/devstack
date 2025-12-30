@@ -10,7 +10,14 @@
 ![Compose: V2](https://img.shields.io/badge/Compose-V2-blue?logo=docker&logoColor=white)
 
 
-**A modular, GUI-driven DEVSTACK tool for Adobe Commerce, designed to orchestrate monolithic and headless apps on Linux with built-in telemetry and simplified service management.**
+**A modular, GUI-driven tool for Adobe Commerce, designed to orchestrate monolithic and headless apps on Linux with 
+built-in telemetry and simplified service management.**
+
+<div align="left">
+  <img src="docs/github/media/devstack_up.png" alt="Devstack Session"/>
+</div>
+
+---
 
 ## 📖 Table of Contents
 - [About](#about)
@@ -25,12 +32,15 @@
 - [Database Import/Export](#database-importexport)
 - [Accessing the DEVSTACK](#-accessing-the-devstack)
 - [Default Credentials](#-default-credentials)
+- [Debugging & Performance](#debugging--performance)
+    - [Xdebug](#xdebug-configuration)
+    - [Varnish Tricks](#varnish-tricks)
 - [Project Structure](#-project-structure)
 - [License](#-license)
 
 ---
 
-## About
+## Overview
 **DEVSTACK** is a bash-powered orchestration tool designed specifically for Adobe Commerce developers. Instead of a "one-size-fits-all" approach, this tool uses an interactive **Bash GUI** to help you build a dev environment tailored to your specific project needs.
 
 It handles the complex networking and service dependencies required for Adobe Commerce development, including support for headless frontends.
@@ -282,6 +292,15 @@ Use the following credentials to access the administrative panels of the include
 > [!IMPORTANT]
 >
 > **Database Access:** For external tools  the MySql port is `3309`
+
+---
+
+## Debugging & Performance
+### Xdebug Configuration
+
+### Varnish Cache Tricks
+
+---
 
 ## 📂 Project Structure
 
