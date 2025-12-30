@@ -34,7 +34,7 @@ Easily toggle between optional services, monitor performance, and manage your en
 - [Default Credentials](#-default-credentials)
 - [Debugging & Performance](#debugging--performance)
     - [Xdebug](#xdebug-configuration)
-    - [Varnish Tricks](#varnish-tricks)
+    - [Varnish](#varnish)
 - [Project Structure](#-project-structure)
 - [License](#-license)
 
@@ -195,45 +195,63 @@ make node-set version=MAJOR_NODE_VERSION
 
 The default Adobe Commerce database is **devstack_magento**. It is created automatically by the `mysql` container. Keep reading to see how to do `create|drop|import|export` database operations yourself.
 
-The **DEVSTACK** provides a robust system for handling Adobe Commerce data, split between **Automated Initialization** and **Manual CLI Import/Export**. All SQL files are managed within the `env/dumps/` directory.
-
-### Automated Seeds (Initialization)
-
-The system is designed to **"seed"** (auto-populate) your database using SQL files found in `env/dumps/seed/`. However, this process follows strict Docker logic to protect your data.
-
-#### How it works:
-
- - **the ``"first run"`` rule**: automated import happens **only once** - the very first time the MySQL container is created (either after `make magma-build`, or `make up` commands) 
-
- - **the ``"empty volume"`` rule**: for the import to trigger, your local `volume/mysql` directory must be empty
-
- - **target database**: files are automatically imported into the default ``devstack_magento`` database
-
-#### When will it be IGNORED?
-If you **have already run** `make up` previously and a database exists on your disk, the system will skip these files. This is a safety feature to prevent accidental overwriting of your current work.
+The **DEVSTACK** provides a robust system for handling Adobe Commerce data, split between **Automated Initialization** and **Manual CLI Import/Export**.
 
 > [!NOTE]
->
-> Automated import is a **Quick Start** strategy. If your environment is already initialized, you must perform imports manually, or remove all mysql volumes
+> All SQL files are managed within the `env/dumps/` directory
 
-* **Location:** `env/dumps/seed/`
-* **Behavior:** files (`.sql`, `.sql.gz`, or `.sh`) are executed **ONLY** when the database container is created for the very first time (i.e., when the `env/volume/mysql` directory is empty)
-* **Usage:** perfect for **fresh install** data
-* **Resetting:** to re-run these scripts located in seed folder, you must delete your local database volume:
-    1. `rm -rf env/volume/mysql`
-    2. `make up`
-> [!WARNING]
-> Running `rm -rf env/volume/mysql` you will remove all databases of the project
+---
+
+### Automated Seeds (Initialization)
+The system **"seeds"** (auto-populate) your database using files in `env/dumps/seed/` under two conditions:
+
+- **the `first run` rule**: This triggers only when the MySQL container is created for the first time
+- **the `empty volume` rule**: the `env/volume/mysql` directory must be empty
+
+> [!NOTE]
+> 
+> **How to Re-Seed?**
+> 
+> If you need to force the automated import to run again:
+> - `make down`
+> - `sudo rm -rf env/volume/mysql`
+> - `make up`
+> 
+> **Where is the seeded data stored?**
+> - it is imported into the default ``devstack_magento`` database
+
+---
 
 ### Manual CLI Import/Export (Makefile)
 Use these commands for daily development tasks like importing dumps, creating backups, or creating new database.
 
-| Command                                          | Description                                                |
-|:-------------------------------------------------|:-----------------------------------------------------------|
-| `make create-database db=db_name`                | creates a new database if it doesn't exist                 |
-| `make drop-database db=db_name`                  | delete database                                            |
-| `make import-database db=db_name file=dump.sql`  | imports a file from `env/dumps/import/` into a specific DB |
-| `make dump-database db=db_name`                  | exports a compressed `.sql.zip` to `env/dumps/export/`     |
+> [!NOTE]
+> the `file=` parameter looks inside `env/dumps/import/`
+
+| Command                                          | Description                                            |
+|:-------------------------------------------------|:-------------------------------------------------------|
+| `make create-database db=db_name`                | creates a new database if it doesn't exist             |
+| `make drop-database db=db_name`                  | delete database                                        |
+| `make import-database db=db_name file=dump.sql`  | imports a specific dump into the database              |
+| `make dump-database db=db_name`                  | exports a compressed `.sql.zip` to `env/dumps/export/` |
+
+**Examples**
+
+- #### import after the environment is up (`make up`):
+
+```shell
+# 1. create the schema
+make create-database db=staging_db
+
+# 2. import (file must be in env/dumps/import/)
+make import-database db=staging_db file=staging-dump_bak.sql
+```
+
+- #### dump database before performing database-not-safe tests:
+```shell
+# this creates a compressed ZIP backup in env/dumps/export/
+make dump-database db=staging_db
+```
 
 ---
 
@@ -241,7 +259,7 @@ Use these commands for daily development tasks like importing dumps, creating ba
 
 | Folder Path         | Usage         | Behavior                                                     |
 |:--------------------|:--------------|:-------------------------------------------------------------|
-| `env/dumps/seed/`   | **automatic** | scripts run on **DEVSTACK** env **first-boot**               |
+| `env/dumps/seed/`   | **automatic** | scripts run on env **first-boot**                            |
 | `env/dumps/import/` | **manual**    | place external dumps here to use with `make import-database` |
 | `env/dumps/export/` | **manual**    | destination for dumps created via `make dump-database`       |
 
@@ -296,9 +314,45 @@ Use the following credentials to access the administrative panels of the include
 ---
 
 ## Debugging & Performance
+
 ### Xdebug Configuration
 
-### Varnish Cache Tricks
+### Varnish
+
+The Varnish service is always enabled to maintain architectural consistency. However, its behavior changes dynamically based on your application mode:
+
+#### Developer Mode:
+ - Varnish is `"silenced"`. The service remains active, but it passes all requests directly to the backend without caching data
+
+#### Production Mode:
+ - Varnish is fully `active`. It processes and cache data; the backend is reached if no valid cache exists for the request
+
+#### Production Silence Mode: 
+ - this is also known as `Cache Bypass` or `Direct Backend Routing` mechanism. This specific state allows you to run the application
+in a full `production mode` (with `Adobe Commerce` generated files) while **forcing Varnish to bypass the cache**. 
+This is essential for debugging backend-specific logic, like:
+   - `geo-ip resolution`
+   - `session handling`
+   - `header-based redirects`
+   - `store-switching logic`,
+ 
+ that would otherwise be masked by a cached response.
+
+#### Switching Modes
+
+To toggle the modes logic, use the following commands:
+
+| Mode           | Command                 | Result                                                         |
+|:---------------|:------------------------|:---------------------------------------------------------------|
+| **developer**  | `make mode-developer`   | `Varnish is silenced`: direct backend access (no caching)      |
+| **production** | `make mode-production`  | `Varnish is fully active`: processes and caches data as needed |
+
+
+> [!IMPORTANT]
+> 
+> **Service Management Notice** > While the **DEVSTACK** provides commands to toggle caching logic, no specific make commands are provided for direct service management of Varnish. 
+> To perform any direct actions on the Varnish service, you must use native Docker commands
+
 
 ---
 
