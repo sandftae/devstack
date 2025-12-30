@@ -221,10 +221,10 @@ The system **"seeds"** (auto-populate) your database using files in `env/dumps/s
 > - it is imported into the default ``devstack_magento`` database
 
 
-> #### Quick Start or Onboarding strategy for the team(s)
-> This mechanism is ideal for `sharing a pre-configured `environment with team members. Simply place
->  a database dump in `env/dumps/seed/` before distributing the env repository. When a new developer runs make `make up`,
-> they will immediately have a fully populated database without any manual import steps.
+#### Quick Start or Onboarding strategy for the team(s)
+This mechanism is ideal for `sharing a pre-configured `environment with team members. Simply place
+a database dump in `env/dumps/seed/` before distributing the env repository. When a new developer runs make `make up`,
+they will immediately have a fully populated database without any manual import steps.
 
 ---
 
