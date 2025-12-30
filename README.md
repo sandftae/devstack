@@ -321,7 +321,11 @@ Use the following credentials to access the administrative panels of the include
 
 ## Debugging & Performance
 
+---
+
 ### Xdebug Configuration
+
+---
 
 ### Varnish
 
