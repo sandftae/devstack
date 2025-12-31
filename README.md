@@ -34,8 +34,9 @@ Easily toggle between optional services, monitor performance, and manage your en
 - [Default Credentials](#-default-credentials)
 - [Debugging & Performance](#debugging--performance)
     - [Xdebug](#xdebug-configuration)
-    - [Varnish](#varnish)
+    - [Varnish and Adobe Commerce Modes](#varnish-and-adobe-commerce-modes)
 - [Project Structure](#-project-structure)
+- [Troubleshooting](#troubleshooting)
 - [License](#-license)
 
 ---
@@ -327,9 +328,9 @@ Use the following credentials to access the administrative panels of the include
 
 ---
 
-### Varnish
+### Varnish and Adobe Commerce Modes
 
-The Varnish service is always enabled to maintain architectural consistency. However, its behavior changes dynamically based on your application mode:
+The Varnish service is always enabled to maintain architectural consistency. However, its behavior changes dynamically based on your application mode.
 
 #### Developer Mode:
  - Varnish is `"silenced"`. The service remains active, but it passes all requests directly to the backend without caching data
@@ -348,14 +349,16 @@ This is essential for debugging backend-specific logic, like:
  
  that would otherwise be masked by a cached response.
 
-#### Switching Modes
+#### Mode Control Commands
 
-To toggle the modes logic, use the following commands:
+To toggle the modes' logic, use the following commands:
 
-| Mode           | Command                 | Result                                                         |
-|:---------------|:------------------------|:---------------------------------------------------------------|
-| **developer**  | `make mode-developer`   | `Varnish is silenced`: direct backend access (no caching)      |
-| **production** | `make mode-production`  | `Varnish is fully active`: processes and caches data as needed |
+| Mode           | Command                                 | Result                                                                                                                              | Silence Headers           |
+|:---------------|:----------------------------------------|:------------------------------------------------------------------------------------------------------------------------------------|:--------------------------|
+| **developer**  | `make mode-developer`                   | `varnish is silenced`: direct backend access (no caching)                                                                           | `X-Varnish-Bypass: false` |
+| **production** | `make mode-production`                  | `varnish is fully active`: processes and caches data                                                                                | `X-Varnish-Bypass: false` |
+| **production** | `make varnish-production silence=true`  | **production only**:  direct backend access (no caching);<br/>  also know `Direct Backend Routing` and/or `Cache Bypass` strategies | `X-Varnish-Bypass: true`  |
+| **production** | `make varnish-production silence=false` | **production only**: re-activates varnish  data processes and caching                                                               | `X-Varnish-Bypass: false` |
 
 
 > [!IMPORTANT]
@@ -363,6 +366,28 @@ To toggle the modes logic, use the following commands:
 > **Service Management Notice** > While the **DEVSTACK** provides commands to toggle caching logic, no specific make commands are provided for direct service management of Varnish. 
 > To perform any direct actions on the Varnish service, you must use native Docker commands
 
+---
+
+### ``X-Varnish-Bypass`` 
+
+> [!WARNING] Keep in mind that the ``X-Varnish-Bypass`` is **DEVSTACK** specific/custom variable
+
+When you are in **production mode**, you can verify if the bypass is active by inspecting the headers of any request.
+
+Look for the `X-Varnish-Bypass` parameter in the global server variables or response headers:
+
+ - `X-Varnish-Bypass: true` — varnish `is silenced`. The request was passed directly to the PHP-FPM/Nginx backend
+
+ - `X-Varnish-Bypass: false` — varnish `is not silenced`. The request is being handled by the caching layer
+
+On backend you can check the bypass status by looking for the `X-Varnish-Bypass` parameter in the global `$_SERVER` variable:
+
+```php
+if (isset($_SERVER['HTTP_X_VARNISH_BYPASS']) && $_SERVER['HTTP_X_VARNISH_BYPASS'] === 'true') {
+    # varnish is currently silenced/bypassed ----> do debugging
+    # REMEMBER THIS IS FOR DEVELOPMENT PURPOSES ONLY AND SHOULD NOT BE USED IN PRODUCTION OR TEST ENVIRONMENTS!
+}
+```
 
 ---
 
@@ -395,5 +420,50 @@ To toggle the modes logic, use the following commands:
 └── .editiorconfig
 └── .gitignore
 ```
+---
+
+## Troubleshooting
+
+---
+
+### Error 503 Backend fetch failed
+This is the common varnish error. It usually means `Varnish` lost the connection to the Adobe Commerce (Nginx) backend or the backend timed out during a heavy process.
+
+#### Symptoms:
+ - a plain white page with the text: `Error 503 Backend fetch failed`
+ - varnish is running, but it cannot communicate with the PHP containers
+
+#### Resolution
+The fastest way to reset the connection bridge between the cache layer and the application is to restart the environment:
+```shell
+make down
+make up
+```
+
+---
+
+### Permissions & Ownership
+
+A common issue with Docker environments is the **permission denied** error, which occurs because many containers run as the
+`root` user while your local host uses a standard one (usually, `1000:1000`).
+
+**DEVSTACK** implements an automated permission-handling logic to bridge this gap, ensuring that the services and a user
+have access to critical files and folders. The tool automatically synchronizes `read/write` permissions for the following directories:
+ - `src/web-app`
+ - `src/php-app`
+ - `env/.env`
+ - `env/*.yml`
+ - `logs`
+
+For security and data integrity reasons, **DEVSTACK** does not manage permissions for the following folders:
+ - `volumes`
+ - `env/volumes`
+ - `env/dumps`
+
+> [!TIP] The Powermake file has a special section for permissions issues where you can find aliases to resolve folder/file permissions faster. Copy those into Makefile
+
+---
+
+
 ## 📄 License
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
