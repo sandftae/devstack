@@ -370,7 +370,8 @@ To toggle the modes' logic, use the following commands:
 
 ### ``X-Varnish-Bypass`` 
 
-> [!WARNING] Keep in mind that the ``X-Varnish-Bypass`` is **DEVSTACK** specific/custom variable
+> [!WARNING] 
+> Keep in mind that the ``X-Varnish-Bypass`` is **DEVSTACK** specific/custom variable
 
 When you are in **production mode**, you can verify if the bypass is active by inspecting the headers of any request.
 
@@ -383,7 +384,10 @@ Look for the `X-Varnish-Bypass` parameter in the global server variables or resp
 On backend you can check the bypass status by looking for the `X-Varnish-Bypass` parameter in the global `$_SERVER` variable:
 
 ```php
-if (isset($_SERVER['HTTP_X_VARNISH_BYPASS']) && $_SERVER['HTTP_X_VARNISH_BYPASS'] === 'true') {
+if (
+    isset($_SERVER['HTTP_X_VARNISH_BYPASS']) && 
+    $_SERVER['HTTP_X_VARNISH_BYPASS'] === 'true'
+) {
     # varnish is currently silenced/bypassed ----> do debugging
     # REMEMBER THIS IS FOR DEVELOPMENT PURPOSES ONLY AND SHOULD NOT BE USED IN PRODUCTION OR TEST ENVIRONMENTS!
 }
@@ -460,7 +464,8 @@ For security and data integrity reasons, **DEVSTACK** does not manage permission
  - `env/volumes`
  - `env/dumps`
 
-> [!TIP] The Powermake file has a special section for permissions issues where you can find aliases to resolve folder/file permissions faster. Copy those into Makefile
+> [!TIP] 
+> The Powermake file has a special section for permissions issues where you can find aliases to resolve folder/file permissions faster. Copy those into Makefile
 
 ---
 
