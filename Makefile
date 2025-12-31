@@ -27,6 +27,31 @@ HOST_UID := $(shell id -u)
 HOST_GID := $(shell id -g)
 
 # ==============================================================================
+# @@ helper command(s)
+# ==============================================================================
+.PHONY: help
+help: ## show command list
+	@printf "\033[1;33m================================================================================================\n"; \
+	printf "  NOTE: This output is generated from '##' comments.   \n"; \
+	printf "  Please do not change '##' location.\n"; \
+	printf "  You can safely update the comment text.\n"; \
+	printf "  Use the same pattern to add new command to helper list: \n"; \
+	printf "\n"; \
+	printf "   		.PHONY: command \n"; \
+	printf "   		command: ## your fancy comment will go here after these double hashtags \n"; \
+	printf "   			command execution content: \n"; \
+	printf "\n"; \
+	printf "================================================================================================\033[00m\n"; \
+	grep -h -E '^[a-zA-Z0-9_-]+:.*##|^# @@|^[ \t]*##' $(MAKEFILE_LIST) | \
+	awk ' \
+	BEGIN {FS = ":.*?##"}; \
+	/##/ && !/@@/ {printf "\033[1;32m%-24s\033[00m  %s\n", $$1, $$2}; \
+	/^# @@/ { \
+		print ""; \
+		printf "\033[1;37m--- %s ---\033[00m\n", toupper(substr($$0, index($$0, "@@") + 3)); \
+	}'
+
+# ==============================================================================
 # @@ docker container related commands
 # ==============================================================================
 .PHONY: up
@@ -64,7 +89,6 @@ rebuild-image: ## rebuild a docker image based on name given. Usage: make rebuil
 	docker compose -f $(COMPOSE_FILE) --project-directory $(COMPOSE_DIR) build --no-cache $(name) && \
     docker compose -f $(COMPOSE_FILE) --project-directory $(COMPOSE_DIR) up -d $(name)
 	@echo -e "\nThe \033[1m$(name)\033[00m image is successfully \033[1;32mre-built.\033[00m\n"
-
 
 # ==============================================================================
 # @@ magento daily manipulation commands
@@ -116,6 +140,35 @@ mode-developer: ## run bin/magento deploy:mode:set developer and rebuild NGINX i
 		printf "$(_SUCCESS)" "OK" "Great! All is Done!" ; \
 		printf "$(_SUCCESS)" "OK" "If the mode hasn't changed, try restarting your Docker environment." ; \
 	fi
+
+.PHONY: varnish-production
+varnish-production: ## control Varnish silence in production mode. Usage: make varnish-production silence=[true|false]
+	@if [ -z "$(silence)" ]; then \
+		echo -e "\033[1;31mERROR:\033[00m 'silence' arg is not specified!\nUsage: \033[1mmake varnish-production silence=true OR false\033[00m \n"; \
+		exit 1; \
+	fi
+	@if ! [[ "$(silence)" =~ ^(true|false)$$ ]]; then \
+		echo -e "\033[1;31mERROR:\033[00m Invalid value '$(silence)'. Only lowercase \033[1mtrue\033[00m or \033[1mfalse\033[00m are allowed.\n"; \
+		exit 1; \
+	fi
+	@CURRENT_MODE=$$(grep '^ADOBE_COMMERCE_MODE=' env/.env | cut -d'=' -f2); \
+	if [ "$$CURRENT_MODE" = "developer" ] && [ "$(silence)" = "true" ]; then \
+		echo -e "\033[1;33mWARNING:\033[00m Adobe Commerce is currently in \033[1mdeveloper\033[00m mode.\n"; \
+		echo -e "You must change mode to \033[1mproduction\033[00m first"; \
+		echo -e "Otherwise, you will experience unexpected cache errors and inconsistent behavior.\n"; \
+		echo -e "To change mode run \033[1mmake mode-production\033[00m.\n"; \
+		exit 1; \
+	fi
+	@sed -i 's/DEVELOPER_MODE_BYPASS_VARNISH=.*/DEVELOPER_MODE_BYPASS_VARNISH="$(silence)"/g' ./env/.env
+	@echo -e "\nRunning..."
+	@docker compose -f $(COMPOSE_FILE) --project-directory $(COMPOSE_DIR) up -d --build  $(SSL_PROXY_IMAGE) > /dev/null 2>&1
+	@echo -ne "\033[1A\033[K"
+	@if [ "$(silence)" = "true" ]; then \
+		echo -e "\n\033[1;32mSUCCESS:\033[00m Varnish is \033[1mSILENCED!\033[00m\n"; \
+	else \
+		echo -e "\n\033[1;32mSUCCESS:\033[00m Varnish is \033[1mUNSILENCED!\033[00m\n"; \
+	fi
+	@echo -e "Remember to either \033[1mswitch back\033[00m or run \033[1mmake mode-developer\033[00m after completion. \n"
 
 # ==============================================================================
 # @@ web-app manipulation commands
