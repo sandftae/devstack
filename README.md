@@ -469,6 +469,13 @@ For security and data integrity reasons, **DEVSTACK** does not manage permission
 
 ---
 
+## 📘 Documentation
+
+Refer to [INSIGHTS.md](INSIGHTS.md) for architectural decisions and performance benchmarks.
+
+Refer to [SHOWCASES.md](SHOWCASES.md) for a visual representation of the tool.
+
+---
 
 ## 📄 License
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
