@@ -3,12 +3,8 @@
 #
 # Makefile command list
 #
-# This Makefile contains an extended list of CLI commands needed to configure and manage env.
-#
-# !!! IMPORTANT  !!!
-#
-# Do not change structure of file (spaces, comment symbols, or @@) as the 'make help' command
-# uses this file structure to build list of CLI commands you can use
+# This Makefile contains list of Base CLI commands needed to configure and manage env.
+# If you really want to feel the power yuo should copy Powermake file content into this file
 #
 # ============================================================================================
 # ============================================================================================
