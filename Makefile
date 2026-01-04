@@ -106,6 +106,29 @@ mode-developer: ## run bin/magento deploy:mode:set developer and rebuild NGINX i
 		printf "\033[1;32m✔\033[0m All systems aligned to DEVELOPER successfully!\n"; \
 	fi
 
+.PHONY: varnish-production
+varnish-production: ## control Varnish silence in production mode. Usage: make varnish-production silence=[true|false]
+	@if [ -z "$(silence)" ]; then \
+		echo -e "\n\033[1;31mERROR:\033[00m 'silence' arg is not specified!\n\nUsage: \033[1mmake varnish-production silence=true OR false\033[00m \n"; \
+		exit 1; \
+	fi
+	@if ! [[ "$(silence)" =~ ^(true|false)$$ ]]; then \
+		echo -e "\033[1;31mERROR:\033[00m Invalid value '$(silence)'. Only lowercase \033[1mtrue\033[00m or \033[1mfalse\033[00m are allowed.\n"; \
+		exit 1; \
+	fi
+	@CURRENT_MODE=$$(grep '^ADOBE_COMMERCE_MODE=' env/.docker.env | cut -d'=' -f2 | tr -d '"' | tr -d "'"); \
+	if [ "$$CURRENT_MODE" = "developer" ] && [ "$(silence)" = "true" ]; then \
+		echo -e "\033[1;33mWARNING:\033[00m Adobe Commerce is currently in \033[1mdeveloper\033[00m mode.\n"; \
+		echo -e "You must change mode to \033[1mproduction\033[00m first.\n"; \
+		exit 1; \
+	fi
+	@sed -i 's/DEVELOPER_MODE_BYPASS_VARNISH=.*/DEVELOPER_MODE_BYPASS_VARNISH="$(silence)"/g' ./env/.docker.env && \
+	printf "\n" && \
+	$(SPINNER) '$(DOCKER_COMPOSE) up -d --build $(SSL_PROXY_IMAGE)' "Configuring Varnish \033[1msilence\033[00m" && \
+	printf "\033[1;32m✔\033[0m Varnish is now $(shell [ "$(silence)" = "true" ] && echo "\033[1mSILENCED\033[0m" || echo "\033[1mUNSILENCED\033[0m")!\n"
+	@printf "\n"
+	@echo -e "Remember to either \033[1mswitch back\033[00m or run \033[1mmake mode-developer\033[00m after completion.\n"
+
 # ==============================================================================
 # @@ php-app manipulation commands
 # ==============================================================================
@@ -230,17 +253,21 @@ dump-database: ## export database to a zipped file. Usage: make dump-database db
 		exit 1; \
 	fi
 
+.PHONY: enter-database
+enter-database: ## get into mysql located inside database container
+	@docker exec -it devstack_mysql sh -c "mysql -u$(DB_USER) -p$(DB_PASSWORD)"
+
 # ==============================================================================
 # @@ magento project install commands
 # ==============================================================================
 .PHONY: create-ce
 create-ce: ## run magento 'composer install' command for community edition (CE) commerce version specified
-	@docker exec -it -u php $(PHP_CONTAINER) bash -c "export TERM=xterm-256color && $(INSTALL_COMMERCE_CE)"
+	@docker exec -it -u php $(PHP_CONTAINER) sh -c "export TERM=xterm-256color && $(INSTALL_COMMERCE_CE)"
 	@echo -e "\n\n\033[1;32mDONE:\033[00m installation complete.\n\n"
 
 .PHONY: create-ee ## run magento 'composer install' command for community edition (EE) commerce version specified
 create-ee: ## Install Magento Enterprise Edition
-	@docker exec -it -u php $(PHP_CONTAINER) bash -c "export TERM=xterm-256color && $(INSTALL_COMMERCE_EE)"
+	@docker exec -it -u php $(PHP_CONTAINER) sh -c "export TERM=xterm-256color && $(INSTALL_COMMERCE_EE)"
 	@echo -e "\n\n\033[1;32mDONE:\033[00m installation complete.\n\n"
 
 .PHONY: setup-install
