@@ -60,11 +60,11 @@ down: ## down docker environment
 
 .PHONY: php-app
 php-app: ## execute php-app docker container interactively [-it]
-	docker exec -it -u php $(PHP_CONTAINER) sh
+	@docker exec -it -u php $(PHP_CONTAINER) sh
 
 .PHONY: web-app
 web-app: ## execute web-app docker container interactively [-it]
-	docker exec -it devstack_web-app sh
+	@docker exec -it devstack_web-app sh
 
 .PHONY: rebuild-image
 rebuild-image: ## rebuild a docker image based on name given. Usage: make rebuild-image name=image_name
@@ -74,17 +74,6 @@ rebuild-image: ## rebuild a docker image based on name given. Usage: make rebuil
 	fi
 	@printf "\n"
 	@$(SPINNER) '$(DOCKER_COMPOSE) build --no-cache $(name) && $(DOCKER_COMPOSE) up -d $(name)' "Rebuilding $(name)"
-
-# ==============================================================================
-# @@ magento project install commands
-# ==============================================================================
-.PHONY: install-ce
-install-ce: ## run magento 'composer install' command for community edition (CE) commerce version specified
-	docker exec -u php $(PHP_CONTAINER) $(INSTALL_COMMERCE_CE)
-
-.PHONY: install-ee
-install-ee: ## run magento 'composer install' command for enterprise edition (EE) commerce version specified
-	docker exec -u php $(PHP_CONTAINER) $(INSTALL_COMMERCE_EE)
 
 # ==============================================================================
 # @@ magento daily manipulation commands
@@ -242,12 +231,27 @@ dump-database: ## export database to a zipped file. Usage: make dump-database db
 	fi
 
 # ==============================================================================
-# @@ magento project setups and configs commands
+# @@ magento project install commands
 # ==============================================================================
-.PHONY: install-project
-# @see:    ./env/etc/make/magento/setup/clean-project.mk
-install-project: ## run bin/magento setup:install command by using default dummy data(remove .env if needed)
+.PHONY: create-ce
+create-ce: ## run magento 'composer install' command for community edition (CE) commerce version specified
+	@docker exec -it -u php $(PHP_CONTAINER) bash -c "export TERM=xterm-256color && $(INSTALL_COMMERCE_CE)"
+	@echo -e "\n\n\033[1;32mDONE:\033[00m installation complete.\n\n"
+
+.PHONY: create-ee ## run magento 'composer install' command for community edition (EE) commerce version specified
+create-ee: ## Install Magento Enterprise Edition
+	@docker exec -it -u php $(PHP_CONTAINER) bash -c "export TERM=xterm-256color && $(INSTALL_COMMERCE_EE)"
+	@echo -e "\n\n\033[1;32mDONE:\033[00m installation complete.\n\n"
+
+.PHONY: setup-install
+# @see:    ./env/etc/make/magento/setup/setup-install.mk
+setup-install: ## run bin/magento setup:install command by using data specified in .commerce.env (remove .env if needed)
 	docker exec -u php $(PHP_CONTAINER) sh -c '$(BIN_MAGENTO_SETUP_INSTALL)'
+
+.PHONY: setup-new-admin
+# @see:    ./env/etc/make/magento/setup/new-admin.mk
+setup-new-admin: ## create new admin user (e.g., admin100500) or throws an error if exists
+	docker exec -u php $(PHP_CONTAINER) sh -c '$(BIN_MAGENTO_CREATE_ADMIN_USER)'
 
 # ==============================================================================
 # @@ magma docker environment builder
