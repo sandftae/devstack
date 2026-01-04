@@ -195,23 +195,23 @@ varnish-production: ## control Varnish silence in production mode. Usage: make v
 
 .PHONY: mode-show
 mode-show: ## run bin/magento deploy:mode:show
-	docker exec -u php $(PHP_CONTAINER) sh -c '$(BIN_MAGENTO_DEPLOY_MODE_SHOW)'
+	@docker exec -u php $(PHP_CONTAINER) sh -c '$(BIN_MAGENTO_DEPLOY_MODE_SHOW)'
 
 .PHONY: static-deploy
 static-deploy: ## run bin/magento setup:static-content:deploy -f command
-	docker exec -u php $(PHP_CONTAINER) sh -c '$(BIN_MAGENTO_STATIC_CONTENT_DEPLOY)'
+	@docker exec -u php $(PHP_CONTAINER) sh -c '$(BIN_MAGENTO_STATIC_CONTENT_DEPLOY)'
 
 .PHONY: static-deploy-parallel-2
 static-deploy-parallel-2: ## run bin/magento setup:static-content:deploy -f -j 2 (2 parallel jobs)
-	docker exec -u php $(PHP_CONTAINER) sh -c '$(BIN_MAGENTO_STATIC_CONTENT_DEPLOY)'
+	@docker exec -u php $(PHP_CONTAINER) sh -c '$(BIN_MAGENTO_STATIC_CONTENT_DEPLOY)'
 
 .PHONY: static-deploy-parallel-4
 static-deploy-parallel-4: ## run bin/magento setup:static-content:deploy -f -j 4 (4 parallel jobs)
-	docker exec -u php $(PHP_CONTAINER) sh -c '$(BIN_MAGENTO_STATIC_CONTENT_DEPLOY)'
+	@docker exec -u php $(PHP_CONTAINER) sh -c '$(BIN_MAGENTO_STATIC_CONTENT_DEPLOY)'
 
 .PHONY: sample-data
 sample-data: ## run bin/magento sampledata:deploy
-	docker exec -u php $(PHP_CONTAINER) sh -c '$(BIN_MAGENTO_SAMPLE_DATA_DEPLOY)'
+	@docker exec -u php $(PHP_CONTAINER) sh -c '$(BIN_MAGENTO_SAMPLE_DATA_DEPLOY)'
 
 # ==============================================================================
 # @@ php-app manipulation commands
@@ -337,17 +337,21 @@ dump-database: ## export database to a zipped file. Usage: make dump-database db
 		exit 1; \
 	fi
 
+.PHONY: enter-database
+enter-database: ## get into mysql located inside database container
+	@docker exec -it devstack_mysql sh -c "mysql -u$(DB_USER) -p$(DB_PASSWORD)"
+
 # ==============================================================================
 # @@ magento project install commands
 # ==============================================================================
 .PHONY: create-ce
 create-ce: ## run magento 'composer install' command for community edition (CE) commerce version specified
-	@docker exec -it -u php $(PHP_CONTAINER) bash -c "export TERM=xterm-256color && $(INSTALL_COMMERCE_CE)"
+	@docker exec -it -u php $(PHP_CONTAINER) sh -c "export TERM=xterm-256color && $(INSTALL_COMMERCE_CE)"
 	@echo -e "\n\n\033[1;32mDONE:\033[00m installation complete.\n\n"
 
 .PHONY: create-ee ## run magento 'composer install' command for community edition (EE) commerce version specified
 create-ee: ## Install Magento Enterprise Edition
-	@docker exec -it -u php $(PHP_CONTAINER) bash -c "export TERM=xterm-256color && $(INSTALL_COMMERCE_EE)"
+	@docker exec -it -u php $(PHP_CONTAINER) sh -c "export TERM=xterm-256color && $(INSTALL_COMMERCE_EE)"
 	@echo -e "\n\n\033[1;32mDONE:\033[00m installation complete.\n\n"
 
 .PHONY: setup-install
