@@ -22,7 +22,7 @@ SPINNER = /bin/bash env/bash/make/utils/spinner_wrapper.sh
 # @@ help command
 # ==============================================================================
 .PHONY: help
-help: ## show this help message
+help: ## help command
 	@printf "$(HELP_NOTE)"
 	@printf "\n\033[1;34mMAINTENANCE COMMANDS FOR $(PROJECT_NAME)\033[0m\n"
 	@awk 'BEGIN {FS = ":.*##"; printf "\nUsage:\n  make \033[36m<target>\033[0m\n"} \
