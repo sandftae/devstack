@@ -18,27 +18,17 @@ SPINNER = /bin/bash env/bash/make/utils/spinner_wrapper.sh
 # ==============================================================================
 # @@ helper command(s)
 # ==============================================================================
+# ==============================================================================
+# @@ help command
+# ==============================================================================
 .PHONY: help
-help: ## show command list
-	@printf "\033[1;33m================================================================================================\n"; \
-	printf "  NOTE: This output is generated from '##' comments.   \n"; \
-	printf "  Please do not change '##' location.\n"; \
-	printf "  You can safely update the comment text.\n"; \
-	printf "  Use the same pattern to add new command to helper list: \n"; \
-	printf "\n"; \
-	printf "   		.PHONY: command \n"; \
-	printf "   		command: ## your fancy comment will go here after these double hashtags \n"; \
-	printf "   			command execution content: \n"; \
-	printf "\n"; \
-	printf "================================================================================================\033[00m\n"; \
-	grep -h -E '^[a-zA-Z0-9_-]+:.*##|^# @@|^[ \t]*##' $(MAKEFILE_LIST) | \
-	awk ' \
-	BEGIN {FS = ":.*?##"}; \
-	/##/ && !/@@/ {printf "\033[1;32m%-24s\033[00m  %s\n", $$1, $$2}; \
-	/^# @@/ { \
-		print ""; \
-		printf "\033[1;37m--- %s ---\033[00m\n", toupper(substr($$0, index($$0, "@@") + 3)); \
-	}'
+help: ## show this help message
+	@printf "$(HELP_NOTE)"
+	@printf "\n\033[1;34mMAINTENANCE COMMANDS FOR $(PROJECT_NAME)\033[0m\n"
+	@awk 'BEGIN {FS = ":.*##"; printf "\nUsage:\n  make \033[36m<target>\033[0m\n"} \
+		/^[a-zA-Z0-9_-]+:.*?##/ { printf "  \033[36m%-30s\033[0m %s\n", $$1, $$2 } \
+		/^# @@/ { printf "\n\033[1;33m%s\033[0m\n", substr($$0, 6) } ' $(MAKEFILE_LIST)
+	@printf "\n"
 
 # ==============================================================================
 # @@ docker container related commands
@@ -265,12 +255,12 @@ list-database: ## list databases created by the client
 # @@ magento project install commands
 # ==============================================================================
 .PHONY: create-ce
-create-ce: ## run magento 'composer install' command for community edition (CE) commerce version specified
+create-ce: ## run magento 'composer create-project <params>' command for specified community edition (CE) commerce version
 	@docker exec -it -u php $(PHP_CONTAINER) sh -c "export TERM=xterm-256color && $(INSTALL_COMMERCE_CE)"
 	@echo -e "\n\n\033[1;32mDONE:\033[00m installation complete.\n\n"
 
-.PHONY: create-ee ## run magento 'composer install' command for community edition (EE) commerce version specified
-create-ee: ## Install Magento Enterprise Edition
+.PHONY: create-ee
+create-ee: ## run magento 'composer create-project <params>' command for specified enterprise edition (EE) commerce version
 	@docker exec -it -u php $(PHP_CONTAINER) sh -c "export TERM=xterm-256color && $(INSTALL_COMMERCE_EE)"
 	@echo -e "\n\n\033[1;32mDONE:\033[00m installation complete.\n\n"
 
