@@ -16,9 +16,6 @@ include ./env/etc/make/config.mk
 SPINNER = /bin/bash env/bash/make/utils/spinner_wrapper.sh
 
 # ==============================================================================
-# @@ helper command(s)
-# ==============================================================================
-# ==============================================================================
 # @@ help command
 # ==============================================================================
 .PHONY: help
@@ -55,16 +52,6 @@ php-app: ## execute php-app docker container interactively [-it]
 .PHONY: web-app
 web-app: ## execute web-app docker container interactively [-it]
 	@docker exec -it devstack_web-app sh
-
-.PHONY: rebuild-image
-rebuild-image: ## rebuild a docker image based on name given. Usage: make rebuild-image name=image_name
-	@if [ -z "$(name)" ]; then \
-		echo -e "\033[1;31mERROR:\033[00m 'name' arg is not specified!\n\nUsage: \033[1mmake rebuild-image name=image_name\033[00m \n"; \
-	else \
-		printf "\n" ; \
-		$(SPINNER) '$(DOCKER_COMPOSE) build --no-cache $(name) && $(DOCKER_COMPOSE) up -d $(name)' "Rebuilding: \033[1m$(name)\033[00m" ; \
-		printf "\n" ; \
-	fi
 
 # ==============================================================================
 # @@ magento daily manipulation commands
@@ -125,6 +112,10 @@ varnish-production: ## control Varnish silence in production mode
 mode-show: ## run bin/magento deploy:mode:show
 	@docker exec -u php $(PHP_CONTAINER) sh -c '$(BIN_MAGENTO_DEPLOY_MODE_SHOW)'
 
+.PHONY: static-deploy
+static-deploy: ## run bin/magento setup:static-content:deploy -f command
+	@docker exec -it -u php $(PHP_CONTAINER) sh -c "export TERM=xterm-256color && $(BIN_MAGENTO_STATIC_CONTENT_DEPLOY)"
+
 # ==============================================================================
 # @@ php-app manipulation commands
 # ==============================================================================
@@ -178,7 +169,7 @@ node-set: ## change image container version. Usage: make node-set version=20
 create-database: ## create database. Usage: make create-database db=dbname
 	@if [ -z "$(db)" ]; then \
 		echo -e "\n\033[1;31mERROR:\033[00m 'db' arg is not specified!\n\nUsage: \033[1mmake create-database db=dbname\033[00m \n"; \
-	elif docker exec devstack_mysql mysql -u root -p'root' -e "use $(db)" >/dev/null 2>&1; then \
+	elif docker exec devstack_mysql mysql -u $(DB_USER) -p$(DB_PASSWORD) -e "use $(db)" >/dev/null 2>&1; then \
 		echo -ne "\nDatabase \033[1m$(db)\033[00m already \033[1;33mexists\033[00m. \n\nDo you want to overwrite it? [y/N]: " && read ans; \
 		if [ "$${ans:-N}" = "y" ] || [ "$${ans:-N}" = "Y" ]; then \
 			$(SPINNER) \
@@ -199,7 +190,7 @@ import-database: ## import dump into existing db. Usage: make import-database db
 		echo -e "\n\033[1;31mERROR:\033[00m \033[1mdb\033[00m or \033[00m\033[1mfile\033[00m arg missing!\n\nUsage: \033[1mmake import-database db=dbname file=file.sql\033[00m \n"; \
 	elif [ ! -f "./env/dumps/import/$(file)" ]; then \
 		echo -e "\n\033[1;31mERROR:\033[00m file \033[1m./env/dumps/import/$(file)\033[00m not found! \n"; \
-	elif ! docker exec devstack_mysql mysql -u root -p'root' -e "use $(db)" >/dev/null 2>&1; then \
+	elif ! docker exec devstack_mysql mysql -u $(DB_USER) -p$(DB_PASSWORD) -e "use $(db)" >/dev/null 2>&1; then \
 		echo -e "\n\033[1;31mERROR:\033[00m Database '\033[1m$(db)\033[00m' does not exist.\n\nCreate it first: \033[1mmake create-database db=$(db)\033[00m\n"; \
 	else \
 		echo -e "\nDatabase:    \033[1;34m$(db)\033[0m"; \
@@ -219,7 +210,7 @@ import-database: ## import dump into existing db. Usage: make import-database db
 dump-database: ## export database to a zipped file. Usage: make dump-database db=dbname
 	@if [ -z "$(db)" ]; then \
 		echo -e "\n\033[1;31mERROR:\033[00m \033[1mdb\033[00m arg is not specified!\n\nUsage: \033[1mmake dump-database db=dbname\033[00m \n"; \
-	elif ! docker exec devstack_mysql mysql -u root -p'root' -e "use $(db)" >/dev/null 2>&1; then \
+	elif ! docker exec devstack_mysql mysql -u $(DB_USER) -p$(DB_PASSWORD) -e "use $(db)" >/dev/null 2>&1; then \
 		echo -e "\n\033[1;31mERROR:\033[00m Database '\033[1m$(db)\033[00m' does not exist.\n"; \
 	else \
 		DATE=$$(date +%Y-%m-%d_%H-%M-%S); \
@@ -236,6 +227,26 @@ dump-database: ## export database to a zipped file. Usage: make dump-database db
 			printf "\n\033[1;32m✔\033[0m Database exported to \033[1m$$DUMP_NAME\033[0m successfully!\n"; \
 		else \
 			echo -e "\n\033[1;31mDump aborted.\033[00m\n"; \
+		fi; \
+	fi
+
+.PHONY: drop-database
+drop-database: ## drop database ba name given. Usage: make drop-database db=dbname
+	@if [ -z "$(db)" ]; then \
+		echo -e "\n\033[1;31mERROR:\033[00m \033[1mdb\033[00m arg is not specified!\n\nUsage: \033[1mmake drop-database db=dbname\033[00m \n"; \
+	elif ! docker exec devstack_mysql mysql -u $(DB_USER) -p$(DB_PASSWORD) -e "use $(db)" >/dev/null 2>&1; then \
+		echo -e "\n\033[1;31mERROR:\033[00m Database '\033[1m$(db)\033[00m' does not exist.\n"; \
+	else \
+		echo -e "\nTarget Database: \033[1;31m$(db)\033[0m"; \
+		echo -e "\n\033[1;31mWARNING:\033[00m This action is \033[1mPERMANENT\033[0m. All tables and data will be destroyed."; \
+		echo -ne "\nAre you absolutely sure you want to DROP this database? [y/N]: " && read ans; \
+		if [ "$${ans:-N}" = "y" ] || [ "$${ans:-N}" = "Y" ]; then \
+			$(SPINNER) \
+				"docker exec -i devstack_mysql mysql -u root -p'root' -e 'DROP DATABASE \`$(db)\`;'" \
+				"\nDropping database \033[1;31m$(db)\033[0m"; \
+			printf "\n\033[1;32m✔\033[0m Database \033[1m$(db)\033[0m has been deleted.\n"; \
+		else \
+			echo -e "\n\033[1;33mAborted.\033[00m No changes made to \033[1m$(db)\033[0m.\n"; \
 		fi; \
 	fi
 
@@ -267,7 +278,7 @@ create-ee: ## run magento 'composer create-project <params>' command for specifi
 .PHONY: setup-install
 # @see:    ./env/etc/make/magento/setup/setup-install.mk
 setup-install: ## run bin/magento setup:install command by using data specified in .commerce.env (remove .env if needed)
-	@docker exec -it -u php $(PHP_CONTAINER) sh -c "export TERM=xterm-256color && $(BIN_MAGENTO_SETUP_INSTALL)"
+	@docker exec -it -u php $(PHP_CONTAINER) sh -c "export TERM=xterm-256color && $(BIN_MAGENTO_SETUP_INSTALL) && $(BIN_MAGENTO_SETUP_DOMAIN)"
 	@echo -e "\n\n\033[1;32mDONE:\033[00m \033[1msetup:install\033[0m complete.\n\n"
 
 .PHONY: setup-new-admin
@@ -286,17 +297,25 @@ setup-new-admin: ## create new admin user (e.g., admin100500) or throws an error
 # ==============================================================================
 .PHONY: magma-build
 magma-build: ## helper command is used to up docker environment builder
-	@export HOST_UID=$(shell id -u) && \
-	export HOST_GID=$(shell id -g) && \
-    COMPOSE_FILE=$(DOCKER_COMPOSE_FILE) ./env/bash/make/build/confirm_rebuild.sh && \
-    /bin/bash env/bash/make/container/shutdown.sh $(DOCKER_COMPOSE) && \
-    docker compose -f $(COMPOSE_ENV_BUILD_FILE) run --rm \
-        -e COLUMNS=$(shell tput cols) \
-        -e LINES=$(shell tput lines) \
-	magma bash launcher && \
-	$(DOCKER_COMPOSE) up -d --build
-	@printf "\n"
-	@echo -e "\n$(FOOTER_ART)\n"
+	@export HOST_UID=$(shell id -u); \
+	export HOST_GID=$(shell id -g); \
+	if COMPOSE_FILE=$(DOCKER_COMPOSE_FILE) ./env/bash/make/build/confirm_rebuild.sh; then \
+		/bin/bash env/bash/make/container/shutdown.sh $(DOCKER_COMPOSE); \
+		docker compose -f $(COMPOSE_ENV_BUILD_FILE) run --rm \
+			-e COLUMNS=$(shell tput cols) \
+			-e LINES=$(shell tput lines) \
+			magma bash launcher; \
+		EXIT_CODE=$$?; \
+		if [ $$EXIT_CODE -ne 1 ]; then \
+			$(DOCKER_COMPOSE) up -d --build; \
+			printf "\n"; \
+			echo -e "\n$(FOOTER_SHORT_ART)\n"; \
+		else \
+			echo ""; \
+		fi; \
+	else \
+		printf "\n"; \
+	fi
 
 .PHONY: magma-pre-check
 magma-pre-check: ## helper that runs the bash function
