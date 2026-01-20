@@ -11,6 +11,9 @@ cmd_node_set() {
   local online_versions
   local service="${WEB_APP_SERVICE_NAME:-web-app}"
 
+  # ensure the service exists and its node_container is running
+  check_service_status "$service" || return 1
+
   # check arg exists
   if [ -z "$version" ]; then
     printf "\n%b%b[!] ERROR:%b %bversion%b arg is not specified!\n" "${COLOR_RED}" "${C_BOLD}" "${C_NC}" "${C_BOLD}" "${C_NC}"

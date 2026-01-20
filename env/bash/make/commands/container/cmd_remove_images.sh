@@ -1,3 +1,10 @@
+#!/bin/bash
+# ============================================================
+# COMMAND: remove_images
+# DESCRIPTION: removes project related images
+# ============================================================
+
+# cmd_remove_images
 cmd_remove_images() {
   local project_prefix="${COMPOSE_PROJECT_NAME:-devstack}"
 
