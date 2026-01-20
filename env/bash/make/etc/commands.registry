@@ -261,8 +261,9 @@ cmd_xde_group="php-app container manipulation commands"
 
 cmd_php_set_name="php-set"
 cmd_php_set_desc="change image container php version"
-cmd_php_set_usage="make php_set version=x.x, like make php_set version=8.3 [only major LTS versions are allowed]"
+cmd_php_set_usage="make php-set version=x.x"
 cmd_php_set_group="php-app container manipulation commands"
+cmd_php_set_note="e.g., version=8.3 [only ${C_BOLD}major LTS${C_NC} versions are allowed]"
 
 cmd_php_version_name="php-version | php-meta"
 cmd_php_version_desc="display php-app container metadata"
@@ -273,8 +274,9 @@ cmd_php_version_group="php-app container manipulation commands"
 # --- Group: web-app manipulation commands ---
 cmd_node_set_name="node-set"
 cmd_node_set_desc="change image container php version"
-cmd_node_set_usage="make node-set version=xx.x, where 'xx.x' is a major version  [e.g, make node-set version=22.00]"
+cmd_node_set_usage="make node-set version=xx.x"
 cmd_node_set_group="web-app container manipulation commands"
+cmd_node_set_note="${C_BOLD}xx.x${C_NC} is a major version [e.g, make node-set version=22.00]"
 
 cmd_node_version_name="node-version | node-meta"
 cmd_node_version_desc="display cweb-app[node-app] container metadata"

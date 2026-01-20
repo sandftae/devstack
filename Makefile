@@ -3,7 +3,7 @@
 #
 # Makefile command list
 #
-# This Makefile contains an CLI command needed to configure and manage env.
+# This Makefile contains an CLI command needed to run environment configurator.
 #
 # ============================================================================================
 # ============================================================================================
