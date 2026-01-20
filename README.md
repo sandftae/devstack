@@ -4,11 +4,17 @@
 ![Version](https://img.shields.io/badge/version-1.0.0--beta-orange.svg)
 ![Environment: Local Only](https://img.shields.io/badge/Environment-local%20only-red.svg)
 ![Adobe Commerce: >=2.4.5](https://img.shields.io/badge/Adobe%20Commerce-%E2%89%A52.4.5-red?logo=adobe&logoColor=white)
-![OS: Linux Only](https://img.shields.io/badge/OS-Linux%20-yellow?logo=linux&logoColor=white)
+# ![OS: Linux Only](https://img.shields.io/badge/OS-Linux%20-yellow?logo=linux&logoColor=white)
 ![Build: Makefile](https://img.shields.io/badge/Build-Makefile-4EAA25?logo=gnuterminal&logoColor=white)
 ![Docker: >20](https://img.shields.io/badge/Docker-%3E20-blue?logo=docker&logoColor=white)
 ![Compose: V2](https://img.shields.io/badge/Compose-V2-blue?logo=docker&logoColor=white)
 
+
+---
+
+# This README.md file is under review and do not fully finish yet
+
+---
 
 An interactive, GUI-driven orchestrator designed to build modular Adobe Commerce environments for monolithic or headless development.
 Easily toggle between optional services, monitor performance, and manage your entire local infrastructure from a single interface.
