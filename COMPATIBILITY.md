@@ -1,8 +1,8 @@
-# 🛠 Adobe Commerce & Service Compatibility Matrix
+# Adobe Commerce & Service Compatibility Matrix
 
 This document outlines the software versions automatically provisioned by the **DEVSTACK** GUI based on your selected Adobe Commerce version.
 
-## 📊 Core Stack Mapping
+### Core Stack Mapping
 
 | Adobe Commerce Version | PHP Version  | MySQL/MariaDB  | OpenSearch   | Elasticsearch* |
 |:-----------------------|:-------------|:---------------|:-------------|:---------------|
@@ -16,7 +16,7 @@ This document outlines the software versions automatically provisioned by the **
 
 ---
 
-## 🏗 Infrastructure Details
+### Infrastructure Details
 
 ### PHP-FPM
 The PHP containers are built on **Alpine Linux** to keep the footprint small. They include critical Adobe Commerce extensions pre-installed:
@@ -39,7 +39,7 @@ All supported versions use a unified caching strategy:
 
 ---
 
-## 🌐 Frontend Compatibility
+##  Frontend Compatibility
 
 | Frontend Tech          | Node.js Version         | Recommended For          |
 |:-----------------------|:------------------------|:-------------------------|

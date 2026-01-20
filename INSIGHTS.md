@@ -1,6 +1,6 @@
 
-### 🧠 DEVSTACK INSIGHTS
-#### 📌 Project Philosophy
+###  DEVSTACK INSIGHTS
+#### Project Philosophy
 
 The **DEVSTACK** tool is built on two core pillars:
 

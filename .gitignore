@@ -1,4 +1,5 @@
 # project root files and folder to be fully excluded
+.idea
 log/
 src/
 archive/
@@ -9,12 +10,25 @@ sources/
 env/image/
 env/static/
 env/volume/
+env/magma/
 
-# exclude all database dumps and seeds except for documentation
+# exclude all in env/dumps
 env/dumps/**/*
-!env/dumps/seed/README.txt
-!env/dumps/import/README.txt
-!env/dumps/export/README.txt
+
+# but you can go go onti these =)
+!env/dumps/seed/
+!env/dumps/import/
+!env/dumps/export/
+
+# but you have to ignore of those folders
+env/dumps/seed/*
+env/dumps/import/*
+env/dumps/export/*
+
+# and do not ingore these files
+!env/dumps/seed/README.md
+!env/dumps/import/README.md
+!env/dumps/export/README.md
 
 # exclude specific compose files inside env folder
 env/compose.yml
