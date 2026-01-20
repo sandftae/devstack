@@ -15,7 +15,6 @@ cmd_php_version() {
   local composer_version
   local varnish_status="enabled/unsilenced"
 
-
   php_service="${PHP_APP_SERVICE_NAME:-php-app}"
   xdebug_status="${COLOR_YELLOW}${C_BOLD}disabled${C_NC}"
 

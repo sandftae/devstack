@@ -13,6 +13,9 @@ cmd_php_set() {
   local service="${PHP_APP_SERVICE_NAME:-php-app}"
   local ac_245_php_version="8.1"
 
+  # ensure the service exists and its node_container is running
+  check_service_status "$service" || return 1
+
   # check arg exists
   if [ -z "$version" ]; then
     printf "\n%b%b[!] ERROR:%b %bversion%b arg is not specified!\n" "${COLOR_RED}" "${C_BOLD}" "${C_NC}" "${C_BOLD}" "${C_NC}"

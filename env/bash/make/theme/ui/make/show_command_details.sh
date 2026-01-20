@@ -1,3 +1,10 @@
+#!/bin/bash
+# ============================================================
+# UI: command_details
+# DESCRIPTION: show command details when h|help flag is used
+# ============================================================
+
+# show_command_details function
 show_command_details() {
   local cmd="$1"
   local clean_cmd="${cmd//-/_}"

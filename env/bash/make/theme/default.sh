@@ -1,7 +1,7 @@
 #!/bin/bash
 # ============================================================
 # THEME: default
-# this file defines  colors
+# DESCRIPTION: this file defines  colors
 # ============================================================
 
 # base colors
@@ -16,7 +16,7 @@ export COLOR_SILVER='\033[1;90m'
 
 # formatting
 export COLOR_BOLD='\033[1m'
-export COLOR_NC='\033[0m' # No Color
+export COLOR_NC='\033[0m' # no color/end formatting
 
 # aliases
 export C_BOLD='\033[1m'

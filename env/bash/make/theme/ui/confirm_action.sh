@@ -1,3 +1,4 @@
+#!/bin/bash
 # ============================================================
 # UTILS: confirm_action
 # DESCRIPTION: standard yes/no prompt with color interpretation
