@@ -11,6 +11,8 @@ env/image/
 env/static/
 env/volume/
 env/magma/
+env/.commerce.env
+env/.docker.env
 
 # exclude all in env/dumps
 env/dumps/**/*
