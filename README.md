@@ -8,7 +8,6 @@
 ![Docker: >20](https://img.shields.io/badge/Docker-%3E20-blue?logo=docker&logoColor=white)
 ![Compose: V2](https://img.shields.io/badge/Compose-V2-blue?logo=docker&logoColor=white)
 
-
 ---
 
 # This README.md file is under review and do not fully finish yet
@@ -21,6 +20,34 @@ Easily toggle between optional services, monitor performance, and manage your en
 <div align="left">
   <img src="docs/github/media/devstack_up.png" alt="Devstack Session"/>
 </div>
+
+---
+
+## Devstack gallery
+
+<details>
+<summary> Click for a quick visual overview</summary>
+<br/>
+  <img src="docs/github/media/magma/1.png" width="45%" alt="Commerce Edition"/>
+  <img src="docs/github/media/magma/2.png" width="45%" alt="Commerce Edition"/>
+  <img src="docs/github/media/magma/3.png" width="45%" alt="Commerce Storefront"/>
+  <img src="docs/github/media/magma/4.png" width="45%" alt="Commerce Storefront"/>
+  <img src="docs/github/media/magma/5.png" width="45%" alt="Base Configuration"/>
+  <img src="docs/github/media/magma/6.png" width="45%" alt="Base Configuration"/>
+  <img src="docs/github/media/magma/7.png" width="45%" alt="Base Configuration"/>
+  <img src="docs/github/media/magma/meta.png" width="45%" alt="Project Meta"/>
+  <img src="docs/github/media/magma/database.png" width="45%" alt="Database"/>
+  <img src="docs/github/media/magma/metrics.png" width="45%" alt="Metrics"/>
+  <img src="docs/github/media/magma/mode.png" width="45%" alt="Mode"/>
+  <img src="docs/github/media/magma/node-set.png" width="45%" alt="Node Set"/>
+  <img src="docs/github/media/magma/php-set.png" width="45%" alt="PHP Set"/>
+  <img src="docs/github/media/magma/varnish.png" width="45%" alt="Varnish"/>
+  <img src="docs/github/media/magma/list.png" width="45%" alt="List"/>
+  <img src="docs/github/media/magma/list_2.png" width="45%" alt="List-2"/>
+  <img src="docs/github/media/magma/list_3.png" width="45%" alt="List-3"/>
+  <img src="docs/github/media/magma/list_4.png" width="45%" alt="List-3"/>
+  
+</details>
 
 ---
 
@@ -157,9 +184,16 @@ See [this](#database-importexport) for more details
     - run the install command to populate the database
     ```bash
       # at the Makefile level
-       make setup-install
       # this command configure urls, admin, etc
-    ```
+       make setup-install
+    
+      # change commerce mode to developer  
+      make mode-developer
+      # or 
+      make mode-production  
+      
+      # use 'make mode-show' to see current commerce mode and docker environment mode  
+      ```
     - default admin/pass is ``admin/admin12345``, run this command to set your own:
    ```bash
       make create-admin
