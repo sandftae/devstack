@@ -4,7 +4,6 @@
 ![Version](https://img.shields.io/badge/version-1.0.0--beta-orange.svg)
 ![Environment: Local Only](https://img.shields.io/badge/Environment-local%20only-red.svg)
 ![Adobe Commerce: >=2.4.5](https://img.shields.io/badge/Adobe%20Commerce-%E2%89%A52.4.5-red?logo=adobe&logoColor=white)
-# ![OS: Linux Only](https://img.shields.io/badge/OS-Linux%20-yellow?logo=linux&logoColor=white)
 ![Build: Makefile](https://img.shields.io/badge/Build-Makefile-4EAA25?logo=gnuterminal&logoColor=white)
 ![Docker: >20](https://img.shields.io/badge/Docker-%3E20-blue?logo=docker&logoColor=white)
 ![Compose: V2](https://img.shields.io/badge/Compose-V2-blue?logo=docker&logoColor=white)
@@ -29,7 +28,6 @@ Easily toggle between optional services, monitor performance, and manage your en
 - [About](#about)
 - [Key Features](#key-features)
 - [Available Services](#available-services)
-- [The Two-Tier Makefile Strategy](#the-two-tier-makefile-strategy)
 - [Getting Started](#-getting-started)
     - [Prerequisites](#prerequisites)
     - [Infrastructure Installation](#infrastructure-installation)
@@ -82,26 +80,15 @@ For a full breakdown of which PHP, MySQL, OpenSearch, etc. versions are paired w
 > This tool is created specifically for **local development and testing**. It contains configurations designed for debugging, performance monitoring, and are **not secure** for production or staging.
 >
 > ### Infrastructure vs. Application
-> This tool builds the **"house"** (the services, etc). You are responsible for bringing the **"furniture"**. It means cloning your source code, managing `auth.json` credentials, and executing application-level installs like `composer install` or `yarn install`, and etc.
+> This tool builds the **"house"** (the services, etc). You are responsible for bringing the **"furniture"**. It means cloning your source code, managing `auth.json` credentials, and etc.
 
 ---
 
-## The Two-Tier Makefile Strategy
-This tools provide two ways to manage environment based on workflow preferences:
-
-1.  **Makefile (OOTB):** Minimalist. Only contains core commands to `build`, `start`, `stop`, and `enter` containers
-2.  **Powermake:** Extended Makefile. Includes dozens of "power" commands for Adobe Commerce and docker
-
-> [!TIP]
-> If you want more power, simply copy specific commands (or the whole file) from `Powermake` into `Makefile`
-
----
-
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 * **Good Mood**: We are living in tough time. Let's try to keep our thoughts clear and open to the beautiful
-* **OS:** Linux (Ubuntu recommended) version 24.04 or higher LTS
+* **OS:** Linux (Ubuntu recommended) version 24.04 or higher LTS. The tool was not tested with MacOS/Windows, but it was written to be capable to work with those OS
 * **Docker:** Docker Engine 20.10+ and Docker Compose v2
 * **Utilities:** `make`, `bash`
 
@@ -114,20 +101,18 @@ This tools provide two ways to manage environment based on workflow preferences:
    
     cd devstack
     
-   # optional cleaning action; be sure you are deleting devstack`s 
+   # optional cleaning action; be sure you are ONLY deleting devstack`s 
    # git service files/folders, and devstack`s *.md files  
    rm -rf *.md LICENSE .editorconfig .git .gitigonre .editorconfig docs/github
     ```
 
-2. **Database Seed and/or Database Import** [``optional step``]
-
-Set **a database dump** to import before run `make magma-build`. See [this](#database-importexport) for more details
-
-3. **Launch the DEVSTACK GUI**
+2. **Launch the DEVSTACK GUI**
     ```bash
    make magma-build 
    ```
+
 > [!NOTE]
+> 
 > Once the environment build is complete, you will see that several new files and folders [have been added](#-project-structure)
 
 ---
@@ -135,6 +120,15 @@ Set **a database dump** to import before run `make magma-build`. See [this](#dat
 ## Adobe Commerce Installation
 
 The **DEVSTACK** provides a `development environment`, but you need to fill in the project source code yourself.
+
+> [!IMPORTANT]
+> 
+> All installation-related manipulations will be performed based on the Commerce version specified during setup.
+
+---
+
+### ``cloned/existing adobe commerce project installation``
+
 
 0. **Start Environment**
 
@@ -144,25 +138,38 @@ Before go further, lets start docker environment if not yet:
 make up
 ```
 
-> [!IMPORTANT] 
-> Your **pub** folder must be located **directly in the php-app** directory
+1. **Import Database**
 
-1. **Backend**
+See [this](#database-importexport) for more details
+
+
+2. **Backend**
 
     - get into the PHP container
     ```bash
     make php-app
    ```
-    - `create` database and `import` data into it **manually**, see [Database Import/Export](#database-importexport) section
     - clone your project repository **inside** the container and run composer
-   ```bash
-    composer install
+   ```bash 
+   # at the Makefile level
+    make composer-install
     ```
+    - run the install command to populate the database
+    ```bash
+      # at the Makefile level
+       make setup-install
+      # this command configure urls, admin, etc
+    ```
+    - default admin/pass is ``admin/admin12345``, run this command to set your own:
+   ```bash
+      make create-admin
+   ```
 
-2. **Frontend (Default / Monolith)**
+2. **Frontend (default / monolith)**
     - default Adobe Commerce frontend is located in the ``php-app`` folder
 
-3. **Frontend (Headless)**
+
+3. **Frontend (headless)**
     
     - enter the ``web-app`` container
     ```bash
@@ -173,6 +180,24 @@ make up
 
 ---
 
+### ``fresch adobe commerce project installation``
+if you re going to use fresh commerce ``EE/CE`` then the flow is the following:
+```bash
+ # up docker environment
+ make up
+ 
+  # for CE version; specified during configuration version of the CE will be used
+ make create-ce
+ 
+ # for EE version; specified during configuration version of the EE will be used
+ make create-ee
+ 
+ # set the database in the alignment with commerce edition and version 
+ make setup-install
+````
+
+--- 
+
 ### ``node`` version upgrade/downgrade
 
 The ``web-app`` container is packed with the ``node v.20``.  If you need to ``upgrade/downgrade`` version run this command:
@@ -181,9 +206,13 @@ The ``web-app`` container is packed with the ``node v.20``.  If you need to ``up
 make node-set version=MAJOR_NODE_VERSION
 ```
 
+> [!IMPORTANT]
+> 
+> node version must be changed only by using ``make node-set version=MAJOR_NODE_VERSION`` command
+
 ---
 
-## 🛠 Usage
+##  Usage
 | Base commands        | Description                         |
 |----------------------|-------------------------------------|
 | ``make up``          | start the docker environment        |
@@ -192,9 +221,18 @@ make node-set version=MAJOR_NODE_VERSION
 | ``make web-app``     | enter Web-app container             |
 | ``make magma-build`` | run/re-run the GUI devstack builder |
 
-> [!TIP]
->
-> Check ``Powermake`` for extended list of cli commands to manage `Adobe Commerce instance`, `docker`, `metrics`, `project root`, and `access`. It has more commands to use then base `Makefile`. See [Two-Tier Makefile Strategy](#the-two-tier-makefile-strategy) section to gain more understanding
+
+### `help`
+Each command has a `help | h` flag, e.g.:
+```shell
+make list h
+make help
+
+make create-ce h
+amke create-ce help
+```
+
+See the following list of all command in existence: [click](COMMANDS.md)
 
 ---
 
@@ -231,8 +269,16 @@ The system **"seeds"** (auto-populate) your database using files in `env/dumps/s
 #### Quick Start or Onboarding strategy for the team(s)
 This mechanism is ideal for `sharing a pre-configured `environment with team members. Simply place
 a database dump in `env/dumps/seed/` before distributing the env repository. When a new developer runs make `make up`,
-they will immediately have a fully populated database without any manual import steps.
+they will have a fully populated database without any manual import steps.
 
+> [!IMPORTANT]
+>
+> **THE "SILENT" SEEDING PROCESS**
+>
+> The official MySQL Docker image do NOT provide a real-time progress bar or UI notifications. This may be confusing because once you run env the mysql container is
+> up and no database import progress bar is shown. So, once you're seeding the database you need to track the process itself. Just check db size once in minute to see db size actually increasing.
+> 
+> #### Use manual import if you want to have more control over import
 ---
 
 ### Manual CLI Import/Export (Makefile)
@@ -241,12 +287,12 @@ Use these commands for daily development tasks like importing dumps, creating ba
 > [!NOTE]
 > the `file=` parameter looks inside `env/dumps/import/`
 
-| Command                                          | Description                                            |
-|:-------------------------------------------------|:-------------------------------------------------------|
-| `make create-database db=db_name`                | creates a new database if it doesn't exist             |
-| `make drop-database db=db_name`                  | delete database                                        |
-| `make import-database db=db_name file=dump.sql`  | imports a specific dump into the database              |
-| `make dump-database db=db_name`                  | exports a compressed `.sql.zip` to `env/dumps/export/` |
+| Command                                          | Description                                           |
+|:-------------------------------------------------|:------------------------------------------------------|
+| `make create-database db=db_name`                | creates a new database if it doesn't exist            |
+| `make drop-database db=db_name`                  | delete database                                       |
+| `make import-database db=db_name file=dump.sql`  | imports a specific dump into the database             |
+| `make dump-database db=db_name`                  | exports a compressed `.sql.gz` to `env/dumps/export/` |
 
 **Examples**
 
@@ -262,13 +308,13 @@ make import-database db=staging_db file=staging-dump_bak.sql
 
 - #### dump database before performing database-not-safe tests:
 ```shell
-# this creates a compressed ZIP backup in env/dumps/export/
+# this creates a compressed .gz backup in env/dumps/export/
 make dump-database db=staging_db
 ```
 
 ---
 
-### 📂 Database Folder Purposes
+### Database Folder Purposes
 
 | Folder Path         | Usage         | Behavior                                                     |
 |:--------------------|:--------------|:-------------------------------------------------------------|
@@ -277,25 +323,26 @@ make dump-database db=staging_db
 | `env/dumps/export/` | **manual**    | destination for dumps created via `make dump-database`       |
 
 ---
-## 🌐 Accessing the DEVSTACK
+## Accessing the DEVSTACK
 
 Once the containers are running, you can access the various parts of the environment using the URLs below.
 
-### 🛍 Storefronts & Backend
-| Service                  | Local URL                      | Note                              |
-|:-------------------------|:-------------------------------|:----------------------------------|
-| **Monolith Frontend**    | http://dev-env.localhost/      | Default Adobe Commerce storefront |
-| **Adobe Commerce Admin** | http://dev-env.localhost/<key> | Use your custom admin url         |
-| **Vue Storefront**       | http://localhost:3000/         | Default Vue storefront            |
-| **PWA Studio**           | http://0.0.0.0:3000/           | Default PWA storefront            |
+### Storefronts & Backend
+| Service                  | Local URL                                             | Note                              |
+|:-------------------------|:------------------------------------------------------|:----------------------------------|
+| **Monolith Frontend**    | https://your-domain.localhost/                        | Default Adobe Commerce storefront |
+| **Adobe Commerce Admin** | https://your-domain.localhost/admin                   | Use your custom admin url         |
+| **Vue Storefront**       | https://lyour-domain:3000/ <br/> http://0.0.0.0:3000/ | Default Vue storefront            |
+| **PWA Studio**           | https://lyour-domain:3000/ <br/> http://0.0.0.0:3000/ | Default PWA storefront            |
 
 
-### 🛠 DEVSTACK Service Dashboard
-| Service                 | Local URL                                                                  |
-|:------------------------|:---------------------------------------------------------------------------|
-| **Service Dashboard**   | [https://dev-env.localhost/devstack/](https://dev-env.localhost/devstack/) |
+### EVSTACK Service Dashboard
+| Service                 | Local URL                                                                      |
+|:------------------------|:-------------------------------------------------------------------------------|
+| **Service Dashboard**   | [https://your-domain.localhost/devstack/](https://dev-env.localhost/devstack/) |
 
 > [!TIP]
+> 
 > **The Service Dashboard** contains direct links to all active service GUIs
 
 **The Service Dashboard** view:
@@ -307,7 +354,7 @@ Once the containers are running, you can access the various parts of the environ
 
 ---
 
-## 🔐 Default Credentials
+## Default Credentials
 
 Use the following credentials to access the administrative panels of the included services.
 
@@ -332,20 +379,24 @@ Use the following credentials to access the administrative panels of the include
 
 ### Xdebug Configuration
 
+*Xdebug* configuration covers only `PHPStorm` at this moment. Please, use this [reference](XDEBUG.md) to, actually, **configure** your `PHPStorm`
+
 ---
 
 ### Varnish and Adobe Commerce Modes
 
-The Varnish service is always enabled to maintain architectural consistency. However, its behavior changes dynamically based on your application mode.
+The Varnish service is always enabled to maintain architectural consistency. 
 
-#### Developer Mode:
+#### Silence Mode:
  - Varnish is `"silenced"`. The service remains active, but it passes all requests directly to the backend without caching data
 
-#### Production Mode:
+#### Unsilence Mode:
  - Varnish is fully `active`. It processes and cache data; the backend is reached if no valid cache exists for the request
 
-#### Production Silence Mode: 
- - this is also known as `Cache Bypass` or `Direct Backend Routing` mechanism. This specific state allows you to run the application
+
+#### `Silence mode` technical details 
+
+This mode is also known as `Cache Bypass` or `Direct Backend Routing` mechanism. This allows you to run the application
 in a full `production mode` (with `Adobe Commerce` generated files) while **forcing Varnish to bypass the cache**. 
 This is essential for debugging backend-specific logic, like:
    - `geo-ip resolution`
@@ -355,22 +406,23 @@ This is essential for debugging backend-specific logic, like:
  
  that would otherwise be masked by a cached response.
 
+---
+
+<div align="center">
+  <img src="docs/github/media/silence.png" width="45%" alt="Service Dashboard"/>  
+  <img src="docs/github/media/unsilence.png" width="45%" alt="Service Credentials"/>
+</div>
+
+---
+
 #### Mode Control Commands
 
 To toggle the modes' logic, use the following commands:
 
-| Mode           | Command                                 | Result                                                                                                                              | Silence Headers           |
-|:---------------|:----------------------------------------|:------------------------------------------------------------------------------------------------------------------------------------|:--------------------------|
-| **developer**  | `make mode-developer`                   | `varnish is silenced`: direct backend access (no caching)                                                                           | `X-Varnish-Bypass: false` |
-| **production** | `make mode-production`                  | `varnish is fully active`: processes and caches data                                                                                | `X-Varnish-Bypass: false` |
-| **production** | `make varnish-production silence=true`  | **production only**:  direct backend access (no caching);<br/>  also know `Direct Backend Routing` and/or `Cache Bypass` strategies | `X-Varnish-Bypass: true`  |
-| **production** | `make varnish-production silence=false` | **production only**: re-activates varnish  data processes and caching                                                               | `X-Varnish-Bypass: false` |
-
-
-> [!IMPORTANT]
-> 
-> **Service Management Notice** > While the **DEVSTACK** provides commands to toggle caching logic, no specific make commands are provided for direct service management of Varnish. 
-> To perform any direct actions on the Varnish service, you must use native Docker commands
+| Mode allows to use it                 | Command                                 | Result                                                                                                                              | Silence Headers                 |
+|:--------------------------------------|:----------------------------------------|:------------------------------------------------------------------------------------------------------------------------------------|:--------------------------------|
+| **production**<br/> and **developer** | `make varnish-disable`                  | `varnish is silenced`: direct backend access (no caching)                                                                           | `X-Varnish-Bypass: true`        |
+| **production**<br/> and **developer** | `make varnish-enable`                   | `varnish is fully active`: processes and caches data                                                                                | `X-Varnish-Bypass` not provided |
 
 ---
 
@@ -379,13 +431,13 @@ To toggle the modes' logic, use the following commands:
 > [!WARNING] 
 > Keep in mind that the ``X-Varnish-Bypass`` is **DEVSTACK** specific/custom variable
 
-When you are in **production mode**, you can verify if the bypass is active by inspecting the headers of any request.
+When you are in **varnish silence mode**, you can verify if the bypass is active by inspecting the headers of any request.
 
 Look for the `X-Varnish-Bypass` parameter in the global server variables or response headers:
 
  - `X-Varnish-Bypass: true` — varnish `is silenced`. The request was passed directly to the PHP-FPM/Nginx backend
 
- - `X-Varnish-Bypass: false` — varnish `is not silenced`. The request is being handled by the caching layer
+ - `X-Varnish-Bypass` missed — varnish `is not silenced`. The request is being handled by the caching layer
 
 On backend you can check the bypass status by looking for the `X-Varnish-Bypass` parameter in the global `$_SERVER` variable:
 
@@ -397,15 +449,18 @@ if (
     # varnish is currently silenced/bypassed ----> do debugging
     # REMEMBER THIS IS FOR DEVELOPMENT PURPOSES ONLY AND SHOULD NOT BE USED IN PRODUCTION OR TEST ENVIRONMENTS!
 }
+
 ```
 
 ---
 
-## 📂 Project Structure
+##  Project Structure
 
 ```shell
 ├── docs/                       # Knowledge folder: put here project-related files you would like to store
 ├── env/                        # GUI logic, .env file, and Docker templates
+│   ├── bash/                   # Devstack service manipulation and manage commands
+│   ├── etc/                    # Build and runtime docker service configs
 │   ├── dumps/                  # Database management root
 │   │   ├── export/             # Destination for 'make dump-database'
 │   │   ├── import/             # Source for 'make import-database'
@@ -423,7 +478,6 @@ if (
 │   ├── php-app/                # Adobe Commerce Source Code (PHP)
 │   └── web-app/                # Headless Source Code (Node.js)
 ├── Makefile                    # Core Base commands
-├── Powermake                   # Extended command boilerplate
 └── README.md
 └── ROADMAP.md
 └── LICENSE
@@ -469,10 +523,6 @@ For security and data integrity reasons, **DEVSTACK** does not manage permission
  - `volumes`
  - `env/volumes`
  - `env/dumps`
-
-> [!TIP] 
-> The Powermake file has a special section for permissions issues where you can find aliases to resolve folder/file permissions faster. Copy those into Makefile
-
 ---
 
 ## 📘 Documentation
