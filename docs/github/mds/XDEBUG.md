@@ -1,16 +1,16 @@
 # Xdebug Configuration Guide
 
-This guide describes how to configure `Xdebug` for both `Web requests` and `CLI commands` (including custom Adobe Commerce commands) in `PHPStorm`.
+This guide describes how to configure `Xdebug` for both `HTTP/HTTPS requests` and `CLI commands` (including custom Adobe Commerce commands) in `PHPStorm`.
 
 > [!NOTE]
 > 
-> This guide is specifically tailored for PHPStorm and Docker-based environments.
+> This guide is specifically tailored for PHPStorm and Docker-based environments
 
 ---
 
 ## Table of Contents
 - [Manage Commands](#manage-commands)
-- [Web Request Debugging](#httphttps-request-debugging)
+- [HTTP/HTTPS Request Debugging](#httphttps-request-debugging)
 - [CLI Debugging](#cli-debugging)
 
 ---
@@ -22,7 +22,7 @@ Use these `make` commands to control the Xdebug status within your container:
 | Command               | Alias      | Description                        |
 |:----------------------|:-----------|:-----------------------------------|
 | `make xdebug-enable`  | `make xde` | enables Xdebug `in the container`  |
-| `make xdebug-disable` | `make xd`  | disables Xdebug `in the container` |
+| `make xdebug-disable` | `make xdd` | disables Xdebug `in the container` |
 
 ---
 
@@ -35,6 +35,7 @@ Configuration consists of two main parts:
 ### 1. PHPStorm Debug and DBGp Proxy
 Configure the ports and proxy settings to allow `PHPStorm` to listen for `incoming` Xdebug connections.
 Just follow screenshots:
+
 <details>
 <summary>View Configuration Screenshots</summary>
 <p align="center">
@@ -76,7 +77,7 @@ Align path mappings so `PHPStorm` can map the file structure `inside the contain
 
 ## CLI Debugging
 
-To debug Adobe Commerce `CLI` or custom console commands, you must first complete the [Web Request Debugging](#web-request-debugging) setup.
+To debug Adobe Commerce `CLI` or custom console commands, you must first complete the [HTTP/HTTPS Request Debugging](#web-request-debugging) setup.
 
 > [!IMPORTANT]
 >
