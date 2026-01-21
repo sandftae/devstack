@@ -7,6 +7,7 @@
 ![Build: Makefile](https://img.shields.io/badge/Build-Makefile-4EAA25?logo=gnuterminal&logoColor=white)
 ![Docker: >20](https://img.shields.io/badge/Docker-%3E20-blue?logo=docker&logoColor=white)
 ![Compose: V2](https://img.shields.io/badge/Compose-V2-blue?logo=docker&logoColor=white)
+![Bash Version](https://img.shields.io/badge/bash-%3E%3D_3.2-blue?logo=gnu-bash&logoColor=white)
 
 ---
 
