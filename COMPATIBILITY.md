@@ -21,22 +21,16 @@ This document outlines the software versions automatically provisioned by the **
 ### PHP-FPM
 The PHP containers are built on **Alpine Linux** to keep the footprint small. They include critical Adobe Commerce extensions pre-installed:
 * `bcmath`, `gd`, `intl`, `mysqli`, `pdo_mysql`, `soap`, `xsl`, `zip`, `sockets`, etc.
-* **Xdebug 3** is included and enabled by default. It can be toggled via the `.env` file:
-  * set ``XDEBUG_ENABLED=false``
-  * run:
-```shell
-make rebuild-image name=php-app
-```
+* **Xdebug 3** is included and `disabled` by default.
 
 ### Search Engines
-* **OpenSearch:** Selected as the default search engine for all 2.4.x installs.
-* **Dashboards:** If selected in the GUI, the OpenSearch Dashboard will be accessible via the Service Dashboard.
+* **OpenSearch:** selected as the default search engine for all 2.4.x installs.
+* **Dashboards:** if selected in the GUI, the OpenSearch Dashboard will be accessible via the Service Dashboard.
 
 ### Cache & Session
 All supported versions use a unified caching strategy:
-* **Redis/ValKey:** Used for both Session storage and Backend Cache
-* **Varnish:** Configured for Full Page Cache (FPC). Use the `make mode-production` command in **Powermake** to test Varnish effectively
-
+* **Redis/ValKey:** used for both `session storage` and `backend cache`
+* **Varnish:**cConfigured for Full Page Cache (FPC)
 ---
 
 ##  Frontend Compatibility
