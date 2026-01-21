@@ -257,7 +257,7 @@ make list h
 make help
 
 make create-ce h
-amke create-ce help
+make create-ce help
 ```
 
 See this list of all existing commands: [click](docs/mds/COMMANDS.md) or run this in your terminal:
@@ -420,7 +420,7 @@ Use the following credentials to access the administrative panels of the include
 
 ### Varnish and Adobe Commerce Modes
 
-The Varnish service is always enabled to maintain architectural consistency. The `varnsih` container has two modes that are helpfully for `debugging` purposes.
+The Varnish service is always enabled to maintain architectural consistency. The `varnish` container has two modes that are helpfully for `debugging` purposes.
 
 #### Silence Mode:
  - Varnish is `"silenced"`. The service remains active, but it passes all requests directly to the backend without caching data
