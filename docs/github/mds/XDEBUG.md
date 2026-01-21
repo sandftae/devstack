@@ -47,9 +47,10 @@ Just follow screenshots:
 ### 2. PHP Interpreter and Path Mappings
 To ensure proper communication between the `host` and the `php-app` container, you must configure the `remote interpreter` and `path mappings`.
 
-Configuration consists of two main parts:
+Configuration consists of three main parts:
 - the actual `PHP Interpreter` configuration
 - the `container` configuration
+- the `"first request"` configuration
 
 > [!IMPORTANT]
 > 
@@ -66,6 +67,7 @@ Connect `PHPStorm` to the Docker `container's PHP binary`.
 </details>
 
 #### Step #2: Container Configuration
+
 Align path mappings so `PHPStorm` can map the file structure `inside the container`.
 <details>
 <summary>Setup Steps</summary>
@@ -73,7 +75,28 @@ Align path mappings so `PHPStorm` can map the file structure `inside the contain
   <img src="../media/xdebug/CONTAINERS_2.png" width="45%"/>
 </details>
 
----
+#### Step #3: First Request Configuration
+
+At this point, your `XDebug` is fully configured, and there are only two small steps left:
+
+- enable `XDebug` in the `php-app` container
+   ```bash
+     # either 
+     make xdebug-enable
+     # or
+     make xde
+   ```
+- enable `PHPStorm listener`
+- refresh the page once the command is done
+
+
+<details>
+<summary> see this gallery to get visualisation of how it looks like</summary>
+<br/>
+<br/>
+  <img src="../media/xdebug/XDEBUG_1.png" width="45%" alt="SERVER"/>
+  <img src="../media/xdebug/XDEBUG_2.png" width="45%" alt="VOILA!"/>
+</details>
 
 ## CLI Debugging
 
