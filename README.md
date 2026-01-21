@@ -50,18 +50,18 @@ Easily toggle between optional services, monitor performance, and manage your en
 - [About](#about)
 - [Key Features](#key-features)
 - [Available Services](#available-services)
-- [Getting Started](#-getting-started)
+- [Getting Started](#getting-started)
     - [Prerequisites](#prerequisites)
     - [Infrastructure Installation](#infrastructure-installation)
     - [Adobe Commerce Installation](#adobe-commerce-installation)
-- [Usage](#-usage)
+- [Usage](#usage)
 - [Database Import/Export](#database-importexport)
-- [Accessing the DEVSTACK](#-accessing-the-devstack)
-- [Default Credentials](#-default-credentials)
-- [Debugging & Performance](#debugging--performance)
+- [Accessing the DEVSTACK](#accessing-the-devstack)
+- [Default Credentials](#default-credentials)
+- [Debugging, Testing & Performance](#debugging--performance)
     - [Xdebug](#xdebug-configuration)
-    - [Varnish and Adobe Commerce Modes](#varnish-and-adobe-commerce-modes)
-- [Project Structure](#-project-structure)
+    - [Varnish and Adobe Commerce Modes](#varnish-and-varnish-modes)
+- [Project Structure](#project-structure)
 - [Troubleshooting](#troubleshooting)
 - [License](#-license)
 
@@ -149,80 +149,122 @@ The **DEVSTACK** provides a `development environment`, but you need to fill in t
 
 ---
 
-### ``cloned/existing adobe commerce project installation``
+### Cloned/Existing Adobe Commerce Project Installation
 
 
-0. **Start Environment**
-
-Before go further, lets start docker environment if not yet:
-
-```shell
-make up
-```
-
-1. **Import Database**
-
-See [this](#database-importexport) for more details
-
-
-2. **Backend**
-
-    - get into the PHP container
-    ```bash
-    make php-app
-   ```
-    - clone your project repository **inside** the container and run composer
-   ```bash 
-   # at the Makefile level
-    make composer-install
+1. **Start Environment**
+   
+    Before go further, lets start docker environment if not yet:
+    ```shell
+    make up
     ```
-    - run the install command to populate the database
-    ```bash
-      # at the Makefile level
-      # this command configure urls, admin, etc
-      make setup-install
-    
-      # change commerce mode to developer  
-      make mode-developer
-      # or 
-      make mode-production  
-      
-      # use "make mode-show" command to see current commerce mode and docker environment mode  
-      ```
-    - default admin/pass is ``admin/admin12345``, run this command to set your own:
-   ```bash
-      make create-admin
-   ```
 
-2. **Frontend (default / monolith)**
+2. **Import Database**
+    
+    Data import perform either into `default` database **devstack_magento** or into your `custom-named` one.
+
+      - *Default Database*
+
+        This import is simple. Follow steps described:
+    
+        - put ``db-dump.sql`` file into `./env/dumps/import` folder
+        - run import
+          ```bash
+          make import-database db=devstack_magento file=db-dump.sql
+          ```
+   
+      - *Custom-Named* Database
+   
+        This import is simple as well, but you need to do one extra step. Follow steps described:
+        - put ``db-dump.sql`` file into `./env/dumps/import` folder
+        - create database and run import
+          ```bash
+          # step #1: create database
+          make create-database db=your_database_name
+          
+          # step #3: update DB_NAME of the './env/.commerce.env' file
+          DB_NAME=your_database_name
+          
+          # step #3: import database
+          make import-database db=your_database_name file=db-dump.sql
+          ```
+
+
+> [!TIP]
+> See [this](#database-importexport) section to get more details about database management
+
+3. **Backend**
+
+    - get into the `php-app` container and `clone project` repository
+        ```bash
+        make php-app
+       # IMPORTANT: you HAVE TO clone the repo into the php-app folder of the php-app container.
+       # The 'php-app' folder is a folder you are in once you run 'make php-app' command.
+       # Use './' or '.' to force git to clone project into the php-app folder directly
+        git clone path-repository.git ./ 
+       ```
+   
+    - run the installation command to deploy the `Adobe Commerce` instance locally
+        ```bash
+          # run these commands outside of the container, at the Makefile level
+          make composer-install
+       
+          # this command configure AC, admin, populate default database or your custom-named one, etc
+          make setup-install
+        
+          # change commerce mode to developer  
+          make mode-developer
+       
+          # or to production
+          make mode-production  
+          
+          # use "make mode-show" command to see current commerce mode and docker environment mode  
+          ```
+    - default admin/pass is ``admin/admin12345``, run this command to set your own
+       ```bash
+          make create-admin
+       ```
+
+4. **Frontend (default / monolith)**
     - default Adobe Commerce frontend is located in the ``php-app`` folder
 
 
-3. **Frontend (headless)**
+5. **Frontend (headless)**
     
     - enter the ``web-app`` container
-    ```bash
-    make web-app 
-   ```
+        ```bash
+        make web-app 
+       ```
    
     - ``clone`` the web project and run ``npm/yarn deploy commands``
 
 ---
 
-### ``fresch adobe commerce project installation``
-if you re going to use fresh commerce ``EE/CE`` then the flow is the following:
+### Fresh Adobe Commerce Project Installation
+if you are going to use fresh commerce ``EE/CE`` then the flow is the following:
+
 ```bash
  # up docker environment
  make up
  
-  # for CE version; specified during configuration version of the CE will be used
+ # for CE version -> specified during configuration version of the CE will be used
  make create-ce
  
- # for EE version; specified during configuration version of the EE will be used
+ # for EE version -> specified during configuration version of the EE will be used
  make create-ee
  
- # set the database in the alignment with commerce edition and version 
+ # OPTIONALLY: set up sample data before run 'make setup-install' command
+ make sample-data
+ 
+ # set the database (default database or your custom-named one) in the alignment with
+ # commerce edition and version 
  make setup-install
+ 
+ # change commerce mode to developer  
+ make mode-developer
+       
+ # or to production
+ make mode-production  
 ````
 
 --- 
@@ -242,15 +284,35 @@ make node-set version=MAJOR_NODE_VERSION
 ---
 
 ##  Usage
-| Base commands        | Description                         |
-|----------------------|-------------------------------------|
-| ``make up``          | start the docker environment        |
-| ``make down``        | stop and shutdown the environment   |
-| ``make php-app``     | enter PHP-app container             |
-| ``make web-app``     | enter Web-app container             |
+
+See this of [commands](docs/mds/COMMANDS.md) existing or run the following command in the terminal:
+
+```bash
+make list
+```
+
+#### Base commands
+
+| Base commands                                 | Description                    |
+|-----------------------------------------------|--------------------------------|
+| ``make up``                                   | start the docker environment   |
+| ``make down``                                 | shutdown the environment       |
+| ``make php-app``                              | enter `php-app` container      |
+| ``make web-app``                              | enter `web-app` container      |
+| ``make cc``                                   | commerce `cache:clean`         |
+| ``make cf``                                   | commerce `cache:flush`         |
+| ``make seup``                                 | commerce `setup:upgrade`       |
+| ``make sedico``                               | commerce `se:di:co`            |
+| ``make mode-developer``                       | commerce set `developer` mode  |
+| ``make mode-production``                      | commerce set `production` mode |
+| ``make mode-show``                            | commerce `current` mode        |
+| ``make xdebug-disable``<br/>or<br/>`make xdd` | enable `XDebug`                |
+| ``make xdebug-enable``<br/>or<br/>`make xde`  | disable `XDebug`               |
 
 
-### `help`
+---
+
+#### HELP command
 Each command has a `help | h` flag, e.g.:
 ```shell
 make list h
@@ -258,15 +320,6 @@ make help
 
 make create-ce h
 make create-ce help
-```
-
-See this list of all existing commands: [click](docs/mds/COMMANDS.md) or run this in your terminal:
-```bash
-    # show command mets
-    make list help
-    
-    # run this command to list l commands
-    make list
 ```
 
 ---
@@ -316,36 +369,37 @@ they will have a fully populated database without any manual import steps.
 > #### Use manual import if you want to have more control over import
 ---
 
-### Manual CLI Import/Export (Makefile)
+### Manual Database Import/Export
 Use these commands for daily development tasks like importing dumps, creating backups, or creating new database.
 
-> [!NOTE]
-> the `file=` parameter looks inside `env/dumps/import/`
 
 | Command                                          | Description                                           |
 |:-------------------------------------------------|:------------------------------------------------------|
 | `make create-database db=db_name`                | creates a new database if it doesn't exist            |
-| `make drop-database db=db_name`                  | delete database                                       |
+| `make drop-database db=db_name`                  | drop/delete database                                  |
 | `make import-database db=db_name file=dump.sql`  | imports a specific dump into the database             |
 | `make dump-database db=db_name`                  | exports a compressed `.sql.gz` to `env/dumps/export/` |
 
+> [!NOTE]
+> the `file=` parameter of the **import command** looks inside `env/dumps/import/`
+
 **Examples**
 
-- #### import after the environment is up (`make up`):
+- #### import 
 
-```shell
-# 1. create the schema
-make create-database db=staging_db
+    ```shell
+    # 1. create the schema
+    make create-database db=staging_db
+    
+    # 2. import (file must be in env/dumps/import/)
+    make import-database db=staging_db file=staging-dump_bak.sql
+    ```
 
-# 2. import (file must be in env/dumps/import/)
-make import-database db=staging_db file=staging-dump_bak.sql
-```
-
-- #### dump database before performing database-not-safe tests:
-```shell
-# this creates a compressed .gz backup in env/dumps/export/
-make dump-database db=staging_db
-```
+- #### dump database
+    ```shell
+    # this creates a compressed .gz backup in env/dumps/export/
+    make dump-database db=staging_db
+    ```
 
 ---
 
@@ -393,14 +447,15 @@ Once the containers are running, you can access the various parts of the environ
 
 Use the following credentials to access the administrative panels of the included services.
 
-| Service         | Username | Password | Note                    |
-|:----------------|:---------|:---------|:------------------------|
-| **Grafana**     | `admin`  | `admin`  | Telemetry & Metrics     |
-| **phpMyAdmin**  | `root`   | `root`   | Database Management     |
-| **RabbitMQ**    | `guest`  | `guest`  | Message Queue GUI       |
-| **cAdvisor**    | *None*   | *None*   | Direct container stats  |
-| **OpenSearch**  | `admin`  | `admin`  | Search Engine Dashboard |
-| **SFTP Server** | `test`   | `12345`  | Port `22222`            |
+| Service                    | Username | Password     | Note                                        |
+|:---------------------------|:---------|:-------------|:--------------------------------------------|
+| **Grafana**                | `admin`  | `admin`      | Telemetry & Metrics                         |
+| **phpMyAdmin**             | `root`   | `root`       | Database Management                         |
+| **RabbitMQ**               | `guest`  | `guest`      | Message Queue GUI                           |
+| **cAdvisor**               | *None*   | *None*       | Direct container stats                      |
+| **OpenSearch**             | `admin`  | `admin`      | Search Engine Dashboard                     |
+| **SFTP Server**            | `test`   | `12345`      | Port `22222`                                |
+| **Commerce Default Admin** | `admin`  | `admin12345` | run `make create-admin` to create your own  |
 
 > [!IMPORTANT]
 >
@@ -414,22 +469,29 @@ Use the following credentials to access the administrative panels of the include
 
 ### Xdebug Configuration
 
-*Xdebug* configuration covers only `PHPStorm` at this moment. Please, use this [reference](docs/github/mds/XDEBUG.md) to, actually, **configure** your `PHPStorm`
+*Xdebug* configuration covers only `PHPStorm` at this moment. Please, use this [reference](docs/github/mds/XDEBUG.md) to **configure** `PHPStorm`
 
 ---
 
-### Varnish and Adobe Commerce Modes
+### Varnish and Varnish Modes
 
-The Varnish service is always enabled to maintain architectural consistency. The `varnish` container has two modes that are helpfully for `debugging` purposes.
+The Varnish service is always enabled to maintain architectural consistency. The `varnish` container has **two modes** that are helpful for `debugging` purposes.
 
 #### Silence Mode:
- - Varnish is `"silenced"`. The service remains active, but it passes all requests directly to the backend without caching data
+ - Varnish is `"silenced"`. The service remains active, but it passes all requests directly to the backend `without caching data`.
+      ```bash
+      # run to 'silence' the varnish
+      make varnish-disable    
+      ```
 
 #### Unsilence Mode:
- - Varnish is fully `active`. It processes and cache data; the backend is reached if no valid cache exists for the request
+ - Varnish is fully `active`. It processes and cache data, the backend is reached if no valid cache exists for the request
+      ```bash
+      # run to 'unsilence' the varnish
+      make varnish-enable    
+      ```
 
-
-#### `Silence mode` technical details 
+#### `Silence Mode` technical details 
 
 This mode is also known as `Cache Bypass` or `Direct Backend Routing` mechanism. This allows you to run the application
 in a full `production mode` (with `Adobe Commerce` generated files) while **forcing Varnish to bypass the cache**. 
@@ -441,16 +503,25 @@ This is essential for debugging backend-specific logic, like:
  
  that would otherwise be masked by a cached response.
 
----
+ This is **default** mode for both `developer` and `production` *Adobe Commerce* modes. Most of the time the varnish **is silenced**.
 
 <div align="center">
   <img src="docs/github/media/silence.png" width="45%" alt="Service Dashboard"/>  
   <img src="docs/github/media/unsilence.png" width="45%" alt="Service Credentials"/>
 </div>
 
+
+> [!TIP]
+>
+> To purge **varnish** run this command:
+> ```bash
+> make varnish-purge
+> ```
+
+
 ---
 
-#### Mode Control Commands
+#### Mode Control Commands Summary
 
 To switch mode logic, use the following commands:
 
@@ -478,10 +549,7 @@ Look for the `X-Varnish-Bypass` parameter in the global server variables or resp
 On backend you can check the bypass status by looking for the `X-Varnish-Bypass` parameter in the global `$_SERVER` variable:
 
 ```php
-if (
-    isset($_SERVER['HTTP_X_VARNISH_BYPASS']) && 
-    $_SERVER['HTTP_X_VARNISH_BYPASS'] === 'true'
-) {
+if ($_SERVER['HTTP_X_VARNISH_BYPASS']) {
     # varnish is currently silenced/bypassed ----> do debugging
     # REMEMBER THIS IS FOR DEVELOPMENT PURPOSES ONLY AND SHOULD
     # NOT BE USED IN PRODUCTION OR TEST ENVIRONMENTS!
