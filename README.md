@@ -10,10 +10,6 @@
 
 ---
 
-# This README.md file is under review and do not fully finish yet
-
----
-
 An interactive, GUI-driven orchestrator designed to build modular Adobe Commerce environments for monolithic or headless development.
 Easily toggle between optional services, monitor performance, and manage your entire local infrastructure from a single interface.
 
@@ -46,7 +42,6 @@ Easily toggle between optional services, monitor performance, and manage your en
   <img src="docs/github/media/magma/list_2.png" width="45%" alt="List-2"/>
   <img src="docs/github/media/magma/list_3.png" width="45%" alt="List-3"/>
   <img src="docs/github/media/magma/list_4.png" width="45%" alt="List-3"/>
-  
 </details>
 
 ---
@@ -185,14 +180,14 @@ See [this](#database-importexport) for more details
     ```bash
       # at the Makefile level
       # this command configure urls, admin, etc
-       make setup-install
+      make setup-install
     
       # change commerce mode to developer  
       make mode-developer
       # or 
       make mode-production  
       
-      # use 'make mode-show' to see current commerce mode and docker environment mode  
+      # use "make mode-show" command to see current commerce mode and docker environment mode  
       ```
     - default admin/pass is ``admin/admin12345``, run this command to set your own:
    ```bash
@@ -253,7 +248,6 @@ make node-set version=MAJOR_NODE_VERSION
 | ``make down``        | stop and shutdown the environment   |
 | ``make php-app``     | enter PHP-app container             |
 | ``make web-app``     | enter Web-app container             |
-| ``make magma-build`` | run/re-run the GUI devstack builder |
 
 
 ### `help`
@@ -263,10 +257,17 @@ make list h
 make help
 
 make create-ce h
-amke create-ce help
+make create-ce help
 ```
 
-See the following list of all command in existence: [click](COMMANDS.md)
+See this list of all existing commands: [click](docs/mds/COMMANDS.md) or run this in your terminal:
+```bash
+    # show command mets
+    make list help
+    
+    # run this command to list l commands
+    make list
+```
 
 ---
 
@@ -413,13 +414,13 @@ Use the following credentials to access the administrative panels of the include
 
 ### Xdebug Configuration
 
-*Xdebug* configuration covers only `PHPStorm` at this moment. Please, use this [reference](XDEBUG.md) to, actually, **configure** your `PHPStorm`
+*Xdebug* configuration covers only `PHPStorm` at this moment. Please, use this [reference](docs/github/mds/XDEBUG.md) to, actually, **configure** your `PHPStorm`
 
 ---
 
 ### Varnish and Adobe Commerce Modes
 
-The Varnish service is always enabled to maintain architectural consistency. 
+The Varnish service is always enabled to maintain architectural consistency. The `varnish` container has two modes that are helpfully for `debugging` purposes.
 
 #### Silence Mode:
  - Varnish is `"silenced"`. The service remains active, but it passes all requests directly to the backend without caching data
@@ -451,9 +452,9 @@ This is essential for debugging backend-specific logic, like:
 
 #### Mode Control Commands
 
-To toggle the modes' logic, use the following commands:
+To switch mode logic, use the following commands:
 
-| Mode allows to use it                 | Command                                 | Result                                                                                                                              | Silence Headers                 |
+| Commerce mode                         | Command                                 | Result                                                                                                                              | Silence Headers                 |
 |:--------------------------------------|:----------------------------------------|:------------------------------------------------------------------------------------------------------------------------------------|:--------------------------------|
 | **production**<br/> and **developer** | `make varnish-disable`                  | `varnish is silenced`: direct backend access (no caching)                                                                           | `X-Varnish-Bypass: true`        |
 | **production**<br/> and **developer** | `make varnish-enable`                   | `varnish is fully active`: processes and caches data                                                                                | `X-Varnish-Bypass` not provided |
@@ -463,7 +464,8 @@ To toggle the modes' logic, use the following commands:
 ### ``X-Varnish-Bypass`` 
 
 > [!WARNING] 
-> Keep in mind that the ``X-Varnish-Bypass`` is **DEVSTACK** specific/custom variable
+> 
+> Keep in mind that the ``X-Varnish-Bypass`` flag is **DEVSTACK** specific/custom variable
 
 When you are in **varnish silence mode**, you can verify if the bypass is active by inspecting the headers of any request.
 
@@ -481,7 +483,8 @@ if (
     $_SERVER['HTTP_X_VARNISH_BYPASS'] === 'true'
 ) {
     # varnish is currently silenced/bypassed ----> do debugging
-    # REMEMBER THIS IS FOR DEVELOPMENT PURPOSES ONLY AND SHOULD NOT BE USED IN PRODUCTION OR TEST ENVIRONMENTS!
+    # REMEMBER THIS IS FOR DEVELOPMENT PURPOSES ONLY AND SHOULD
+    # NOT BE USED IN PRODUCTION OR TEST ENVIRONMENTS!
 }
 
 ```
