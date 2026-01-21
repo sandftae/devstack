@@ -20,10 +20,9 @@ Please keep in mind that as a `one-dev project`, my response time may vary.
 ---
 
 <p align="center">
-  <img src="docs/github/media/gif/my_sword.gif" width="24%" alt="My Sword"/>
-  <img src="docs/github/media/gif/my_axe.gif" width="24%" alt="My Bow"/>
-  <img src="docs/github/media/gif/my_bow.gif" width="24%" alt="My Axe"/>
-  <img src="docs/github/media/gif/legolas_.gif" height="118px" width="24%" alt="Five!"/>
+  <img src="docs/github/media/gif/my_sword.gif" width="32%" alt="My Sword"/>
+  <img src="docs/github/media/gif/my_axe.gif" width="32%" alt="My Bow"/>
+  <img src="docs/github/media/gif/my_bow.gif" width="32%" alt="My Axe"/>
 </p>
 
 ---
