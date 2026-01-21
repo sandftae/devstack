@@ -1,7 +1,7 @@
 # DEVSTACK
 
 ![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)
-![Version](https://img.shields.io/badge/version-1.0.0--beta-orange.svg)
+![Version](https://img.shields.io/badge/version-0.0.1--beta-orange.svg)
 ![Environment: Local Only](https://img.shields.io/badge/Environment-local%20only-red.svg)
 ![Adobe Commerce: >=2.4.5](https://img.shields.io/badge/Adobe%20Commerce-%E2%89%A52.4.5-red?logo=adobe&logoColor=white)
 ![Build: Makefile](https://img.shields.io/badge/Build-Makefile-4EAA25?logo=gnuterminal&logoColor=white)
@@ -60,6 +60,7 @@ Easily toggle between optional services, monitor performance, and manage your en
 - [Default Credentials](#default-credentials)
 - [Debugging, Testing & Performance](#debugging--performance)
     - [Xdebug](#xdebug-configuration)
+    - [SFTP Server, Crons & Third-Party Integrations](#sftp-access-credentials)
     - [Varnish and Adobe Commerce Modes](#varnish-and-varnish-modes)
 - [Project Structure](#project-structure)
 - [Troubleshooting](#troubleshooting)
@@ -198,9 +199,11 @@ The **DEVSTACK** provides a `development environment`, but you need to fill in t
     - get into the `php-app` container and `clone project` repository
         ```bash
         make php-app
-       # IMPORTANT: you HAVE TO clone the repo into the php-app folder of the php-app container.
-       # The 'php-app' folder is a folder you are in once you run 'make php-app' command.
-       # Use './' or '.' to force git to clone project into the php-app folder directly
+       # IMPORTANT: you HAVE TO clone the repo into the php-app folder.
+       # The 'php-app' folder is a folder you are in once you run 
+       # 'make php-app' command. Use './' or '.' to force git to clone 
+       # project into the php-app folder directly
+        
         git clone path-repository.git ./ 
        ```
    
@@ -209,7 +212,7 @@ The **DEVSTACK** provides a `development environment`, but you need to fill in t
           # run these commands outside of the container, at the Makefile level
           make composer-install
        
-          # this command configure AC, admin, populate default database or your custom-named one, etc
+          # it configures AC, admin, populate default database
           make setup-install
         
           # change commerce mode to developer  
@@ -218,7 +221,7 @@ The **DEVSTACK** provides a `development environment`, but you need to fill in t
           # or to production
           make mode-production  
           
-          # use "make mode-show" command to see current commerce mode and docker environment mode  
+          # use "make mode-show" command to see current mode  
           ```
     - default admin/pass is ``admin/admin12345``, run this command to set your own
        ```bash
@@ -285,7 +288,7 @@ make node-set version=MAJOR_NODE_VERSION
 
 ##  Usage
 
-See this of [commands](docs/mds/COMMANDS.md) existing or run the following command in the terminal:
+See this of [commands](docs/github/mds/COMMANDS.md) existing or run the following command in the terminal:
 
 ```bash
 make list
@@ -313,7 +316,7 @@ make list
 ---
 
 #### HELP command
-Each command has a `help | h` flag, e.g.:
+Each command has `help | h` flag, e.g.:
 ```shell
 make list h
 make help
@@ -470,6 +473,47 @@ Use the following credentials to access the administrative panels of the include
 ### Xdebug Configuration
 
 *Xdebug* configuration covers only `PHPStorm` at this moment. Please, use this [reference](docs/github/mds/XDEBUG.md) to **configure** `PHPStorm`
+
+---
+### SFTP Server & Integration Testing
+
+Use the `local SFTP server` to test file processing and `third-party integrations or crons`.
+
+
+### Connection Methods
+
+ - `FileZilla`
+
+    connect using a visual client to upload and manage test data/files
+
+    <details>
+    <summary>view FileZilla setup</summary>
+      <img src="docs/github/media/sftp/SFTP_1.png" width="45%"/>
+      <img src="docs/github/media/sftp/SFTP_2.png" width="45%"/>
+    </details>
+
+
+
+ - `Command Line (CLI)`
+
+    connect via `terminal` using the following command:
+
+      ```bash
+      sftp -P 2222 test@DOMAIN
+      ```
+
+#### SFTP Access Credentials
+
+| **Parameter** | **Value** |
+|:--------------|:----------|
+| **User**      | `test`    |
+| **Password**  | `12345`   |
+| **Port**      | `2222`    |
+| **Folder**    | `web`     |
+
+> [!NOTE]
+> 
+> Data that should be processed must be located in the ``web`` folder, otherwise there will be `permission error`
 
 ---
 
