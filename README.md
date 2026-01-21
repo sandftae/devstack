@@ -60,11 +60,12 @@ Easily toggle between optional services, monitor performance, and manage your en
 - [Default Credentials](#default-credentials)
 - [Debugging, Testing & Performance](#debugging--performance)
     - [Xdebug](#xdebug-configuration)
-    - [SFTP Server, Crons & Third-Party Integrations](#sftp-access-credentials)
+    - [SFTP Server, Crons & Third-Party Integrations](#sftp-server--integration-testing)
     - [Varnish and Adobe Commerce Modes](#varnish-and-varnish-modes)
 - [Project Structure](#project-structure)
 - [Troubleshooting](#troubleshooting)
 - [License](#-license)
+- [Author`s Note](#author--s-note)
 
 ---
 
@@ -82,10 +83,10 @@ For a full breakdown of which PHP, MySQL, OpenSearch, etc. versions are paired w
 * **Version-Specific:** configure compatible versions of services based on targeted Adobe Commerce version
 * **Headless Isolation:** `php` and `node` apps are kept in separate containers
 * **Headless Configuration:** allows to easy change `node` versions
-* **On-Demand Modes:** toggle between `developer` and `production` app modes to test Varnish bugs
+* **Varnish Modes:** toggle between `silenced` and `unsilenced` modes to test Varnish bugs
 * **Telemetry & Monitoring:** Grafana, Prometheus, and cAdvisor for `play-around` testing 
 * **Developer Utilities:**
-    * **SFTP Server:** local SFTP access to test Adobe Commerce crons and third-party modules syncs
+    * **SFTP Server:** local SFTP access to test Adobe Commerce crons and integrations
     * **Centralized Logging:** aggregate logs from all containers into a single searchable view
     * **Env-Init:** resolves Linux permission mismatches between host and the Docker containers
 * **Service Dashboard:** **DEVSTACK** service Dashboard to address direct links to active services GUIs
@@ -136,7 +137,7 @@ For a full breakdown of which PHP, MySQL, OpenSearch, etc. versions are paired w
 
 > [!NOTE]
 > 
-> Once the environment build is complete, you will see that several new files and folders [have been added](#-project-structure)
+> Once the environment build is complete, you will see that several new files and folders [have been added](#project-structure)
 
 ---
 
@@ -222,6 +223,9 @@ The **DEVSTACK** provides a `development environment`, but you need to fill in t
           make mode-production  
           
           # use "make mode-show" command to see current mode  
+      
+          # OPTIONAL: overview, e.g.: commerce version, php, xdebug, etc.
+          make commerce-meta  
           ```
     - default admin/pass is ``admin/admin12345``, run this command to set your own
        ```bash
@@ -268,6 +272,11 @@ if you are going to use fresh commerce ``EE/CE`` then the flow is the following:
        
  # or to production
  make mode-production  
+ 
+ # use "make mode-show" command to see current mode  
+      
+ # OPTIONAL: overview, e.g.: commerce version, php, xdebug, etc.
+ make commerce-meta
 ````
 
 --- 
@@ -276,13 +285,39 @@ if you are going to use fresh commerce ``EE/CE`` then the flow is the following:
 
 The ``web-app`` container is packed with the ``node v.20``.  If you need to ``upgrade/downgrade`` version run this command:
 ```shell
+# see what the command do
+make node-set help
+
 # major node version like 16, 18, 20, etc.
 make node-set version=MAJOR_NODE_VERSION
+
+# OPTIONAL: run to get node, yarn, npx meta data
+make node-meta
 ```
 
 > [!IMPORTANT]
 > 
-> node version must be changed only by using ``make node-set version=MAJOR_NODE_VERSION`` command
+> `node` version must be changed only by using ``make node-set version=MAJOR_NODE_VERSION`` command
+
+---
+
+### ``php`` version upgrade/downgrade
+
+The ``php-app`` container is packed with the ``Adobe Comemrce`` specific `PHP version`.  If you need to ``upgrade/downgrade`` version run this command:
+```shell
+# see what the command do
+make php-set help
+
+# major php version like 8.0, 8,1, 8.2, etc.
+make php-set version=MAJOR_PHP_VERSION
+
+# OPTIONAL: run to get php, xdebug, meta data
+make php-meta
+```
+
+> [!IMPORTANT]
+>
+> `php` version must be changed only by using ``make php-set version=MAJOR_PHP_VERSION`` command
 
 ---
 
@@ -319,7 +354,7 @@ make list
 Each command has `help | h` flag, e.g.:
 ```shell
 make list h
-make help
+make list help
 
 make create-ce h
 make create-ce help
@@ -676,11 +711,38 @@ For security and data integrity reasons, **DEVSTACK** does not manage permission
 
 ## 📘 Documentation
 
-Refer to [INSIGHTS.md](INSIGHTS.md) for architectural decisions and performance benchmarks.
-
-Refer to [SHOWCASES.md](SHOWCASES.md) for a visual representation of the tool.
+Refer to [INSIGHTS.md](INSIGHTS.md) for architectural decisions and ideas behind the tool.
 
 ---
 
 ## 📄 License
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+
+## Author`s Note
+
+I built **DEVSTACK** out of a simple necessity: I wanted to make my own life easier, especially when `Docker environments` and `Magento` are mentioned in the same sentence.
+
+I've put a lot of heart and "battle-tested" experience into this tool to bridge the gap between complex infrastructure and daily coding. 
+It is not ideal and still `evolving`, but I truly hope it saves you time and makes your development process smoother.
+
+
+**Thank you for using it !**
+
+<br/>
+
+> *"Whatever you do, work at it with all your heart..." — Colossians 3:23*
+
+<br/>
+
+---
+
+<p align="center">
+  <img src="docs/github/media/gif/late.gif" height="180px" width="45%" alt="You are late =)"/>
+  <img src="docs/github/media/gif/GF_smile.gif" height="182px" width="45%" alt="It is done"/>
+</p>
+
+---
+
+<br/>
