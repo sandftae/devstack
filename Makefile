@@ -4,8 +4,8 @@
 # Makefile command list
 #
 # This Makefile contains CLI command needed to run environment configurator.
-# Command to manage stack and perform any other manipulations will added after
-# environment deployment is done
+# Commands to manage stack and perform any other manipulations will be added
+# after environment deployment is done
 #
 # ============================================================================================
 # ============================================================================================
