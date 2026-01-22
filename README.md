@@ -146,7 +146,7 @@ For a full breakdown of which PHP, MySQL, OpenSearch, etc. versions are paired w
 
 > [!NOTE]
 > 
->  * once the environment build is complete, you will see that several new files and folders [have been added](#project-structure)
+>  * once the env build is complete, you will see several new files and folders [have been added](#project-structure)
 >  * you **don't need** to edit `/etc/hosts` or `/hosts` file
 
 ---
