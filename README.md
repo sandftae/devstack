@@ -711,12 +711,13 @@ have access to critical files and folders. The tool automatically synchronizes `
  - `src/php-app`
  - `env/.env`
  - `env/*.yml`
- - `logs`
+- `env/dumps`
+- `logs`
 
-For security and data integrity reasons, **DEVSTACK** does not manage permissions for the following folders:
- - `volumes`
- - `env/volumes`
- - `env/dumps`
+  For security and data integrity reasons, **DEVSTACK** does not manage permissions for the following folders:
+- `volumes`
+- `env/volumes`
+
 ---
 
 ## 📘 Documentation
