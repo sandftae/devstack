@@ -5,7 +5,7 @@ This document outlines the planned features, support, and technical milestones f
 ##  High Priority
 - [ ] **Core Migration (Bash → Go):** rewriting the orchestration logic in **Golang** for better performance, faster execution, and a more user-friendly interface
 - [ ] **New Services:** add new services like Redis Dashboards, Adminer, Selenium, ets
-- 
+
 ## Future Milestones
 - [ ] **Expanded Service Catalog:**
     - [ ] support for **Meilisearch** as an alternative to OpenSearch
