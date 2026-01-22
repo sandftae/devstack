@@ -38,7 +38,7 @@ Configure the ports and proxy settings to allow `PHPStorm` to listen for `incomi
 Just follow screenshots:
 
 <details>
-<summary>View Configuration Screenshots</summary>
+<summary>👉 View Configuration Screenshots</summary>
 <p align="center">
   <img src="../media/xdebug/PORTS.png" width="45%" alt="PHPStorm Xdebug Service"/>
   <img src="../media/xdebug/DBGp.png" width="45%" alt="DBGp Proxy Service"/>
@@ -60,7 +60,7 @@ Configuration consists of three main parts:
 #### Step #1: PHP Interpreter
 Connect `PHPStorm` to the Docker `container's PHP binary`.
 <details>
-<summary>Setup Steps</summary>
+<summary>👉 Setup Steps</summary>
   <img src="../media/xdebug/CLI_INTERPRETER_1.png" width="45%"/>
   <img src="../media/xdebug/CLI_INTERPRETER_2.png" width="45%"/>
   <img src="../media/xdebug/CLI_INTERPRETER_3.png" width="45%"/>
@@ -71,7 +71,7 @@ Connect `PHPStorm` to the Docker `container's PHP binary`.
 
 Align path mappings so `PHPStorm` can map the file structure `inside the container`.
 <details>
-<summary>Setup Steps</summary>
+<summary>👉 Setup Steps</summary>
   <img src="../media/xdebug/CONTAINERS_1.png" width="45%"/>
   <img src="../media/xdebug/CONTAINERS_2.png" width="45%"/>
 </details>
@@ -92,7 +92,7 @@ At this point, your `XDebug` is fully configured, and there are only two small s
 
 
 <details>
-<summary> see this gallery to get visualisation of how it looks like</summary>
+<summary>👉 See this gallery to get visualisation of how it looks like</summary>
 <br/>
 <br/>
   <img src="../media/xdebug/XDEBUG_1.png" width="45%" alt="SERVER"/>
@@ -110,7 +110,7 @@ To debug Adobe Commerce `CLI` or custom console commands, you must first complet
 Just follow screenshots:
 
 <details>
-<summary>CLI Configuration Gallery</summary>
+<summary>👉 CLI Configuration Gallery</summary>
   <img src="../media/xdebug/CLI/CLI_1.png" width="45%"/>
   <img src="../media/xdebug/CLI/CLI_2.png" width="45%"/>
   <img src="../media/xdebug/CLI/CLI_3.png" width="45%"/>

@@ -23,7 +23,7 @@ Easily toggle between optional services, monitor performance, and manage your en
 ## Devstack gallery
 
 <details>
-<summary> Click for a quick visual overview</summary>
+<summary> 👉 click for a quick visual overview</summary>
 <br/>
   <img src="docs/github/media/magma/1.png" width="45%" alt="Commerce Edition"/>
   <img src="docs/github/media/magma/2.png" width="45%" alt="Commerce Edition"/>
@@ -44,6 +44,14 @@ Easily toggle between optional services, monitor performance, and manage your en
   <img src="docs/github/media/magma/list_3.png" width="45%" alt="List-3"/>
   <img src="docs/github/media/magma/list_4.png" width="45%" alt="List-3"/>
 </details>
+
+---
+
+## Architecture
+
+Detailed information about `network topology`, `service dependencies`, and `infrastructure design` can be found here:
+
+👉 **[Internal Infrastructure & Networking Guide](ARCHITECTURE.md)**
 
 ---
 
@@ -226,7 +234,7 @@ The **DEVSTACK** provides a `development environment`, but you need to fill in t
           # use "make mode-show" command to see current mode  
       
           # OPTIONAL: overview, e.g.: commerce version, php, xdebug, etc.
-          make commerce-meta  
+          make project-meta  
           ```
     - default admin/pass is ``admin/admin12345``, run this command to set your own
        ```bash
@@ -523,7 +531,7 @@ Use the `local SFTP server` to test file processing and `third-party integration
     connect using a visual client to upload and manage test data/files
 
     <details>
-    <summary>view FileZilla setup</summary>
+    <summary>👉 view FileZilla setup</summary>
       <img src="docs/github/media/sftp/SFTP_1.png" width="45%"/>
       <img src="docs/github/media/sftp/SFTP_2.png" width="45%"/>
     </details>
