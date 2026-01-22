@@ -714,7 +714,7 @@ have access to critical files and folders. The tool automatically synchronizes `
 - `env/dumps`
 - `logs`
 
-  For security and data integrity reasons, **DEVSTACK** does not manage permissions for the following folders:
+For security and data integrity reasons, **DEVSTACK** does not manage permissions for the following folders:
 - `volumes`
 - `env/volumes`
 
