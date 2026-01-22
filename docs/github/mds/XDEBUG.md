@@ -1,10 +1,10 @@
 # Xdebug Configuration Guide
 
-This guide describes how to configure `Xdebug` for both `HTTP/HTTPS requests` and `CLI commands` (including custom Adobe Commerce commands) in `PHPStorm`.
+This guide describes how to configure `Xdebug` for both `HTTP/HTTPS requests` and `CLI commands`.
 
 > [!NOTE]
 > 
->   - This guide is specifically tailored for PHPStorm and Docker-based environments
+>   - This guide is specifically tailored for `PHPStorm` and `Docker-based environments`
 >   - You don't need to install `Google Chrome xdebug` extension
 
 ---

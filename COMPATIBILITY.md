@@ -30,7 +30,7 @@ The PHP containers are built on **Alpine Linux** to keep the footprint small. Th
 ### Cache & Session
 All supported versions use a unified caching strategy:
 * **Redis/ValKey:** used for both `session storage` and `backend cache`
-* **Varnish:**cConfigured for Full Page Cache (FPC)
+* **Varnish:** for cache
 ---
 
 ##  Frontend Compatibility
