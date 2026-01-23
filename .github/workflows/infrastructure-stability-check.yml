@@ -11,6 +11,8 @@ jobs:
   smoke-test:
     name: Infrastructure Smoke Test
     runs-on: ubuntu-latest
+    env:
+      TERM: xterm
     steps:
       - uses: actions/checkout@v4
 
