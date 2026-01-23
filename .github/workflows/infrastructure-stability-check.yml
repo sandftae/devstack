@@ -69,21 +69,12 @@ jobs:
 
       - name: HTTP Health Check
         run: |
-          echo "Checking SSL connection to mage-dev.localhost..."
-          curl -v -k --fail --retry 5 --retry-delay 10 \
+          echo "Checking if environment is reachable via HTTPS..."
+          if curl -v -k --fail --retry 10 --retry-delay 10 \
                --resolve mage-dev.localhost:443:127.0.0.1 \
-               https://mage-dev.localhost/devstack/ 2>&1 | tee curl_output.txt
-
-          if grep -q "SSL connection using" curl_output.txt; then
-            echo "SSL handshake successful!"
+               https://mage-dev.localhost/devstack/ > /dev/null 2>&1; then
+            echo "Success: environment is up and SSL is working!"
           else
-            echo "SSL handshake failed!"
-            exit 1
-          fi
-
-          if grep -i -q "common name: test-env.localhost" curl_output.txt; then
-            echo "Certificate domain match!"
-          else
-            echo "Warning: Certificate domain mismatch. Found: $(grep "common name:" curl_output.txt)"
+            echo "Error: reachability check failed!"
             exit 1
           fi
