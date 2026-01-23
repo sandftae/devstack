@@ -1,0 +1,9 @@
+---
+extends: default
+
+rules:
+  line-length:
+    max: 120 # max 120 symbols
+    level: warning # if more it is must be warning, not error
+  document-start: disable # do not judge me, linter, if there is no ---
+  truthy: disable
