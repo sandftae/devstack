@@ -195,15 +195,15 @@ The **DEVSTACK** provides a `development environment`, but you need to fill in t
    
       - *Custom-Named* Database
    
-        This import is simple as well, but you need to do one extra step. Follow steps described:
+        This import is simple as well, but you need to `create` new database and `switch` commerce instance enviroment to be alligned with the new one. Follow steps described:
         - put ``db-dump.sql`` file into `./env/dumps/import` folder
         - create database and run import
           ```bash
           # step #1: create database
           make create-database db=your_database_name
           
-          # step #3: update DB_NAME of the './env/.commerce.env' file
-          DB_NAME=your_database_name
+          # step #2: switch the whole commerce instance environment to the new database
+          make switch-database db=your_database_name
           
           # step #3: import database
           make import-database db=your_database_name file=db-dump.sql
@@ -215,15 +215,13 @@ The **DEVSTACK** provides a `development environment`, but you need to fill in t
 
 3. **Backend**
 
-    - get into the `php-app` container and `clone project` repository
+    - `clone project` repository **into** `src/php-app` folder directly
         ```bash
-        make php-app
-       # IMPORTANT: you HAVE TO clone the repo into the php-app folder.
-       # The 'php-app' folder is a folder you are in once you run 
-       # 'make php-app' command. Use './' or '.' to force git to clone 
-       # project into the php-app folder directly
-        
-        git clone path-repository.git ./ 
+        # go into 'php-app' source folder
+       	cd src/php-app
+       	
+       	# use './' or '.' to force git to clone into the 'php-app' folder directly
+	    git clone path-repository.git .
        ```
    
     - run the installation command to deploy the `Adobe Commerce` instance locally
@@ -231,7 +229,7 @@ The **DEVSTACK** provides a `development environment`, but you need to fill in t
           # run these commands outside of the container, at the Makefile level
           make composer-install
        
-          # it configures AC, admin, populate default database
+          # it configures AC, admin, populate the database
           make setup-install
         
           # change commerce mode to developer  
@@ -256,12 +254,23 @@ The **DEVSTACK** provides a `development environment`, but you need to fill in t
 
 5. **Frontend (headless)**
     
-    - enter the ``web-app`` container
+    - `clone project` repository **into** `src/web-app` folder
         ```bash
-        make web-app 
+        # go into 'web-app' source folder
+        cd src/web-app
+        
+        # clone the repository
+        git clone path-repository.git .
        ```
    
-    - ``clone`` the web project and run ``npm/yarn deploy commands``
+    - go into `web-app` container and run ``npm/yarn deploy commands``
+         ```bash
+        # go into 'web-app' container
+        make web-app
+        
+        # run install/build commands
+        yarn install && yarn dev
+       ```
 
 ---
 
