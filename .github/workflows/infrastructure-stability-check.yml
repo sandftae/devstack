@@ -34,13 +34,18 @@ jobs:
         run: |
           make up
           echo "Waiting for containers to be 'running'..."
-          CONTAINERS=("nginx" "ssl-reverse-proxy" "php-app" "web-app")
-          CONTAINERS+=("mysql" "mailpit" "varnish" "opensearch" "valkey")
-          CONTAINERS+=("sftp" "rabbitmq" "phpmyadmin" "logs")
-          for i in {1..60}; do
+
+          # Список сервисов из твоего compose.yml
+          SERVICES=("nginx" "ssl-reverse-proxy" "php-app" "web-app" "mysql")
+          SERVICES+=("mailpit" "varnish" "opensearch" "valkey" "sftp")
+          SERVICES+=("rabbitmq" "phpmyadmin" "logs")
+
+          # 24 итерации * 5 сек = 120 сек (2 минуты)
+          for i in {1..24}; do
             ALL_RUNNING=true
-            for container in "${CONTAINERS[@]}"; do
-              if [ "$(docker inspect -f '{{.State.Running}}' $container 2>/dev/null)" != "true" ]; then
+            for svc in "${SERVICES[@]}"; do
+              # Проверяем, есть ли запущенный контейнер, имя которого содержит название сервиса
+              if [ -z "$(docker ps --filter "name=$svc" --filter "status=running" -q)" ]; then
                 ALL_RUNNING=false
                 break
               fi
@@ -48,14 +53,15 @@ jobs:
 
             if [ "$ALL_RUNNING" = true ]; then
               echo "All containers are up and running!"
+              docker ps # Показать финальный список для логов
               break
             fi
 
-            echo "Waiting for services... ($((i*5))s)"
+            echo "Waiting for services... ($((i*5))s / 120s)"
             sleep 5
 
-            if [ $i -eq 60 ]; then
-              echo "Timeout: Containers failed to start in 5 minutes"
+            if [ $i -eq 24 ]; then
+              echo "Timeout: Containers failed to start in 2 minutes"
               docker ps -a
               exit 1
             fi
