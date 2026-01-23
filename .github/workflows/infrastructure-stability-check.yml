@@ -7,9 +7,6 @@ on:
   pull_request:
     branches: [main, development]
 
-# it is required to tun quality tools ahead
-#needs: ["Code Quality", "Shell Quality"]
-
 jobs:
   smoke-test:
     name: Infrastructure Smoke Test
