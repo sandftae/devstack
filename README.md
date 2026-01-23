@@ -195,15 +195,15 @@ The **DEVSTACK** provides a `development environment`, but you need to fill in t
    
       - *Custom-Named* Database
    
-        This import is simple as well, but you need to do one extra step. Follow steps described:
+        This import is simple as well, but you need to `create` new database and `switch` commerce instance enviroment to be alligned with the new one. Follow steps described:
         - put ``db-dump.sql`` file into `./env/dumps/import` folder
         - create database and run import
           ```bash
           # step #1: create database
           make create-database db=your_database_name
           
-          # step #3: update DB_NAME of the './env/.commerce.env' file
-          DB_NAME=your_database_name
+          # step #2: switch the whole commerce instance environment to the new database
+          make switch-database db=your_database_name
           
           # step #3: import database
           make import-database db=your_database_name file=db-dump.sql
@@ -229,7 +229,7 @@ The **DEVSTACK** provides a `development environment`, but you need to fill in t
           # run these commands outside of the container, at the Makefile level
           make composer-install
        
-          # it configures AC, admin, populate default database
+          # it configures AC, admin, populate the database
           make setup-install
         
           # change commerce mode to developer  
