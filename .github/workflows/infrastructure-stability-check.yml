@@ -44,34 +44,33 @@ jobs:
 
       - name: Start Infrastructure
         run: |
-          # Start all services defined in the generated compose file
+          # start all services defined in the generated compose file
           make up
           echo "Waiting for containers to reach 'running' state..."
-          # List of services to monitor (broken into array for readability)
+          # list of services to monitor
           SERVICES=(
             "nginx" "ssl-reverse-proxy" "php-app" "web-app"
             "mysql" "mailpit" "varnish" "opensearch"
             "valkey" "sftp" "rabbitmq" "phpmyadmin" "logs"
           )
-          # Polling loop: 24 iterations * 5 seconds = 120 seconds timeout
+          # polling loop: 24 iterations * 5 seconds = 120 seconds timeout
           for i in {1..24}; do
             ALL_RUNNING=true
             for svc in "${SERVICES[@]}"; do
-              # Check if a running container exists for the given service name
               if [ -z "$(docker ps --filter "name=$svc" --filter "status=running" -q)" ]; then
                 ALL_RUNNING=false
                 break
               fi
             done
             if [ "$ALL_RUNNING" = true ]; then
-              echo "Success: All containers are up and running!"
+              echo "Success: all containers are up and running!"
               docker ps
               break
             fi
             echo "Still waiting... ($((i*5))s / 120s)"
             sleep 5
             if [ $i -eq 24 ]; then
-              echo "Error: Timeout reached. Some containers failed to start."
+              echo "Error: timeout reached, some containers failed to start."
               docker ps -a
               exit 1
             fi
@@ -79,8 +78,7 @@ jobs:
 
       - name: HTTP & SSL Health Check
         run: |
-          # Verify that the web server is reachable via HTTPS
-          # --retry helps to wait until the backend is ready
+          # verify that the web server is reachable via HTTPS
           echo "Performing HTTPS reachability check..."
           if curl -v -k --fail --retry 10 --retry-delay 10 \
                --resolve mage-dev.localhost:443:127.0.0.1 \
@@ -92,7 +90,7 @@ jobs:
           fi
 
       - name: Cleanup on Failure
-        # Collect logs if any of the previous steps failed
+        # collect logs if any of the previous steps failed
         if: failure()
         run: |
           echo "Infrastructure failed. Dumping container logs..."
