@@ -1,49 +1,63 @@
----
 name: Infrastructure Stability
 
 on:
-  push:
-    branches: [main, development]
   pull_request:
-    branches: [main, development]
+    branches: [main, master]
+  push:
+    branches: [main, master]
 
 jobs:
   smoke-test:
     name: Infrastructure Smoke Test
     runs-on: ubuntu-latest
+    
     env:
+      # set terminal type to avoid 'tput: No value for $TERM' warnings
       TERM: xterm
-    steps:
-      - uses: actions/checkout@v4
+      # enable Docker BuildKit for caching
+      DOCKER_BUILDKIT: 1
+      COMPOSE_DOCKER_CLI_BUILD: 1
 
-      - name: Generate Configs
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        # I'm using the Buildx in hope to speed up tests when creating PR cuz it has good caching mechanism
+        uses: docker/setup-buildx-action@v3
+
+      - name: Generate Configurations
         run: |
-          # generate configs
+          # generate environment files and docker-compose.yml
           docker compose -f ./env/compose.env-build.yml run --rm magma bash ./scripts/smoke/smoke
 
       - name: Verify Generated Files
         run: |
+          # ensure that critical configuration files were created
           FILES=("env/.commerce.env" "env/.docker.env" "env/compose.yml")
           for file in "${FILES[@]}"; do
             if [ ! -f "$file" ]; then
-              echo "File $file not found!"
+              echo "Error: $file was not generated!"
               exit 1
             fi
           done
-          echo "All config files generated"
+          echo "Verification successful: all files exist."
 
       - name: Start Infrastructure
         run: |
+          # start all services
           make up
-          echo "Waiting for containers to be 'running'..."
-
-          SERVICES=("nginx" "ssl-reverse-proxy" "php-app" "web-app" "mysql")
-          SERVICES+=("mailpit" "varnish" "opensearch" "valkey" "sftp")
-          SERVICES+=("rabbitmq" "phpmyadmin" "logs")
-
+          
+          echo "Waiting for containers to reach 'running' state..."
+          
+          # list of services to monitor
+          SERVICES=("nginx" "ssl-reverse-proxy" "php-app" "web-app" "mysql" "mailpit" "varnish" "opensearch" "valkey" "sftp" "rabbitmq" "phpmyadmin" "logs")
+          
+          # 24 iterations * 5 seconds = 120 seconds timeout
           for i in {1..24}; do
             ALL_RUNNING=true
             for svc in "${SERVICES[@]}"; do
+              # check if a running container exists for the given service name
               if [ -z "$(docker ps --filter "name=$svc" --filter "status=running" -q)" ]; then
                 ALL_RUNNING=false
                 break
@@ -51,29 +65,38 @@ jobs:
             done
 
             if [ "$ALL_RUNNING" = true ]; then
-              echo "All containers are up and running!"
+              echo "Success: All containers are up and running!"
               docker ps
               break
             fi
 
-            echo "Waiting for services... ($((i*5))s / 120s)"
+            echo "Still waiting... ($((i*5))s / 120s)"
             sleep 5
 
             if [ $i -eq 24 ]; then
-              echo "Timeout: Containers failed to start in 2 minutes"
+              echo "Error: timeout reached, some containers failed to start."
               docker ps -a
               exit 1
             fi
           done
 
-      - name: HTTP Health Check
+      - name: HTTP & SSL Health Check
         run: |
-          echo "Checking if environment is reachable via HTTPS..."
+          # verify that the web server is reachable via HTTPS
+          echo "Performing HTTPS reachability check..."
+          
           if curl -v -k --fail --retry 10 --retry-delay 10 \
                --resolve mage-dev.localhost:443:127.0.0.1 \
                https://mage-dev.localhost/devstack/ > /dev/null 2>&1; then
-            echo "Success: environment is up and SSL is working!"
+            echo "Reachability check passed!"
           else
-            echo "Error: reachability check failed!"
+            echo "Reachability check failed!"
             exit 1
           fi
+
+      - name: Cleanup on Failure
+        # collect logs if any of the previous steps failed
+        if: failure()
+        run: |
+          echo "Infrastructure failed. Dumping container logs..."
+          docker compose -f env/compose.yml logs --tail=100
