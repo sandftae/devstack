@@ -101,7 +101,7 @@ At this point, your `XDebug` is fully configured, and there are only two small s
 
 ## CLI Debugging
 
-To debug Adobe Commerce `CLI` or custom console commands, you must first complete the [HTTP/HTTPS Request Debugging](#web-request-debugging) setup.
+To debug Adobe Commerce `CLI` or custom console commands, you must first complete the [HTTP/HTTPS Request Debugging](#httphttps-request-debugging) setup.
 
 > [!IMPORTANT]
 >
