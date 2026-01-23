@@ -215,15 +215,13 @@ The **DEVSTACK** provides a `development environment`, but you need to fill in t
 
 3. **Backend**
 
-    - get into the `php-app` container and `clone project` repository
+    - `clone project` repository **into** `src/php-app` folder directly
         ```bash
-        make php-app
-       # IMPORTANT: you HAVE TO clone the repo into the php-app folder.
-       # The 'php-app' folder is a folder you are in once you run 
-       # 'make php-app' command. Use './' or '.' to force git to clone 
-       # project into the php-app folder directly
-        
-        git clone path-repository.git ./ 
+        # go into 'php-app' source folder
+       	cd src/php-app
+       	
+       	# use './' or '.' to force git to clone into the 'php-app' folder directly
+	    git clone path-repository.git .
        ```
    
     - run the installation command to deploy the `Adobe Commerce` instance locally
