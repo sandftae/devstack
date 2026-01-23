@@ -9,6 +9,15 @@
 ![Compose: V2](https://img.shields.io/badge/Compose-V2-blue?logo=docker&logoColor=white)
 ![Bash Version](https://img.shields.io/badge/bash-%3E%3D_3.2-blue?logo=gnu-bash&logoColor=white)
 
+
+---
+ 
+| **CI/CD**                                                                                          | **Stability**                                                                                    | **Security**                                                      |
+|:---------------------------------------------------------------------------------------------------|:-------------------------------------------------------------------------------------------------|:------------------------------------------------------------------|
+| ![Code Quality](https://github.com/sandftae/devstack/actions/workflows/code-quality.yml/badge.svg) | ![Shell Check](https://github.com/sandftae/devstack/actions/workflows/shell-check.yml/badge.svg) | ![Gitleaks](https://img.shields.io/badge/Security-Gitleaks-green) |
+| ![Smoke Tests](https://img.shields.io/badge/Smoke_Tests-planned-gray)                              | ![Compatibility](https://img.shields.io/badge/macOS_Checked-yes-blue)                            |                                                                   |
+
+
 ---
 
 An interactive, GUI-driven orchestrator designed to build modular Adobe Commerce environments for monolithic or headless development.
