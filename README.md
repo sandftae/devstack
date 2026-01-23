@@ -11,6 +11,13 @@
 
 ---
 
+![Code Quality](https://github.com/sandftae/devstack/actions/workflows/code-quality.yml/badge.svg) ![Shell Check](https://github.com/sandftae/devstack/actions/workflows/shell-check.yml/badge.svg) 
+![Gitleaks](https://img.shields.io/badge/Security-Gitleaks-green) ![Smoke Tests](https://img.shields.io/badge/Smoke_Tests-planned-gray)
+
+[//]: # (![Compatibility]&#40;https://img.shields.io/badge/macOS_Checked-yes-blue&#41;)
+
+---
+
 An interactive, GUI-driven orchestrator designed to build modular Adobe Commerce environments for monolithic or headless development.
 Easily toggle between optional services, monitor performance, and manage your entire local infrastructure from a single interface.
 
