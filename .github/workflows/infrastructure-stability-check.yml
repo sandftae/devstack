@@ -37,7 +37,9 @@ jobs:
         run: |
           make up
           echo "Waiting for containers to be 'running'..."
-          CONTAINERS=("nginx" "ssl-reverse-proxy" "php-app" "web-app" "mysql" "mailpit" "varnish" "opensearch" "valkey" "sftp" "rabbitmq" "phpmyadmin" "logs")
+          CONTAINERS=("nginx" "ssl-reverse-proxy" "php-app" "web-app")
+          CONTAINERS+=("mysql" "mailpit" "varnish" "opensearch" "valkey")
+          CONTAINERS+=("sftp" "rabbitmq" "phpmyadmin" "logs")
           for i in {1..60}; do
             ALL_RUNNING=true
             for container in "${CONTAINERS[@]}"; do
