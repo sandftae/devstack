@@ -4,6 +4,7 @@ log/
 src/
 archive/
 sources/
+auth.*
 .dockerignore
 
 # exclude specific subfolders inside env folder
