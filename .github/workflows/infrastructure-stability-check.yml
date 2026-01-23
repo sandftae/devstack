@@ -51,7 +51,11 @@ jobs:
           echo "Waiting for containers to reach 'running' state..."
           
           # list of services to monitor
-          SERVICES=("nginx" "ssl-reverse-proxy" "php-app" "web-app" "mysql" "mailpit" "varnish" "opensearch" "valkey" "sftp" "rabbitmq" "phpmyadmin" "logs")
+          SERVICES=(
+            "nginx" "ssl-reverse-proxy" "php-app" "web-app"
+            "mysql" "mailpit" "varnish" "opensearch"
+            "valkey" "sftp" "rabbitmq" "phpmyadmin" "logs"
+          )
           
           # 24 iterations * 5 seconds = 120 seconds timeout
           for i in {1..24}; do
