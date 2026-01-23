@@ -254,12 +254,23 @@ The **DEVSTACK** provides a `development environment`, but you need to fill in t
 
 5. **Frontend (headless)**
     
-    - enter the ``web-app`` container
+    - `clone project` repository **into** `src/web-app` folder
         ```bash
-        make web-app 
+        # go into 'web-app' source folder
+        cd src/web-app
+        
+        # clone the repository
+        git clone path-repository.git .
        ```
    
-    - ``clone`` the web project and run ``npm/yarn deploy commands``
+    - go into `web-app` container and run ``npm/yarn deploy commands``
+         ```bash
+        # go into 'web-app' container
+        make web-app
+        
+        # run install/build commands
+        yarn install && yarn dev
+       ```
 
 ---
 
