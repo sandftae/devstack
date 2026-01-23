@@ -11,8 +11,9 @@
 
 ---
 
+![Stability](https://github.com/sandftae/devstack/actions/workflows/infrastructure-stability-check.yml/badge.svg) 
 ![Code Quality](https://github.com/sandftae/devstack/actions/workflows/code-quality.yml/badge.svg) ![Shell Check](https://github.com/sandftae/devstack/actions/workflows/shell-check.yml/badge.svg) 
-![Gitleaks](https://img.shields.io/badge/Security-Gitleaks-green) ![Smoke Tests](https://img.shields.io/badge/Smoke_Tests-planned-gray)
+![Gitleaks](https://img.shields.io/badge/Security-Gitleaks-green) 
 
 [//]: # (![Compatibility]&#40;https://img.shields.io/badge/macOS_Checked-yes-blue&#41;)
 

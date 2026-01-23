@@ -69,6 +69,22 @@ jobs:
 
       - name: HTTP Health Check
         run: |
-          curl -v -k --fail --retry 10 --retry-delay 15 \
+          echo "Checking SSL connection to mage-dev.localhost..."
+
+          curl -v -k --fail \
                --resolve mage-dev.localhost:443:127.0.0.1 \
-               https://mage-dev.localhost/devstack/
+               https://mage-dev.localhost/devstack/ 2>&1 | tee curl_output.txt
+
+          if grep -q "SSL connection using" curl_output.txt; then
+            echo "SSL handshake successful!"
+          else
+            echo " SSL handshake failed!"
+            exit 1
+          fi
+
+          if grep -q "common name: mage-dev.localhost" curl_output.txt; then
+            echo "Certificate domain match!"
+          else
+            echo  Warning: certificate domain mismatch or not found."
+            exit 1
+          fi
