@@ -329,6 +329,14 @@ cmd_list_database_desc="list databases created by the client"
 cmd_list_database_usage="make list-database"
 cmd_list_database_group="database management"
 
+cmd_switch_database_name="switch-database"
+cmd_switch_database_desc="Updates ${C_BOLD}DB_NAME${C_NC}${COLOR_CYAN} var in the ${C_BOLD}.commerce.env${C_NC}${COLOR_CYAN} file"
+cmd_switch_database_usage="make switch-database db=db_name"
+cmd_switch_database_group="database management"
+cmd_switch_database_note="This just changes the values, but you will still
+               need to run any other commands related to the
+               database and project management"
+
 # --- Group: commerce project setup commands ---
 cmd_commerce_version_name="commerce-version | commerce-meta"
 cmd_commerce_version_desc="provides current version and edition version"
