@@ -1,0 +1,69 @@
+---
+name: Infrastructure Stability
+
+on:
+  push:
+    branches: [main, development]
+  pull_request:
+    branches: [main, development]
+
+# it is required to tun quality tools ahead
+needs: ["Code Quality", "Shell Quality"]
+
+jobs:
+  smoke-test:
+    name: Infrastructure Smoke Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Generate Configs
+        run: |
+          # generate configs
+          docker compose -f ./env/compose.env-build.yml run --rm magma bash ./scripts/smoke/smoke
+
+      - name: Verify Generated Files
+        run: |
+          FILES=("env/.commerce.env" "env/.docker.env" "env/compose.yml")
+          for file in "${FILES[@]}"; do
+            if [ ! -f "$file" ]; then
+              echo "File $file not found!"
+              exit 1
+            fi
+          done
+          echo "All config files generated"
+
+      - name: Start Infrastructure
+        run: |
+          make up
+          echo "Waiting for containers to be 'running'..."
+          CONTAINERS=("nginx" "ssl-reverse-proxy" "php-app" "web-app" "mysql" "mailpit" "varnish" "opensearch" "valkey" "sftp" "rabbitmq" "phpmyadmin" "logs")
+          for i in {1..60}; do
+            ALL_RUNNING=true
+            for container in "${CONTAINERS[@]}"; do
+              if [ "$(docker inspect -f '{{.State.Running}}' $container 2>/dev/null)" != "true" ]; then
+                ALL_RUNNING=false
+                break
+              fi
+            done
+
+            if [ "$ALL_RUNNING" = true ]; then
+              echo "All containers are up and running!"
+              break
+            fi
+
+            echo "Waiting for services... ($((i*5))s)"
+            sleep 5
+
+            if [ $i -eq 60 ]; then
+              echo "Timeout: Containers failed to start in 5 minutes"
+              docker ps -a
+              exit 1
+            fi
+          done
+
+      - name: HTTP Health Check
+        run: |
+          curl -v -k --fail --retry 10 --retry-delay 15 \
+               --resolve mage-dev.localhost:443:127.0.0.1 \
+               https://mage-dev.localhost/devstack/
