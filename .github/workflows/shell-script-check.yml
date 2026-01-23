@@ -6,6 +6,8 @@ on:
     branches: [main, development]
   pull_request:
     branches: [main, development]
+  # manual trigger enabled
+  workflow_dispatch:
 
 jobs:
   shellcheck:
