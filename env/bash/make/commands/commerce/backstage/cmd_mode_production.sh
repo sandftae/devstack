@@ -13,6 +13,16 @@ cmd_mode_production() {
   check_service_status "$php_service" || return 1
   check_service_status "$ssl_reverse_proxy_service_name" || return 1
 
+ # check the project is cloned
+  if ! is_deployed ; then
+    printf "%b%b[!] INFO:%b project %b%b%s%b %bnot found/not cloned%b !\n" \
+      "${COLOR_BLUE}" "${C_BOLD}" "${C_NC}" "${COLOR_YELLOW}" "${C_BOLD}" "${DOMAIN}" "${C_NC}" "${C_BOLD}" "${C_NC}"
+    printf "Clone the repo OR run %bmake create-ee%b %b[EE]%b / %bmake create-ce%b %b[CE]%b.\n" \
+      "${C_BOLD}" "${C_NC}" "${COLOR_YELLOW}" "${C_NC}" "${C_BOLD}" "${C_NC}" "${COLOR_YELLOW}" "${C_NC}"
+
+    return 1
+  fi
+
   # print warning
   mode_change_warn
 

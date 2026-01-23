@@ -7,9 +7,10 @@
 # cmd_xdebug_toggle function
 cmd_xdebug_toggle() {
   local state="$1"
+  local service_name
   local xdebug_mode="off"
   local display_state="off"
-  local service_name
+  local ide_config="" # empty, by default
 
   service_name="${PHP_APP_SERVICE_NAME:-php-app}"
 
@@ -17,10 +18,17 @@ cmd_xdebug_toggle() {
   check_service_status "$service_name" || return 1
 
   # do mapping
-  [[ "$state" == "true" ]] && { xdebug_mode="debug"; display_state="on"; }
+  [[ "$state" == "true" ]] && {
+    xdebug_mode="debug";
+    display_state="on";
+    ide_config="serverName=${DOMAIN:-localhost}";
+  }
 
   # set new XDEBUG_MODE value to be used by _docker_compose
   update_env_var "XDEBUG_MODE" "$xdebug_mode" "$DOCKER_ENV_FILE"
+
+  # set new PHP_IDE_CONFIG value to be used by _docker_compose
+  update_env_var "PHP_IDE_CONFIG" "$ide_config" "$DOCKER_ENV_FILE"
 
   # up php-app container with new configs
   spinner "Xdebug ${C_BOLD}${display_state}${C_NC}: applying configuration" _docker_compose up -d "$service_name" || return 1

@@ -31,7 +31,6 @@ cmd_switch_database() {
 
   update_env_var "DB_NAME" "$db" "$COMMERCE_ENV_FILE"
 
-
   printf "%b✔%b Database is switched to %b%s%b.\n" "${COLOR_GREEN}" "${C_NC}" "${C_BOLD}" "$db" "${C_NC}"
 
   return 0

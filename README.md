@@ -477,9 +477,10 @@ Use these commands for daily development tasks like importing dumps, creating ba
 | `env/dumps/export/` | **manual**    | destination for dumps created via `make dump-database`       |
 
 ---
+
 ## Accessing the DEVSTACK
 
-Once the containers are running, you can access the various parts of the environment using the URLs below.
+Once the containers are running, you can access the various parts of the environment using the CLI command URLs below.
 
 ### Storefronts & Backend
 | Service                  | Local URL                                             | Note                              |
@@ -490,14 +491,28 @@ Once the containers are running, you can access the various parts of the environ
 | **PWA Studio**           | https://lyour-domain:3000/ <br/> http://0.0.0.0:3000/ | Default PWA storefront            |
 
 
-### EVSTACK Service Dashboard
-| Service                 | Local URL                                                                      |
-|:------------------------|:-------------------------------------------------------------------------------|
-| **Service Dashboard**   | [https://your-domain.localhost/devstack/](https://dev-env.localhost/devstack/) |
+---
 
-> [!TIP]
-> 
-> **The Service Dashboard** contains direct links to all active service GUIs
+## DEVSTACK Service Dashboard
+
+**DEVSTACK Dashboard** is a central control panel. It provides a single interface with **direct links and login credentials** for all services included in the stack.
+So, you don't need to memorize passwords and links to the services. It is available through the `dashboard`.
+
+You can access the dashboard in two ways:
+
+ * `via browser`
+
+    open the following URL in your browser:  
+    **URL:** [https://your-domain.localhost/devstack/](https://your-domain.localhost/devstack/)
+
+
+ * `via CLI`
+
+    run this command
+    
+    ```bash
+    make devstack
+    ````
 
 **The Service Dashboard** view:
 
@@ -512,15 +527,16 @@ Once the containers are running, you can access the various parts of the environ
 
 Use the following credentials to access the administrative panels of the included services.
 
-| Service                    | Username | Password     | Note                                        |
-|:---------------------------|:---------|:-------------|:--------------------------------------------|
-| **Grafana**                | `admin`  | `admin`      | Telemetry & Metrics                         |
-| **phpMyAdmin**             | `root`   | `root`       | Database Management                         |
-| **RabbitMQ**               | `guest`  | `guest`      | Message Queue GUI                           |
-| **cAdvisor**               | *None*   | *None*       | Direct container stats                      |
-| **OpenSearch**             | `admin`  | `admin`      | Search Engine Dashboard                     |
-| **SFTP Server**            | `test`   | `12345`      | Port `22222`                                |
-| **Commerce Default Admin** | `admin`  | `admin12345` | run `make create-admin` to create your own  |
+| Service                    | Username  | Password     | Note                                       |
+|:---------------------------|:----------|:-------------|:-------------------------------------------|
+| **Grafana**                | `admin`   | `admin`      | Telemetry & Metrics                        |
+| **phpMyAdmin**             | `root`    | `root`       | Database Management                        |
+| **Mysql Database**         | `root`    | `root`       | Database Management                        |
+| **RabbitMQ**               | `guest`   | `guest`      | Message Queue GUI                          |
+| **cAdvisor**               | *None*    | *None*       | Direct container stats                     |
+| **OpenSearch**             | `admin`   | `admin`      | Search Engine Dashboard                    |
+| **SFTP Server**            | `test`    | `12345`      | Port `22222`                               |
+| **Commerce Default Admin** | `admin`   | `admin12345` | run `make create-admin` to create your own |
 
 > [!IMPORTANT]
 >

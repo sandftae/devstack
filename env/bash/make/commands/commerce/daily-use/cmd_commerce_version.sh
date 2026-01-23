@@ -7,6 +7,7 @@
 # cmd_commerce_version
 cmd_commerce_version() {
   local line
+  local domain
   local version_val
   local edition_name
   local composer_file
@@ -18,6 +19,8 @@ cmd_commerce_version() {
     printf "Run %bmake create-ee%b or %bmake create-ce%b to begin.\n\n" "${C_BOLD}" "${C_NC}" "${C_BOLD}" "${C_NC}"
     return 1
   fi
+
+  domain="${DOMAIN:-localhost [not specified]}"
 
   # extract edition name
   line=$(grep '"name":' "$composer_file" | head -1)
@@ -36,6 +39,7 @@ cmd_commerce_version() {
   printf "%bCOMMERCE metadata:%b\n" "${C_BOLD}" "${C_NC}"
   printf "  %b%-10s%b %s\n" "${COLOR_GREEN}" "edition:" "${C_NC}" "$edition_name"
   printf "  %b%-10s%b %s\n" "${COLOR_GREEN}" "version:" "${C_NC}" "$version_val"
+  printf "  %b%-10s%b %s\n" "${COLOR_GREEN}" "domain:" "${C_NC}" "$domain"
 
   return 0
 }
