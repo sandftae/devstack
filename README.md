@@ -143,7 +143,7 @@ For a full breakdown of which PHP, MySQL, OpenSearch, etc. versions are paired w
     
    # optional cleaning action; be sure you are ONLY deleting devstack`s 
    # git service files/folders, and devstack`s *.md files  
-   rm -rf *.md LICENSE .editorconfig .git .gitigonre .editorconfig docs/github
+   rm -rf *.md LICENSE .editorconfig .git .gitigonre .editorconfig .ymlinnt .github docs/github
     ```
 
 2. **Launch the DEVSTACK GUI**
