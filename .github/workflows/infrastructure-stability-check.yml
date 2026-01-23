@@ -6,7 +6,7 @@ on:
   push:
     branches: [main, master]
   # manual trigger enabled
-  workflow_dispatch:  
+  workflow_dispatch:
 
 jobs:
   smoke-test:

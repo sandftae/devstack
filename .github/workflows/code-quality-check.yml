@@ -7,7 +7,7 @@ on:
   pull_request:
     branches: [main, development]
   # manual trigger enabled
-  workflow_dispatch: 
+  workflow_dispatch:
 
 jobs:
   gitleaks:
