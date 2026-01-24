@@ -1,64 +1,60 @@
 # Xdebug Configuration Guide
 
-This guide describes how to configure `Xdebug` for both `HTTP/HTTPS requests` and `CLI commands`.
+This guide describes how to configure `Xdebug` for both `HTTP/HTTPS requests` and `CLI` commands (cron/console).
 
 > [!NOTE]
 > 
->   - This guide is specifically tailored for `PHPStorm` and `Docker-based environments`
->   - You don't need to install `Google Chrome xdebug` extension
+>   - this setup uses a `direct-to-IDE` approach, so `no browser extension needed`
+>   - once it is done both `http/https request` and `CLI` are debuggable
 
 ---
 
 ## Table of Contents
 - [Manage Commands](#manage-commands)
-- [HTTP/HTTPS Request Debugging](#httphttps-request-debugging)
-- [CLI Debugging](#cli-debugging)
+- [XDebug Configuration](#xdebug-configuration)
+- [How to Start Debugging](#how-to-start-debugging)
 
 ---
 
 ## Manage Commands
 
-Use these `make` commands to control the Xdebug status within your container:
+Use these `make` commands to control the Xdebug status within your container.
 
 | Command               | Alias      | Description                        |
 |:----------------------|:-----------|:-----------------------------------|
 | `make xdebug-enable`  | `make xde` | enables Xdebug `in the container`  |
 | `make xdebug-disable` | `make xdd` | disables Xdebug `in the container` |
 
+
 ---
 
-## HTTP/HTTPS Request Debugging
+## XDebug Configuration
 
-Configuration consists of two main parts: 
- - the `Debug/Proxy services`
- - the `PHP Interpreter`
+Configuration consists of three steps: 
+ - `Debug/Proxy services`
+ - `PHP Interpreter Configuration`
+ - `Server Path Mapping`
 
-### 1. PHPStorm Debug and DBGp Proxy
-Configure the ports and proxy settings to allow `PHPStorm` to listen for `incoming` Xdebug connections.
-Just follow screenshots:
+### I. PHPStorm Debug and DBGp Proxy
+Configure the ports and proxy settings to allow `PHPStorm` to listen for `incoming` connections.
 
 <details>
-<summary>👉 View Configuration Screenshots</summary>
+<summary>👉 Setup Steps</summary>
 <p align="center">
   <img src="../media/xdebug/PORTS.png" width="45%" alt="PHPStorm Xdebug Service"/>
   <img src="../media/xdebug/DBGp.png" width="45%" alt="DBGp Proxy Service"/>
 </p>
 </details>
 
-### 2. PHP Interpreter and Path Mappings
-To ensure proper communication between the `host` and the `php-app` container, you must configure the `remote interpreter` and `path mappings`.
-
-Configuration consists of three main parts:
-- the actual `PHP Interpreter` configuration
-- the `container` configuration
-- the `"first request"` configuration
+### II. PHP Interpreter Configuration
+To ensure proper communication between the `host` and the `php-app` container, you must configure the `remote interpreter` and the `php-app container`.
 
 > [!IMPORTANT]
 > 
-> Ensure the `PHP Interpreter` version you selected matches your `Adobe Commerce` version (e.g., PHP 8.4 for AC v2.4.8). The interpreter should point to the `php-app` container`s image.
+> Ensure the `PHP Interpreter` version you selected matches your `Adobe Commerce` version (e.g., PHP 8.4 for AC v2.4.8, etc). The interpreter should point to the `php-app` container`s image.
 
-#### Step #1: PHP Interpreter
-Connect `PHPStorm` to the Docker `container's PHP binary`.
+#### STEP 1: PHP Interpreter
+Connect `PHPStorm` to the Docker `container's php-fpm`.
 <details>
 <summary>👉 Setup Steps</summary>
   <img src="../media/xdebug/CLI_INTERPRETER_1.png" width="45%"/>
@@ -67,7 +63,7 @@ Connect `PHPStorm` to the Docker `container's PHP binary`.
   <img src="../media/xdebug/CLI_INTERPRETER_4.png" width="45%"/>
 </details>
 
-#### Step #2: Container Configuration
+#### STEP 2: Containers
 
 Align path mappings so `PHPStorm` can map the file structure `inside the container`.
 <details>
@@ -76,62 +72,43 @@ Align path mappings so `PHPStorm` can map the file structure `inside the contain
   <img src="../media/xdebug/CONTAINERS_2.png" width="45%"/>
 </details>
 
-#### Step #3: First Request Configuration
+### III. Server Path Mapping
 
-At this point, your `XDebug` is fully configured, and there are only two small steps left:
+This configuration **tunnels** `PHPStorm` with the `php-fpm` inside container and `vice versa`.
 
-- enable `XDebug` in the `php-app` container
-   ```bash
-     # either 
-     make xdebug-enable
-     # or
-     make xde
-   ```
-- enable `PHPStorm listener`
-- refresh the page once the command is done
-
-
-<details>
-<summary>👉 See this gallery to get visualisation of how it looks like</summary>
-<br/>
-<br/>
-  <img src="../media/xdebug/XDEBUG_1.png" width="45%" alt="SERVER"/>
-  <img src="../media/xdebug/XDEBUG_2.png" width="45%" alt="VOILA!"/>
-</details>
-
-## CLI Debugging
-
-To debug Adobe Commerce `CLI` or custom console commands, you must first complete the [HTTP/HTTPS Request Debugging](#httphttps-request-debugging) setup.
-
-> [!IMPORTANT]
+> [!NOTE]
 >
-> Ensure the `PHP Interpreter` version you selected matches your `Adobe Commerce` version (e.g., PHP 8.4 for AC v2.4.8). The interpreter should point to the `php-app` container`s image.
-
-Just follow screenshots:
+> The `Server Name` **must** match your `domain` name specified for `commerce instance` during environment configuration
+> (e.g., mage-dev.localhost).
+> 
+> Check **Setup Steps** to see where is located and how it has to look like.
 
 <details>
-<summary>👉 CLI Configuration Gallery</summary>
-  <img src="../media/xdebug/CLI/CLI_1.png" width="45%"/>
-  <img src="../media/xdebug/CLI/CLI_2.png" width="45%"/>
-  <img src="../media/xdebug/CLI/CLI_3.png" width="45%"/>
-  <img src="../media/xdebug/CLI/CLI_4.png" width="45%"/>
-  <img src="../media/xdebug/CLI/CLI_5.png" width="45%"/>
+<summary>👉 Setup Steps</summary>
+  <img src="../media/xdebug/SERVER_1.png" width="45%"/>
+  <img src="../media/xdebug/SERVER_2.png" width="45%"/>
 </details>
+
+---
+
+
+##### Done. No more configurations needed. Both `HTTP/HTTPS Requests` and `CLI` commands are debuggable now
 
 ---
 
 ## How to Start Debugging
 
-1.  **Enable Xdebug** in your terminal:
+1. **Set breakpoints:** add breakpoints where needed
+2. **Enable Xdebug** in the terminal:
     ```bash
     make xde
     # or 
     make xdebug-enable
     ```
-2.  **Start Listening:** click the `Start Listening for PHP Debug Connections` icon in PHPStorm (the `phone` icon)
-3.  **Run incoming request:** refresh your browser page to listed `HTTP/HTTPS` request
-3.  **Run CLI:**  press `bug` button of the `PHPStorm` to start CLI command. See this screenshot [gallery](#cli-debugging) to find that button
-4. **Disable Xdebug** in your terminal:
+3. **Start Listening:** click the `Start Listening for PHP Debug Connections` icon in PHPStorm (the `phone` icon)
+4. **Run incoming request:** refresh your browser page to trigger `HTTP/HTTPS` request
+5. **Run CLI:** e.g., `bin/magento cron:run` or `custom` one 
+6. **Disable Xdebug** in your terminal:
     ```bash
     make xdd
     # or 
