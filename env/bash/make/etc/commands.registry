@@ -384,7 +384,7 @@ cmd_commerce_setup_opensearch_usage="make setup-opensearch-configs"
 cmd_commerce_setup_opensearch_group="commerce management"
 cmd_commerce_setup_opensearch_note="OpenSearch configs are setup during 'make setup-install' by default"
 
-# --- Group: commerce management commands ---
+# --- Group: composer management commands ---
 cmd_composer_name="composer-install | composer-update"
 cmd_composer_desc="run composer install/update"
 cmd_composer_usage="make composer-install

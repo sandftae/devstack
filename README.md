@@ -731,6 +731,11 @@ make down
 make up
 ```
 
+### Composer Arguments Issue
+If you encounter unexpected errors (like `The input does not contain valid JSON` or `missing arguments`) when running `complex 
+composer commands via make`, it might be due to how shell arguments are parsed through the Makefile filter. In such cases,
+log `into the container` using make shell and run the command directly: `composer <your-command>`.
+
 ---
 
 ### Permissions & Ownership
