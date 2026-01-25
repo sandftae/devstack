@@ -3,8 +3,9 @@
 This document outlines the planned features, support, and technical milestones for the **DEVSTTACK**.
 
 ##  High Priority
-- [ ] **Core Migration (Bash → Go):** rewriting the orchestration logic in **Golang** for better performance, faster execution, and a more user-friendly interface
+- [ ] **Core Migration (Bash → Go):** rewriting the **magma tool* in **Golang** for better performance, faster execution, and a more user-friendly interface
 - [ ] **New Services:** add new services like Redis Dashboards, Adminer, Selenium, etc
+- [ ] **Justfile:** migrate to `justfile`
 
 ## Future Milestones
 - [ ] **Expanded Service Catalog:**
