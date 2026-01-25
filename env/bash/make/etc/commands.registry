@@ -391,14 +391,6 @@ cmd_composer_usage="make composer-install
                make composer-update"
 cmd_composer_group="composer"
 
-cmd_composer_raw_name="composer"
-cmd_composer_raw_desc="run composer <arguments>"
-cmd_composer_raw_usage="make composer <arguments>"
-cmd_composer_raw_group="composer"
-cmd_composer_raw_note="if arguments contain complex istallation and it
-               fails, try running it ${COLOR_YELLOW}${C_BOLD}directly inside the PHP
-               container${C_NC}"
-
 # --- Group: varnish management commands ---
 cmd_varnish_purge_name="varnish-purge"
 cmd_varnish_purge_desc="purge varnish"

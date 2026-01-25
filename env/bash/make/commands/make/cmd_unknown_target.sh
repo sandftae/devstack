@@ -12,11 +12,6 @@ cmd_unknown_target() {
   local suggestions=""
   local full_input="$*"
 
-  # no actions for line with these symbols
-  if [[ "$target" == *"://"* || "$target" == *"/"* ]]; then
-    return 0
-  fi
-
   # gather all valid .PHONY targets/commands
   all_targets=$(grep "^.PHONY:" Makefile | sed 's/.PHONY://g' | tr ' ' '\n' | \
                 grep -vE '^(unknown_target|.DEFAULT|all|\.|#|$$)' | sort -u)
