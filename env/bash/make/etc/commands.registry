@@ -384,12 +384,20 @@ cmd_commerce_setup_opensearch_usage="make setup-opensearch-configs"
 cmd_commerce_setup_opensearch_group="commerce management"
 cmd_commerce_setup_opensearch_note="OpenSearch configs are setup during 'make setup-install' by default"
 
-# --- Group: commerce management commands ---
+# --- Group: composer management commands ---
 cmd_composer_name="composer-install | composer-update"
 cmd_composer_desc="run composer install/update"
 cmd_composer_usage="make composer-install
                make composer-update"
 cmd_composer_group="composer"
+
+cmd_composer_raw_name="composer"
+cmd_composer_raw_desc="run composer <arguments>"
+cmd_composer_raw_usage="make composer <arguments>"
+cmd_composer_raw_group="composer"
+cmd_composer_raw_note="if arguments contain complex istallation and it
+               fails, try running it ${COLOR_YELLOW}${C_BOLD}directly inside the PHP
+               container${C_NC}"
 
 # --- Group: varnish management commands ---
 cmd_varnish_purge_name="varnish-purge"

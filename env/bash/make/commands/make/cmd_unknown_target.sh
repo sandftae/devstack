@@ -6,11 +6,16 @@
 
 # cmd_unknown_target function
 cmd_unknown_target() {
+  local target="$1"
   local all_targets
   local broad_matches
-  local target="$1"
   local suggestions=""
   local full_input="$*"
+
+  # no actions for line with these symbols
+  if [[ "$target" == *"://"* || "$target" == *"/"* ]]; then
+    return 0
+  fi
 
   # gather all valid .PHONY targets/commands
   all_targets=$(grep "^.PHONY:" Makefile | sed 's/.PHONY://g' | tr ' ' '\n' | \
@@ -24,7 +29,7 @@ cmd_unknown_target() {
     fi
   done
 
-  # matching logic for typos (like 'make hepl')
+  # matching logic for typos (like 'make lits')
   if [[ -n "$target" ]]; then
     broad_matches=$(echo "$all_targets" | grep -iE "^${target:0:3}")
     if [[ ${#target} -ge 5 ]]; then
