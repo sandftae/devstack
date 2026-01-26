@@ -303,7 +303,7 @@ if you are going to use fresh commerce ``EE/CE`` then the flow is the following:
  # use "make mode-show" command to see current mode  
       
  # OPTIONAL: overview, e.g.: commerce version, php, xdebug, etc.
- make commerce-meta
+ make project-meta
 ````
 
 --- 
