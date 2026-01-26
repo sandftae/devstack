@@ -253,6 +253,7 @@ The **DEVSTACK** provides a `development environment`, but you need to fill in t
 
 
 5. **Frontend (headless)**
+
    > [!IMPORTANT]
    > 
    > Please refer to [this](#vsf-cors-errors) guide to **resolve** the `CORS error` in `VSF` and [this](#accessing-the-devstack) 
