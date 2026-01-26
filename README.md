@@ -483,12 +483,12 @@ Use these commands for daily development tasks like importing dumps, creating ba
 Once the containers are running, you can access the various parts of the environment using the CLI command URLs below.
 
 ### Storefronts & Backend
-| Service                  | Local URL                                             | Note                              |
-|:-------------------------|:------------------------------------------------------|:----------------------------------|
-| **Monolith Frontend**    | https://your-domain.localhost/                        | Default Adobe Commerce storefront |
-| **Adobe Commerce Admin** | https://your-domain.localhost/admin                   | Use your custom admin url         |
-| **Vue Storefront**       | https://lyour-domain:3000/ <br/> http://0.0.0.0:3000/ | Default Vue storefront            |
-| **PWA Studio**           | https://lyour-domain:3000/ <br/> http://0.0.0.0:3000/ | Default PWA storefront            |
+| Service                  | Local URL                           | Note                                                                                                                                                   |
+|:-------------------------|:------------------------------------|:-------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Monolith Frontend**    | https://your-domain.localhost/      | Default Adobe Commerce storefront                                                                                                                      |
+| **Adobe Commerce Admin** | https://your-domain.localhost/admin | Use your custom admin url                                                                                                                              |
+| **Vue Storefront**       | https://your-domain:3000/           | Default Vue storefront<br/> **NOTE:** do not use `0.0.0.0:3000`<br/>or any `IP` provided by the `builder`<br/>See [this](#vsf-cors-errors) for details |
+| **PWA Studio**           | http://0.0.0.0:3000/                | Default PWA storefront                                                                                                                                 |
 
 
 ---
@@ -735,6 +735,21 @@ make up
 If you encounter unexpected errors (like `The input does not contain valid JSON` or `missing arguments`) when running `complex 
 composer commands via make`, it might be due to how shell arguments are parsed through the Makefile filter. In such cases,
 log `into the container` using make shell and run the command directly: `composer <your-command>`.
+
+### VSF CORS errors
+**VUE Storefront** may be prone to `CORS errors`. To avoid this, use your domain with port `3000` as shown in the example.
+Do not use default or generated URLs and ports.
+
+Examples:
+ ```bash
+  # No CORS errors
+  mage-env.localhost:3000/
+  <domain>:3000/
+    
+  # Yes CORS errors
+  0.0.0.0:3000/
+  000.0.0.00:3000/
+```   
 
 ---
 
