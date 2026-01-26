@@ -174,7 +174,7 @@ The **DEVSTACK** provides a `development environment`, but you need to fill in t
 
 1. **Start Environment**
    
-    Before go further, lets start docker environment if not yet:
+    Before go further, lets start docker environment if not yet
     ```shell
     make up
     ```
