@@ -253,7 +253,11 @@ The **DEVSTACK** provides a `development environment`, but you need to fill in t
 
 
 5. **Frontend (headless)**
-    
+   > [!IMPORTANT]
+   > 
+   > Please refer to [this](#vsf-cors-errors) guide to **resolve** the `CORS error` in `VSF` and [this](#accessing-the-devstack) 
+   > section to get the `URL` used for `headless commerce` and `admin area`.
+   
     - `clone project` repository **into** `src/web-app` folder
         ```bash
         # go into 'web-app' source folder
@@ -303,7 +307,7 @@ if you are going to use fresh commerce ``EE/CE`` then the flow is the following:
  # use "make mode-show" command to see current mode  
       
  # OPTIONAL: overview, e.g.: commerce version, php, xdebug, etc.
- make commerce-meta
+ make project-meta
 ````
 
 --- 
