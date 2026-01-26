@@ -287,12 +287,12 @@ if you are going to use fresh commerce ``EE/CE`` then the flow is the following:
  # for EE version -> specified during configuration version of the EE will be used
  make create-ee
  
- # OPTIONALLY: set up sample data before run 'make setup-install' command
- make sample-data
- 
  # set the database (default database or your custom-named one) in the alignment with
  # commerce edition and version 
  make setup-install
+ 
+ # OPTIONALLY: set up sample data before run 'make setup-install' command
+ make sample-data
  
  # change commerce mode to developer  
  make mode-developer
