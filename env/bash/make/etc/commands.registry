@@ -116,6 +116,16 @@ cmd_remove_networks_usage="make remove-networks"
 cmd_remove_networks_group="docker container management"
 cmd_remove_networks_note="networks not related to the project will not be changed"
 
+cmd_container_ip_by_name_name="container-ip"
+cmd_container_ip_by_name_desc="view container ip address by name"
+cmd_container_ip_by_name_usage="make container-ip name=<container_name>"
+cmd_container_ip_by_name_group="docker container management"
+
+cmd_base_network_ip_name="base-network-ip"
+cmd_base_network_ip_desc="view base network ip"
+cmd_base_network_ip_usage="make base-network-ip"
+cmd_base_network_ip_group="docker container management"
+
 # --- Group: adobe commerce daily manipulation commands ---
 cmd_cc_name="cc"
 cmd_cc_desc="run bin/magento cache:clean command"
