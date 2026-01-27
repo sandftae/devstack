@@ -240,6 +240,12 @@ The **DEVSTACK** provides a `development environment`, but you need to fill in t
           
           # use "make mode-show" command to see current mode  
       
+          # run indeser:reindex    
+          make reindex
+      
+          # OPTIONAL: run cron:run    
+          make cron
+      
           # OPTIONAL: overview, e.g.: commerce version, php, xdebug, etc.
           make project-meta  
           ```
@@ -305,7 +311,13 @@ if you are going to use fresh commerce ``EE/CE`` then the flow is the following:
  # or to production
  make mode-production  
  
- # use "make mode-show" command to see current mode  
+ # use "make mode-show" command to see current mode
+   
+ # run indeser:reindex    
+ make reindex
+      
+ # OPTIONAL: run cron:run    
+ make cron         
       
  # OPTIONAL: overview, e.g.: commerce version, php, xdebug, etc.
  make project-meta
@@ -492,7 +504,7 @@ Once the containers are running, you can access the various parts of the environ
 |:-------------------------|:------------------------------------|:-------------------------------------------------------------------------------------------------------------------------------------------------------|
 | **Monolith Frontend**    | https://your-domain.localhost/      | Default Adobe Commerce storefront                                                                                                                      |
 | **Adobe Commerce Admin** | https://your-domain.localhost/admin | Use your custom admin url                                                                                                                              |
-| **Vue Storefront**       | https://your-domain:3000/           | Default Vue storefront<br/> **NOTE:** do not use `0.0.0.0:3000`<br/>or any `IP` provided by the `builder`<br/>See [this](#vsf-cors-errors) for details |
+| **Vue Storefront**       | http://your-domain:3000/            | Default Vue storefront<br/> **NOTE:** do not use `0.0.0.0:3000`<br/>or any `IP` provided by the `builder`<br/>See [this](#vsf-cors-errors) for details |
 | **PWA Studio**           | http://0.0.0.0:3000/                | Default PWA storefront                                                                                                                                 |
 
 
