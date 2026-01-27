@@ -302,7 +302,7 @@ if you are going to use fresh commerce ``EE/CE`` then the flow is the following:
  # commerce edition and version 
  make setup-install
  
- # OPTIONALLY: set up sample
+ # OPTIONALLY: set up sample data
  make sample-data
  
  # change commerce mode to developer  
