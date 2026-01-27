@@ -81,7 +81,10 @@ This configuration **tunnels** `PHPStorm` with the `php-fpm` inside container an
 > The `Server Name` **must** match your `domain` name specified for `commerce instance` during environment configuration
 > (e.g., mage-dev.localhost).
 > 
-> Check **Setup Steps** to see where is located and how it has to look like.
+> Run this command to get it:
+> ```bash 
+> make project-meta
+>```
 
 <details>
 <summary>👉 Setup Steps</summary>
