@@ -21,7 +21,7 @@ cmd_container_ip_by_name() {
   fi
 
   # strip the 'devstack_' prefix if the user provided it
-  name="${raw_name#${project_prefix}_}"
+  name="${raw_name#"${project_prefix}_"}"
 
   # ensure the service exists and its container is running
   check_service_status "$name" || return 1
