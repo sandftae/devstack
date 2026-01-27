@@ -41,7 +41,8 @@
 | `make rebuild-all`       | rebuild all images that currently compose file contains                                                      |
 | `make rebuild-image`     | rebuild a docker image based on name given. USAGE: make rebuild-image name=image_name                        |
 | `make logs`              | view logs. USAGE: make logs [service=service-name] <-- for service logs or just [make logs] for all services |
-| `make project-meta`      | view project meta data like php meta, node meta, composer meta, commerce meta, and etc                       |
+| `make container-ip`      | get container ip by service name or container name. USAGE: make container-ip name=container_name             |
+| `make base-network-ip`   | get base network ip                                                                                          |
 
 ---
 
