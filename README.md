@@ -500,12 +500,13 @@ Use these commands for daily development tasks like importing dumps, creating ba
 Once the containers are running, you can access the various parts of the environment using the CLI command URLs below.
 
 ### Storefronts & Backend
-| Service                  | Local URL                           | Note                                                                                                                                                   |
-|:-------------------------|:------------------------------------|:-------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **Monolith Frontend**    | https://your-domain.localhost/      | Default Adobe Commerce storefront                                                                                                                      |
-| **Adobe Commerce Admin** | https://your-domain.localhost/admin | Use your custom admin url                                                                                                                              |
-| **Vue Storefront**       | http://your-domain:3000/            | Default Vue storefront<br/> **NOTE:** do not use `0.0.0.0:3000`<br/>or any `IP` provided by the `builder`<br/>See [this](#vsf-cors-errors) for details |
-| **PWA Studio**           | http://0.0.0.0:3000/                | Default PWA storefront                                                                                                                                 |
+| Service                  | Local URL                           | Note                                                                          |
+|:-------------------------|:------------------------------------|:------------------------------------------------------------------------------|
+| **Monolith Frontend**    | https://your-domain.localhost/      | Default Adobe Commerce storefront                                             |
+| **Adobe Commerce Admin** | https://your-domain.localhost/admin | Use your custom admin url                                                     |
+| **Vue Storefront**       | http://your-domain.localhost:3000/  | Vue storefront<br/> **NOTE:** see [this](#vsf-cors-errors) for `cors` details |
+| **PWA Studio**           | http://0.0.0.0:3000/                | PWA storefront                                                                |
+| **Hyva**                 | http://your-domain.localhost/       | **Did not tested yet**                                                        |
 
 
 ---
@@ -761,12 +762,18 @@ Examples:
  ```bash
   # No CORS errors
   mage-env.localhost:3000/
-  <domain>:3000/
+  <your-domain>:3000/
     
   # Yes CORS errors
   0.0.0.0:3000/
   000.0.0.00:3000/
 ```   
+
+
+### The engine "node" is incompatible with ...
+
+This error occurs when deploying commerce `modules` that `require` a node version different from the one in the container.
+To **change** the node version, see [this](#node-version-upgradedowngrade) tutorial.
 
 ---
 
