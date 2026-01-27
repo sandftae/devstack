@@ -762,7 +762,7 @@ Examples:
  ```bash
   # No CORS errors
   mage-env.localhost:3000/
-  <your-domain>:3000/
+  <your-domain>.localhost:3000/
     
   # Yes CORS errors
   0.0.0.0:3000/
