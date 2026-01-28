@@ -57,7 +57,6 @@ cmd_import_database() {
 
   printf " ->Importing may %btake a while%b...\n" "${C_BOLD}" "${C_NC}"
 
-
   # stream the file into the container
   if _docker_compose exec -T "$db_service" sh -c " MYSQL_PWD='$DB_PASSWORD' mysql -u '$DB_USER' '$db_name' < /import/$file_name" ; then
     printf "\n%b%b✔%b Import completed %bsuccessfully%b!\n\n" "${COLOR_GREEN}" "${C_BOLD}" "${C_NC}" "${C_BOLD}" "${C_NC}"
