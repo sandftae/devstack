@@ -1,6 +1,9 @@
 * linguist-detectable=false
 
-*.sh linguist-detectable=true
-Makefile linguist-detectable=true
+**/*.sh linguist-detectable=true
+**/*.sh linguist-language=Shell
 
+*.sh linguist-detectable=true
 *.sh linguist-language=Shell
+
+Makefile linguist-detectable=true
