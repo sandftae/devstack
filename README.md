@@ -214,57 +214,63 @@ The **DEVSTACK** provides a `development environment`, but you need to fill in t
 
 3. **Backend**
 
-    - `clone project` repository **into** `src/php-app` folder directly
-        ```bash
-        # go into 'php-app' source folder
-       	cd src/php-app
+> [!IMPORTANT]
+> 
+> The project's `PHP` source code **should always be cloned** directly into the `php-app` folder, not into a sub-folder.
+
+
+- `clone project` repository **into** `src/php-app` folder **directly**
+    ```bash
+    # go into 'php-app' source folder
+       cd src/php-app
        	
-       	# use './' or '.' to force git to clone into the 'php-app' folder directly
-	    git clone path-repository.git .
-       ```
+       # use './' or '.' to force git to clone into the 'php-app' folder directly
+    git clone path-repository.git .
+   ```
    
-    - run the installation command to deploy the `Adobe Commerce` instance locally
-        ```bash
-          # run these commands outside of the container, at the Makefile level
-          make composer-install
-       
-          # it configures AC, admin, populate the database
-          make setup-install
-        
-          # change commerce mode to developer  
-          make mode-developer
-       
-          # or to production
-          make mode-production  
-          
-          # use "make mode-show" command to see current mode  
+- run the installation command to deploy the `Adobe Commerce` instance locally
+    ```bash
+      # run these commands outside of the container, at the Makefile level
+      make composer-install
+   
+      # it configures AC, admin, populate the database
+      make setup-install
+    
+      # change commerce mode to developer  
+      make mode-developer
+   
+      # or to production
+      make mode-production  
       
-          # run indeser:reindex    
-          make reindex
-      
-          # OPTIONAL: run cron:run    
-          make cron
-      
-          # OPTIONAL: overview, e.g.: commerce version, php, xdebug, etc.
-          make project-meta  
-          ```
-    - default admin/pass is ``admin/admin12345``, run this command to set your own
-       ```bash
-          make create-admin
-       ```
+      # use "make mode-show" command to see current mode  
+  
+      # run indexer:reindex    
+      make reindex
+  
+      # OPTIONAL: run cron:run    
+      make cron
+  
+      # OPTIONAL: overview, e.g.: commerce version, php, xdebug, etc.
+      make project-meta  
+      ```
+- default admin/pass is ``admin/admin12345``, run this command to set your own
+   ```bash
+      make create-admin
+   ```
 
 4. **Frontend (default / monolith)**
-    - default Adobe Commerce frontend is located in the ``php-app`` folder
+    - default `Adobe Commerce` frontend is located in the ``php-app`` folder
 
 
 5. **Frontend (headless)**
 
-   > [!IMPORTANT]
-   > 
-   > Please refer to [this](#vsf-cors-errors) guide to **resolve** the `CORS error` in `VSF` and [this](#accessing-the-devstack) 
-   > section to get the `URL` used for `headless commerce` and `admin area`.
+> [!IMPORTANT]
+> 
+> Please refer to [this](#vsf-cors-errors) guide to **resolve** the `CORS error` in `VSF` and [this](#accessing-the-devstack) 
+> section to get the `URL` used for `headless commerce` and `admin area`.
+
+   - `clone project` repository **into** `src/web-app` folder
    
-    - `clone project` repository **into** `src/web-app` folder
         ```bash
         # go into 'web-app' source folder
         cd src/web-app
@@ -273,54 +279,79 @@ The **DEVSTACK** provides a `development environment`, but you need to fill in t
         git clone path-repository.git .
        ```
    
-    - go into `web-app` container and run ``npm/yarn deploy commands``
-         ```bash
-        # go into 'web-app' container
-        make web-app
+     - go into `web-app` container
+      ```bash
+          # go into 'web-app' container
+          make web-app
         
-        # run install/build commands
-        yarn install && yarn dev
-       ```
+          # run yarn/npm install/build/etc commands
+          yarn install && yarn dev
+      ```
 
 ---
 
 ### Fresh Adobe Commerce Project Installation
-if you are going to use fresh commerce ``EE/CE`` then the flow is the following:
+if you are going to use fresh commerce ``EE/CE`` then the flow is the following.
 
-```bash
- # up docker environment
- make up
- 
- # for CE version -> specified during configuration version of the CE will be used
- make create-ce
- 
- # for EE version -> specified during configuration version of the EE will be used
- make create-ee
- 
- # set the database (default database or your custom-named one) in the alignment with
- # commerce edition and version 
- make setup-install
- 
- # OPTIONALLY: set up sample data
- make sample-data
- 
- # change commerce mode to developer  
- make mode-developer
+1. **Backend**
+    ```bash
+     # up docker environment
+     make up
+     
+     # for CE version -> specified during configuration version of the CE will be used
+     make create-ce
+     
+     # for EE version -> specified during configuration version of the EE will be used
+     make create-ee
+     
+     # set the database (default database or your custom-named one) in the alignment with
+     # commerce edition and version 
+     make setup-install
+     
+     # OPTIONALLY: set up sample data
+     make sample-data
+     
+     # change commerce mode to developer  
+     make mode-developer
+           
+     # or to production
+     make mode-production  
+     
+     # use "make mode-show" command to see current mode
        
- # or to production
- make mode-production  
- 
- # use "make mode-show" command to see current mode
+     # run indexer:reindex    
+     make reindex
+          
+     # OPTIONAL: run cron:run    
+     make cron         
+          
+     # OPTIONAL: overview, e.g.: commerce version, php, xdebug, etc.
+     make project-meta
+    ```` 
    
- # run indeser:reindex    
- make reindex
-      
- # OPTIONAL: run cron:run    
- make cron         
-      
- # OPTIONAL: overview, e.g.: commerce version, php, xdebug, etc.
- make project-meta
-````
+3.  **Frontend (default / monolith)**
+    - default `Adobe Commerce` frontend is located in the ``php-app`` folder
+    
+
+4. **Frontend (headless)**
+
+> [!IMPORTANT]
+>
+> Please refer to [this](#vsf-cors-errors) guide to **resolve** the `CORS error` in `VSF` and [this](#accessing-the-devstack)
+> section to get the `URL` used for `headless commerce` and `admin area`.
+
+   - go into `web-app` container
+     ```bash
+       # go into 'web-app' container
+       make web-app
+
+       # you can create any fancy themes,
+       # pwa here is just an example
+       yarn create @magento/pwa
+
+       # run yarn/npm install/build/etc commands
+       yarn install && yarn dev
+     ```
 
 --- 
 
