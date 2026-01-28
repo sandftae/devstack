@@ -1,0 +1,45 @@
+#!/bin/bash
+
+# ============================================================
+# COMMAND/UTILS/UI/THEME/ETC: manage
+# DESCRIPTION: Entrypoint that resolves paths and passes
+#              arguments to the corresponding command engine
+# ============================================================
+
+# fix for Windows that helps to prevent path conversion
+# when calling docker from git bash
+if [[ "$OSTYPE" == "msys" || "$OSTYPE" == "cygwin" ]]; then
+    export MSYS_NO_PATHCONV=1
+fi
+
+# determine the absolute path to the directory where this script is locates
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# determine project folder
+PROJECT_DIR="$(cd "$SCRIPT_DIR/../../.." && pwd)"
+
+ACTION="${1:-list}"
+
+# export these vars in to the current context
+export SCRIPT_DIR
+export PROJECT_DIR
+
+# determine code folder path
+CORE_DIR="$SCRIPT_DIR/core"
+
+# load the core system
+source "$CORE_DIR/bootstrap.sh"
+source "$CORE_DIR/engine.sh"
+source "$CORE_DIR/dispatch/dispatch_observers.sh"
+
+# run bootstrap
+bootstrap "$SCRIPT_DIR" "$PROJECT_DIR"
+
+# check env and files are fully ready
+gatekeeper "$ACTION" || { [ -t 1 ] && exit 0 || exit 1; }
+
+# dispatch observers
+dispatch_observers "$ACTION" "${@:2}" || exit 0
+
+# call engine
+engine "$ACTION" "${@:2}"

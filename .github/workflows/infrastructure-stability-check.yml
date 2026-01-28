@@ -1,0 +1,99 @@
+name: Infrastructure Stability
+
+on:
+  pull_request:
+    branches: [main, development]
+  push:
+    branches: [main, development]
+  # manual trigger enabled
+  workflow_dispatch:
+
+jobs:
+  smoke-test:
+    name: Infrastructure Smoke Test
+    runs-on: ubuntu-latest
+    env:
+      # set terminal type to avoid 'tput: No value for $TERM' warnings
+      TERM: xterm
+      # enable Docker BuildKit for better performance and caching
+      DOCKER_BUILDKIT: 1
+      COMPOSE_DOCKER_CLI_BUILD: 1
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        # buildx is required for advanced caching features
+        uses: docker/setup-buildx-action@v3
+
+      - name: Generate Configurations
+        run: |
+          # generate environment files and docker-compose.yml
+          docker compose -f ./env/compose.env-build.yml run --rm magma bash ./scripts/smoke/smoke
+
+      - name: Verify Generated Files
+        run: |
+          # ensure that critical configuration files were created
+          FILES=("env/.commerce.env" "env/.docker.env" "env/compose.yml")
+          for file in "${FILES[@]}"; do
+            if [ ! -f "$file" ]; then
+              echo "Error: $file was not generated!"
+              exit 1
+            fi
+          done
+          echo "Verification successful: All files exist."
+
+      - name: Start Infrastructure
+        run: |
+          # start all services defined in the generated compose file
+          make up
+          echo "Waiting for containers to reach 'running' state..."
+          # list of services to monitor
+          SERVICES=(
+            "nginx" "ssl-reverse-proxy" "php-app" "web-app"
+            "mysql" "mailpit" "varnish" "opensearch"
+            "valkey" "sftp" "rabbitmq" "phpmyadmin" "logs"
+          )
+          # polling loop: 24 iterations * 5 seconds = 120 seconds timeout
+          for i in {1..24}; do
+            ALL_RUNNING=true
+            for svc in "${SERVICES[@]}"; do
+              if [ -z "$(docker ps --filter "name=$svc" --filter "status=running" -q)" ]; then
+                ALL_RUNNING=false
+                break
+              fi
+            done
+            if [ "$ALL_RUNNING" = true ]; then
+              echo "Success: all containers are up and running!"
+              docker ps
+              break
+            fi
+            echo "Still waiting... ($((i*5))s / 120s)"
+            sleep 5
+            if [ $i -eq 24 ]; then
+              echo "Error: timeout reached, some containers failed to start."
+              docker ps -a
+              exit 1
+            fi
+          done
+
+      - name: HTTP & SSL Health Check
+        run: |
+          # verify that the web server is reachable via HTTPS
+          echo "Performing HTTPS reachability check..."
+          if curl -v -k --fail --retry 10 --retry-delay 10 \
+               --resolve mage-dev.localhost:443:127.0.0.1 \
+               https://mage-dev.localhost/devstack/ > /dev/null 2>&1; then
+            echo "Reachability check passed!"
+          else
+            echo "Reachability check failed!"
+            exit 1
+          fi
+
+      - name: Cleanup on Failure
+        # collect logs if any of the previous steps failed
+        if: failure()
+        run: |
+          echo "Infrastructure failed. Dumping container logs..."
+          docker compose -f env/compose.yml logs --tail=100

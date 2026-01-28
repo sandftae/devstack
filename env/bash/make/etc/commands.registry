@@ -1,0 +1,454 @@
+#!/bin/bash
+# shellcheck disable=SC2034
+# ============================================================
+# COMMAND REGISTRY
+# ============================================================
+
+# --- Group: list command ---
+cmd_list_name="list | ls"
+cmd_list_desc="list all command"
+cmd_list_usage="make list
+               make ls\n"
+cmd_list_group="commands"
+
+# --- Group: docker container related commands ---
+cmd_up_name="up"
+cmd_up_desc="up docker environment"
+cmd_up_usage="make up"
+cmd_up_group="docker container management"
+
+cmd_down_name="down"
+cmd_down_desc="down docker environment"
+cmd_down_usage="make down
+               make stop"
+cmd_down_group="docker container management"
+
+cmd_stop_name="stop"
+cmd_stop_desc="the same as down"
+cmd_stop_usage="make stop"
+cmd_stop_group="docker container management"
+
+cmd_restart_name="restart"
+cmd_restart_desc="full restart of the docker environment"
+cmd_restart_usage="make restart"
+cmd_restart_group="docker container management"
+
+cmd_php_app_name="php-app"
+cmd_php_app_desc="execute php-app container interactively [-it]"
+cmd_php_app_usage="make php-app"
+cmd_php_app_group="docker container management"
+
+cmd_web_app_name="web-app | node-app"
+cmd_web_app_desc="execute web-app[node-app] container interactively [-it]"
+cmd_web_app_usage="make web-app
+               make node-app"
+cmd_web_app_group="docker container management"
+
+cmd_rebuild_all_name="rebuild-all"
+cmd_rebuild_all_desc="rebuild all images that currently compose file contains"
+cmd_rebuild_all_usage="make rebuild-all"
+cmd_rebuild_all_group="docker container management"
+
+cmd_rebuild_image_name="rebuild-image"
+cmd_rebuild_image_desc="rebuild a docker image based on name given"
+cmd_rebuild_image_usage="make rebuild-image name=<service_name>"
+cmd_rebuild_image_group="docker container management"
+
+cmd_chmod_sock_name="chmod-sock"
+cmd_chmod_sock_desc="sudo chmod 666 on /var/run/docker.sock"
+cmd_chmod_sock_usage="make chmod-sock"
+cmd_chmod_sock_group="docker container management"
+
+cmd_chmod_src_name="chmod-src"
+cmd_chmod_src_desc="sudo chmod 777 on ./src folder"
+cmd_chmod_src_usage="make chmod-src"
+cmd_chmod_src_group="docker container management"
+
+cmd_chmod_project_name="chmod-project"
+cmd_chmod_project_desc="chmod 777 on src <project-folder> recursively"
+cmd_chmod_project_usage="make chmod-project"
+cmd_chmod_project_group="docker container management"
+
+cmd_process_status_output_name="psa"
+cmd_process_status_output_desc="run docker ps -a | run docker ps"
+cmd_process_status_output_usage="make psa
+               make ps"
+cmd_process_status_output_group="docker container management"
+
+cmd_top_name="top"
+cmd_top_desc="show docker containers metrics"
+cmd_top_usage="make top"
+cmd_top_group="docker container management"
+cmd_top_note="use 'make metrics' if you wants to have extended visual static representation"
+
+cmd_stats_name="stats"
+cmd_stats_desc="show real-time resource usage for containers"
+cmd_stats_usage="make stats"
+cmd_stats_group="docker container management"
+cmd_stats_note="use 'make metrics' if you wants to have extended visual static representation"
+
+cmd_metrics_name="metrics"
+cmd_metrics_desc="show extended docker containers metrics with visualisations and graphics"
+cmd_metrics_usage="make metrics"
+cmd_metrics_group="docker container management"
+
+cmd_remove_containers_name="remove-containers"
+cmd_remove_containers_desc="stop and remove all docker containers"
+cmd_remove_containers_usage="make remove-containers"
+cmd_remove_containers_group="docker container management"
+cmd_remove_containers_note="containers not related to the project will not be changed"
+
+cmd_remove_images_name="remove-images"
+cmd_remove_images_desc="remove all PROJECT images"
+cmd_remove_images_usage="make remove-images"
+cmd_remove_images_group="docker container management"
+cmd_remove_images_note="images not related to the project will not be changed"
+
+cmd_remove_volumes_name="remove-volumes"
+cmd_remove_volumes_desc="remove all PROJECT volumes"
+cmd_remove_volumes_usage="make remove-volumes"
+cmd_remove_volumes_group="docker container management"
+cmd_remove_volumes_note="volumes not related to the project will not be changed"
+
+cmd_remove_networks_name="remove-networks"
+cmd_remove_networks_desc="remove all PROJECT volumes"
+cmd_remove_networks_usage="make remove-networks"
+cmd_remove_networks_group="docker container management"
+cmd_remove_networks_note="networks not related to the project will not be changed"
+
+cmd_container_ip_by_name_name="container-ip"
+cmd_container_ip_by_name_desc="view container ip address by name"
+cmd_container_ip_by_name_usage="make container-ip name=<container_name>"
+cmd_container_ip_by_name_group="docker container management"
+
+cmd_base_network_ip_name="base-network-ip"
+cmd_base_network_ip_desc="view base network ip"
+cmd_base_network_ip_usage="make base-network-ip"
+cmd_base_network_ip_group="docker container management"
+
+# --- Group: adobe commerce daily manipulation commands ---
+cmd_cc_name="cc"
+cmd_cc_desc="run bin/magento cache:clean command"
+cmd_cc_usage="make cc"
+cmd_cc_group="adobe commerce daily-use commands"
+
+cmd_cf_name="cf"
+cmd_cf_desc="run bin/magento cache:flush command"
+cmd_cf_usage="make cf"
+cmd_cf_group="adobe commerce daily-use commands"
+
+cmd_setup_upgrade_name="seup"
+cmd_setup_upgrade_desc="run bin/magento setup:upgrade command"
+cmd_setup_upgrade_usage="make seup"
+cmd_setup_upgrade_group="adobe commerce daily-use commands"
+
+cmd_se_di_co_name="se_di_co"
+cmd_se_di_co_desc="run bin/magento setup:di:compile command"
+cmd_se_di_co_usage="make se_di_co"
+cmd_se_di_co_group="adobe commerce daily-use commands"
+
+cmd_rm_generated_files_name="rm"
+cmd_rm_generated_files_desc="remove folders: generated, cache, page_cache, pub/static, and pub/view_preprocessed/"
+cmd_rm_generated_files_usage="make rm"
+cmd_rm_generated_files_group="adobe commerce daily-use commands"
+
+cmd_cron_run_name="cron"
+cmd_cron_run_desc="run run bin/magento cron:run command"
+cmd_cron_run_usage="make cron"
+cmd_cron_run_group="adobe commerce daily-use commands"
+
+cmd_indexer_reindex_name="reindex"
+cmd_indexer_reindex_desc="run run bin/magento idexer:reindex command"
+cmd_indexer_reindex_usage="make reindex"
+cmd_indexer_reindex_group="adobe commerce daily-use commands"
+
+cmd_is_name="is"
+cmd_is_desc="run run bin/magento idexer:status command"
+cmd_is_usage="make is"
+cmd_is_group="adobe commerce daily-use commands"
+
+cmd_mode_production_name="mode-production"
+cmd_mode_production_desc="set adobe commerce instance to production and rebuild NGINX image"
+cmd_mode_production_usage="make mode-production"
+cmd_mode_production_group="adobe commerce daily-use commands"
+
+cmd_mode_developer_name="mode-developer"
+cmd_mode_developer_desc="set adobe commerce instance to developer and rebuild NGINX image"
+cmd_mode_developer_usage="make mode-developer"
+cmd_mode_developer_group="adobe commerce daily-use commands"
+
+cmd_mode_show_name="mode-show"
+cmd_mode_show_desc="run bin/magento deploy:mode:show commant"
+cmd_mode_show_usage="make mode-show"
+cmd_mode_show_group="adobe commerce daily-use commands"
+
+cmd_static_deploy_name="static-deploy"
+cmd_static_deploy_desc="run setup:static-content:deploy -f commands
+               [with no parallel, 2 parallel, or 4 parallel] \n"
+cmd_static_deploy_usage="make static-deploy
+               make static-deploy-parallel-2
+               make static-deploy-parallel-4"
+cmd_static_deploy_group="adobe commerce daily-use commands"
+cmd_static_deploy_note="check adobe commerce docks to get more info"
+
+cmd_static_deploy_parallel_2_name="static-deploy-parallel-2"
+cmd_static_deploy_parallel_2_desc="run setup:static-content:deploy -f -j 2 commands [2 parallel]"
+cmd_static_deploy_parallel_2_usage="make static-deploy-parallel-2"
+cmd_static_deploy_parallel_2_group="adobe commerce daily-use commands"
+
+cmd_static_deploy_parallel_4_name="static-deploy-parallel-4"
+cmd_static_deploy_parallel_4_desc="run setup:static-content:deploy -f -j 4 commands [4 parallel]"
+cmd_static_deploy_parallel_4_usage="make static-deploy-parallel-4"
+cmd_static_deploy_parallel_4_group="adobe commerce daily-use commands"
+
+cmd_sample_data_name="sample-data"
+cmd_sample_data_desc="run bin/magento sampledata:deploy command"
+cmd_sample_data_usage="make sample-data"
+cmd_sample_data_group="adobe commerce daily-use commands"
+
+cmd_phpcs_name="phpcs | cs"
+cmd_phpcs_desc='run vendor/bin/phpcs ... to validate code style.
+                - make phpcs modules="Vendor1 Vendor2/Module5 ..." report=true|false
+                - make phpcs (in this case whole "app/code" will be analyzed)\n'
+cmd_phpcs_usage="make phpcs
+               make cs"
+cmd_phpcs_group="code-style commands"
+cmd_phpcs_note="If 'report' is true reports will be dumped into
+               report folder of the <project-root>. Default
+               'report' is false"
+
+cmd_phpcbf_name="phpcbf | cbf"
+cmd_phpcbf_desc='run vendor/bin/phpcbf ... to fix code styles.
+                - make phpcbf modules="Vendor1 Vendor2/Module5 ..."
+                - make phpcbf (the whole "app/code" folder will be analyzed)\n'
+cmd_phpcbf_usage="make phpcbf
+               make cbf"
+cmd_phpcbf_group="code-style commands"
+cmd_phpcbf_note="PSR12 standard is used by default. Set the
+               'PHP_CS_STANDARD' var to use your own."
+
+cmd_eslint_name="eslint | lint"
+cmd_eslint_desc='run npx eslint ... .
+                - make eslint modules="component/folder1 ..."
+                - make eslint (the whole "web-app" folder will be analyzed)\n'
+cmd_eslint_usage="make eslint
+               make lint"
+cmd_eslint_group="code-style commands"
+
+cmd_logs_name="logs"
+cmd_logs_desc="view all logs or service log if the service name is specifies"
+cmd_logs_usage="make logs
+               make logs service=service_name"
+cmd_logs_group="adobe commerce daily-use commands"
+
+cmd_project_meta_name="project-meta"
+cmd_project_meta_desc="view project meta data like php meta, node meta,
+               composer meta, commerce meta, and etc. \n"
+cmd_project_meta_usage="make project-meta"
+cmd_project_meta_group="adobe commerce daily-use commands"
+
+# --- Group: php-app manipulation commands ---
+cmd_xdebug_toggle_name="xdebug-[enable/disable]"
+cmd_xdebug_toggle_desc="enable/disable xdebug and rebuild image"
+cmd_xdebug_toggle_usage="make xdebug-enable === make xde
+               make xdebug-disable === make xdd"
+cmd_xdebug_toggle_group="php-app container manipulation commands"
+
+cmd_xdebug_enable_name="xdebug-disable"
+cmd_xdebug_enable_desc="disable xdebug and rebuild image"
+cmd_xdebug_enable_usage="make xdebug-disable"
+cmd_xdebug_enable_group="php-app container manipulation commands"
+
+cmd_xdd_name="xdd"
+cmd_xdd_desc="the same as xdebug-disable: disable xdebug and rebuild image"
+cmd_xdd_usage="make xdd"
+cmd_xdd_group="php-app container manipulation commands"
+
+cmd_xde_name="xde"
+cmd_xde_desc="the same as xdebug-enable: enable xdebug and rebuild image"
+cmd_xde_usage="make xde"
+cmd_xde_group="php-app container manipulation commands"
+
+cmd_php_set_name="php-set"
+cmd_php_set_desc="change image container php version"
+cmd_php_set_usage="make php-set version=x.x"
+cmd_php_set_group="php-app container manipulation commands"
+cmd_php_set_note="e.g., version=8.3 [only ${C_BOLD}major LTS${C_NC} versions are allowed]"
+
+cmd_php_version_name="php-version | php-meta"
+cmd_php_version_desc="display php-app container metadata"
+cmd_php_version_usage="make php-version
+               php-meta"
+cmd_php_version_group="php-app container manipulation commands"
+
+# --- Group: web-app manipulation commands ---
+cmd_node_set_name="node-set"
+cmd_node_set_desc="change image container php version"
+cmd_node_set_usage="make node-set version=xx.x"
+cmd_node_set_group="web-app container manipulation commands"
+cmd_node_set_note="${C_BOLD}xx.x${C_NC} is a major version [e.g, make node-set version=22.00]"
+
+cmd_node_version_name="node-version | node-meta"
+cmd_node_version_desc="display cweb-app[node-app] container metadata"
+cmd_node_version_usage="make node-version
+               node-meta"
+cmd_node_version_group="web-app container manipulation commands"
+
+# --- Group: database management commands ---
+cmd_create_database_name="create-database"
+cmd_create_database_desc="create database"
+cmd_create_database_usage="make create-database db=dbname"
+cmd_create_database_group="database management"
+
+cmd_import_database_name="import-database"
+cmd_import_database_desc="import dump into existing database where
+               'db' is db name, and 'file' is a file located
+               in the './env/dumps/import' folder\n"
+cmd_import_database_usage="make import-database db=dbname file=filename.sql"
+cmd_import_database_group="database management"
+
+cmd_dump_database_name="dump-database | export-database"
+cmd_dump_database_desc="dump/export database to a zipped file and put
+               the file into './env/dumps/export' folder\n"
+cmd_dump_database_usage="make dump-database db=dbname
+               make export-database db=dbname"
+cmd_dump_database_group="database management"
+
+cmd_export_database_name="export-database"
+cmd_export_database_desc="the same as the 'make dump-database' command: export database to a zipped file and put the file into './env/dumps/export' folder"
+cmd_export_database_usage="make export-database db=dbname"
+cmd_export_database_group="database management"
+
+cmd_drop_database_name="drop-database"
+cmd_drop_database_desc="drop database ba name given"
+cmd_drop_database_usage="make drop-database db=dbname"
+cmd_drop_database_group="database management"
+
+cmd_restore_database_name="restore-database"
+cmd_restore_database_desc="restore a database dump from './env/dumps/export' folder"
+cmd_restore_database_usage="make restore-database file=zip_filename.zip db=db_name"
+cmd_restore_database_group="database management"
+
+cmd_enter_database_name="enter-database"
+cmd_enter_database_desc="get into mysql located inside database container"
+cmd_enter_database_usage="make enter-database"
+cmd_enter_database_group="database management"
+
+cmd_list_database_name="list-database"
+cmd_list_database_desc="list databases created by the client"
+cmd_list_database_usage="make list-database"
+cmd_list_database_group="database management"
+
+cmd_switch_database_name="switch-database"
+cmd_switch_database_desc="Updates ${C_BOLD}DB_NAME${C_NC}${COLOR_CYAN} var in the ${C_BOLD}.commerce.env${C_NC}${COLOR_CYAN} file"
+cmd_switch_database_usage="make switch-database db=db_name"
+cmd_switch_database_group="database management"
+cmd_switch_database_note="This just changes the values, but you will still
+               need to run any other commands related to the
+               database and project management"
+
+# --- Group: commerce project setup commands ---
+cmd_commerce_version_name="commerce-version | commerce-meta"
+cmd_commerce_version_desc="provides current version and edition version"
+cmd_commerce_version_usage="make commerce-version
+               commerce-meta"
+cmd_commerce_version_group="commerce management"
+
+cmd_commerce_create_ce_name="create-ce"
+cmd_commerce_create_ce_desc="run magento 'composer create-project...' command
+               for specified community edition (CE) commerce version\n"
+cmd_commerce_create_ce_usage="make create-ce"
+cmd_commerce_create_ce_group="commerce management"
+cmd_commerce_create_ce_note="to install adobe commerce, you will need to use
+               your credentials"
+
+cmd_commerce_create_ee_name="create-ee"
+cmd_commerce_create_ee_desc="run magento 'composer create-project...' command
+               for specified enterprise edition (EE) commerce version\n"
+cmd_commerce_create_ee_usage="make create-ee"
+cmd_commerce_create_ee_group="commerce management"
+cmd_commerce_create_ee_note="to install adobe commerce, you will need to use
+               your credentials"
+
+cmd_commerce_setup_install_name="setup-install"
+cmd_commerce_setup_install_desc="run bin/magento setup:install command by using
+               data specified in .commerce.env\n"
+cmd_commerce_setup_install_usage="make setup-install"
+cmd_commerce_setup_install_group="commerce management"
+
+cmd_commerce_upgrade_name="upgrade-ee | upgrade-ce"
+cmd_commerce_upgrade_desc="upgrade commerce instance to version specified\n"
+cmd_commerce_upgrade_usage="make upgrade-ee version=x.x.x
+               upgrade-ce version=x.x.x"
+cmd_commerce_upgrade_group="commerce management"
+
+cmd_commerce_create_admin_name="create-admin"
+cmd_commerce_create_admin_desc="create new admin user or throws an error if exists"
+cmd_commerce_create_admin_usage="make create-admin"
+cmd_commerce_create_admin_group="commerce management"
+cmd_commerce_create_admin_note="default admin/admin112345"
+
+cmd_commerce_setup_opensearch_name="setup-opensearch-configs"
+cmd_commerce_setup_opensearch_desc="Setup OpenSearch configs into 'core_config_data' table"
+cmd_commerce_setup_opensearch_usage="make setup-opensearch-configs"
+cmd_commerce_setup_opensearch_group="commerce management"
+cmd_commerce_setup_opensearch_note="OpenSearch configs are setup during 'make setup-install' by default"
+
+# --- Group: composer management commands ---
+cmd_composer_name="composer-install | composer-update"
+cmd_composer_desc="run composer install/update"
+cmd_composer_usage="make composer-install
+               make composer-update"
+cmd_composer_group="composer"
+
+# --- Group: varnish management commands ---
+cmd_varnish_purge_name="varnish-purge"
+cmd_varnish_purge_desc="purge varnish"
+cmd_varnish_purge_usage="make varnish-purge"
+cmd_varnish_purge_group="varnish management"
+
+cmd_varnish_meta_name="varnish-meta"
+cmd_varnish_meta_desc="shows varnish meta data"
+cmd_varnish_meta_usage="make varnish-meta"
+cmd_varnish_meta_group="varnish management"
+
+cmd_varnish_disable_name="varnish-disable"
+cmd_varnish_disable_desc="the Varnish is RUNNING, and backend IS reachable,
+               but NO CACHES are sent back [the varnish is silenced].\n"
+cmd_varnish_disable_usage="make varnish-disable"
+cmd_varnish_disable_group="varnish management"
+cmd_varnish_disable_note="Used to detect and debug caching errors related
+               to sessions, headers, geoloc (e.g., Amasty GeoIp
+               extension), and etc. See README.md for details"
+
+cmd_varnish_enable_name="varnish-enable"
+cmd_varnish_enable_desc="the Varnish is RUNNING, and backend IS NOT reachable,
+               and CACHES are sent back [the varnish is unsilenced].\n"
+cmd_varnish_enable_usage="make varnish-enable "
+cmd_varnish_enable_group="varnish management"
+cmd_varnish_enable_note="Used to detect and debug caching errors related
+               to sessions, headers, geoloc (e.g., Amasty GeoIp
+               extension), and etc. See README.md for details"
+
+# --- Group: DEVSTACK environment builders ---
+cmd_magma_build_name="magma-build"
+cmd_magma_build_desc="up GUI to build/rebuild project specific docker environment"
+cmd_magma_build_usage="make magma-build"
+cmd_magma_build_group="devstack"
+
+cmd_open_devstack_name="devstack"
+cmd_open_devstack_desc="open the devstack dashboard in the browser"
+cmd_open_devstack_usage="make devstack"
+cmd_open_devstack_group="devstack"
+
+cmd_open_project_name="open-project"
+cmd_open_project_desc="open project in the browser"
+cmd_open_project_usage="make open-project"
+cmd_open_project_group="devstack"
+
+cmd_remove_env_name="avada-kedavra!"
+cmd_remove_env_desc="remove project environment"
+cmd_remove_env_usage="make avada-kedavra!"
+cmd_remove_env_group="devstack"
+cmd_remove_env_note="This will remove ONLY current project related
+               networks, images, containers, and volumes"
