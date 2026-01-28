@@ -221,11 +221,11 @@ The **DEVSTACK** provides a `development environment`, but you need to fill in t
 
 - `clone project` repository **into** `src/php-app` folder **directly**
     ```bash
-    # go into 'php-app' source folder
-       cd src/php-app
+      # go into 'php-app' source folder
+      cd src/php-app
        	
-       # use './' or '.' to force git to clone into the 'php-app' folder directly
-    git clone path-repository.git .
+      # use './' or '.' to force git to clone into the 'php-app' folder directly
+      git clone path-repository.git .
    ```
    
 - run the installation command to deploy the `Adobe Commerce` instance locally
@@ -272,20 +272,20 @@ The **DEVSTACK** provides a `development environment`, but you need to fill in t
    - `clone project` repository **into** `src/web-app` folder
    
         ```bash
-        # go into 'web-app' source folder
-        cd src/web-app
+         # go into 'web-app' source folder
+         cd src/web-app
         
-        # clone the repository
-        git clone path-repository.git .
+         # clone the repository
+         git clone path-repository.git .
        ```
    
      - go into `web-app` container
       ```bash
-          # go into 'web-app' container
-          make web-app
+       # go into 'web-app' container
+       make web-app
         
-          # run yarn/npm install/build/etc commands
-          yarn install && yarn dev
+       # run yarn/npm install/build/etc commands
+       yarn install && yarn dev
       ```
 
 ---
@@ -333,7 +333,7 @@ if you are going to use fresh commerce ``EE/CE`` then the flow is the following.
     - default `Adobe Commerce` frontend is located in the ``php-app`` folder
     
 
-4. **Frontend (headless)**
+3. **Frontend (headless)**
 
 > [!IMPORTANT]
 >
@@ -342,15 +342,15 @@ if you are going to use fresh commerce ``EE/CE`` then the flow is the following.
 
    - go into `web-app` container
      ```bash
-       # go into 'web-app' container
-       make web-app
+     # go into 'web-app' container
+     make web-app
 
-       # you can create any fancy themes,
-       # pwa here is just an example
-       yarn create @magento/pwa
+     # you can create any fancy themes,
+     # pwa here is just an example
+     yarn create @magento/pwa
 
-       # run yarn/npm install/build/etc commands
-       yarn install && yarn dev
+     # run yarn/npm install/build/etc commands
+     yarn install && yarn dev
      ```
 
 --- 
