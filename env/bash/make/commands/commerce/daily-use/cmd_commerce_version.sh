@@ -11,6 +11,7 @@ cmd_commerce_version() {
   local version_val
   local edition_name
   local composer_file
+  local db_name
 
   composer_file="${PROJECT_DIR}/src/php-app/composer.json"
 
@@ -21,6 +22,7 @@ cmd_commerce_version() {
   fi
 
   domain="${DOMAIN:-localhost [not specified]}"
+  db_name="${DB_NAME:-not specified}"
 
   # extract edition name
   line=$(grep '"name":' "$composer_file" | head -1)
@@ -40,6 +42,7 @@ cmd_commerce_version() {
   printf "  %b%-10s%b %s\n" "${COLOR_GREEN}" "edition:" "${C_NC}" "$edition_name"
   printf "  %b%-10s%b %s\n" "${COLOR_GREEN}" "version:" "${C_NC}" "$version_val"
   printf "  %b%-10s%b %s\n" "${COLOR_GREEN}" "domain:" "${C_NC}" "$domain"
+  printf "  %b%-10s%b %b%b%s%b\n" "${COLOR_GREEN}" "database:" "${C_NC}" "${COLOR_YELLOW}" "${C_BOLD}" "$db_name" "${C_NC}"
 
   return 0
 }
