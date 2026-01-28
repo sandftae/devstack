@@ -143,7 +143,7 @@ For a full breakdown of which PHP, MySQL, OpenSearch, etc. versions are paired w
     cd devstack
     
    # optional clean up: remove github metadata, etc.
-   rm -rf *.md docs LICENSE .editorconfig .git .gitignore .yamllint .github
+   rm -rf *.md docs LICENSE .editorconfig .git .gitignore .gitattributes .yamllint .github
     ```
 
 2. **Launch the DEVSTACK GUI**

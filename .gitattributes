@@ -1,0 +1,7 @@
+env/** linguist-vendored=false
+env/** linguist-documentation=false
+
+env/bash/make/* linguist-language=Shell
+env/bash/make/* linguist-detectable=true
+
+Makefile linguist-detectable=true
