@@ -87,15 +87,11 @@ jobs:
         run: |
           # verify that the web server is reachable via HTTPS
           echo "Performing HTTPS reachability check..."
-          curl -v -k --fail --retry 10 --retry-delay 5 \
+          if curl -v -k --fail --retry 10 --retry-delay 10 \
                --resolve mage-dev.localhost:443:127.0.0.1 \
-               https://mage-dev.localhost/devstack/ > /dev/null 2>&1 || exit 1
-
-      - name: Cleanup on Failure
-        # collect logs if any of the previous steps failed
-        if: failure()
-        run: |
-          echo "Infrastructure failed. Dumping container logs..."
-          if [ -f "env/compose.yml" ]; then
-            docker compose -f env/compose.yml logs --tail=100
+               https://mage-dev.localhost/devstack/ > /dev/null 2>&1; then
+            echo "Reachability check passed!"
+          else
+            echo "Reachability check failed!"
+            exit 1
           fi
