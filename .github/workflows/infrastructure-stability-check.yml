@@ -47,7 +47,7 @@ jobs:
       - name: Start Infrastructure
         run: |
           # add temp log folder
-          mkdir -p log/devstack && chmod -R 777 log
+          sudo mkdir -p log/devstack && sudo chmod -R 777 log
 
           # start all services defined in the generated compose file
           make up || {
