@@ -68,7 +68,12 @@ jobs:
           for i in {1..24}; do
             ALL_RUNNING=true
             for svc in "${SERVICES[@]}"; do
-              if [ -z "$(docker ps --filter "label=com.docker.compose.service=$svc" --filter "status=running" -q)" ]; then
+              MATCH=$(docker ps \
+                --filter "label=com.docker.compose.service=$svc" \
+                --filter "status=running" \
+                -q)
+
+              if [ -z "$MATCH" ]; then
                 echo "Wait: $svc is not running yet..."
                 ALL_RUNNING=false
                 break
