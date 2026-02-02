@@ -42,6 +42,8 @@ jobs:
 
       - name: Start Infrastructure
         run: |
+          sudo mkdir -p log/devstack
+          sudo chmod -R 777 log
           # start all services defined in the generated compose file
           make up || {
             echo "Critical failure during make up";
