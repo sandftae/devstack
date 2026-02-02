@@ -4,7 +4,8 @@
 ---
 
 <p align="center">
-  <img src="docs/github/media/devstack_logo.png" style="width:100%; height:330px; object-fit: cover; object-position: center;" alt="Logo">
+  <img src="docs/github/media/devstack-high-resolution-logo.png"
+        style="width:100%; object-fit: cover; object-position: center;" alt="Devstack Logo">
 </p>
 <p align="center">
   <img src="https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge" alt="License">
