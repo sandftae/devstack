@@ -46,7 +46,7 @@ jobs:
       - name: Start Infrastructure
         run: |
           # start all services defined in the generated compose file
-          make up || { echo "CRITICAL: 'make up' failed during execution"; exit 1; }
+          docker compose -f ./env/compose.yml up -d --build || { echo "Docker Build Failed"; exit 1; }
 
           echo "Waiting for containers to reach 'running' state..."
           # list of services to monitor
@@ -56,28 +56,26 @@ jobs:
             "valkey" "sftp" "rabbitmq" "phpmyadmin" "logs"
           )
 
-          # polling loop: 24 iterations * 5 seconds = 120 seconds timeout
           for i in {1..24}; do
             ALL_RUNNING=true
             for svc in "${SERVICES[@]}"; do
               STATUS=$(docker inspect --format='{{.State.Status}}' "$svc" 2>/dev/null || echo "missing")
-
               if [ "$STATUS" != "running" ]; then
-                echo "Wait: $svc is in state [$STATUS]"
+                echo "Wait: $svc is currently [$STATUS]..."
                 ALL_RUNNING=false
                 break
               fi
             done
+
             if [ "$ALL_RUNNING" = true ]; then
-              echo "Success: all containers are up and running!"
+              echo "Success: all containers are up!"
               docker ps
               exit 0
             fi
-
             sleep 5
           done
 
-          echo "Error: timeout reached, infrastructure is not stable."
+          echo "Error: timeout reached."
           docker ps -a
           exit 1
 
