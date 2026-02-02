@@ -68,19 +68,20 @@ jobs:
           for i in {1..24}; do
             ALL_RUNNING=true
             for svc in "${SERVICES[@]}"; do
-              STATUS=$(docker inspect --format='{{.State.Status}}' "$svc" 2>/dev/null || echo "missing")
-              if [ "$STATUS" != "running" ]; then
-                echo "Wait: $svc is [$STATUS]..."
+              if [ -z "$(docker ps --filter "label=com.docker.compose.service=$svc" --filter "status=running" -q)" ]; then
+                echo "Wait: $svc is not running yet..."
                 ALL_RUNNING=false
                 break
               fi
             done
 
             if [ "$ALL_RUNNING" = true ]; then
-              echo "Success: all containers are up!"
+              echo "Success: all containers are up and running!"
               docker ps
               exit 0
             fi
+
+            echo "Still waiting... ($((i*5))s / 120s)"
             sleep 5
           done
 
