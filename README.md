@@ -1,28 +1,36 @@
+
 # DEVSTACK
 
-![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)
-![Version](https://img.shields.io/badge/version-0.0.1--beta-orange.svg)
-![Environment: Local Only](https://img.shields.io/badge/Environment-local%20only-red.svg)
-![Adobe Commerce: >=2.4.5](https://img.shields.io/badge/Adobe%20Commerce-%E2%89%A52.4.5-red?logo=adobe&logoColor=white)
-![Build: Makefile](https://img.shields.io/badge/Build-Makefile-4EAA25?logo=gnuterminal&logoColor=white)
-![Docker: >20](https://img.shields.io/badge/Docker-%3E20-blue?logo=docker&logoColor=white)
-![Compose: V2](https://img.shields.io/badge/Compose-V2-blue?logo=docker&logoColor=white)
-![Bash Version](https://img.shields.io/badge/bash-%3E%3D_3.2-blue?logo=gnu-bash&logoColor=white)
-
 ---
 
-![Stability](https://github.com/sandftae/devstack/actions/workflows/infrastructure-stability-check.yml/badge.svg) 
-![Code Quality](https://github.com/sandftae/devstack/actions/workflows/code-quality.yml/badge.svg) ![Shell Check](https://github.com/sandftae/devstack/actions/workflows/shell-check.yml/badge.svg) 
-![Gitleaks](https://img.shields.io/badge/Security-Gitleaks-green) 
+<p align="center">
+  <img src="docs/github/media/devstack_logo.png" style="width:100%; height:330px; object-fit: cover; object-position: center;" alt="Logo">
+</p>
+<p align="center">
+  <img src="https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge" alt="License">
+  <img src="https://img.shields.io/badge/version-0.0.1--beta-orange.svg?style=for-the-badge" alt="Version">
+  <img src="https://img.shields.io/badge/Environment-local%20only-red.svg?style=for-the-badge" alt="Environment">
+  <img src="https://img.shields.io/badge/Adobe%20Commerce-%E2%89%A52.4.5-red?logo=adobe&logoColor=white&style=for-the-badge" alt="Adobe Commerce">
+</p>
+<p align="center">
+  <img src="https://img.shields.io/badge/Build-Makefile-4EAA25?logo=gnuterminal&logoColor=white&style=for-the-badge" alt="Build">
+  <img src="https://img.shields.io/badge/Docker-%3E20-blue?logo=docker&logoColor=white&style=for-the-badge" alt="Docker">
+  <img src="https://img.shields.io/badge/Compose-V2-blue?logo=docker&logoColor=white&style=for-the-badge" alt="Compose">
+  <img src="https://img.shields.io/badge/bash-%3E%3D_3.2-blue?logo=gnu-bash&logoColor=white&style=for-the-badge" alt="Bash">
+</p>
+<p align="center">
+  <img src="https://img.shields.io/github/actions/workflow/status/sandftae/devstack/infrastructure-stability-check.yml?style=for-the-badge&label=Stability" alt="Stability">
+  <img src="https://img.shields.io/github/actions/workflow/status/sandftae/devstack/code-quality.yml?style=for-the-badge&label=Code%20Quality" alt="Code Quality">
+  <img src="https://img.shields.io/github/actions/workflow/status/sandftae/devstack/shell-check.yml?style=for-the-badge&label=Shell%20Check" alt="Shell Check">
+  <img src="https://img.shields.io/badge/Security-Gitleaks-green?style=for-the-badge" alt="Gitleaks">
+</p>
 
-[//]: # (![Compatibility]&#40;https://img.shields.io/badge/macOS_Checked-yes-blue&#41;)
-
----
+--- 
 
 An interactive, GUI-driven orchestrator designed to build modular Adobe Commerce environments for monolithic or headless development.
 Easily toggle between optional services, monitor performance, and manage your entire local infrastructure from a single interface.
 
-<div align="left">
+<div align="center">
   <img src="docs/github/media/devstack_up.png" alt="Devstack Session"/>
 </div>
 
@@ -67,16 +75,20 @@ Detailed information about `network topology`, `service dependencies`, and `infr
 - [About](#about)
 - [Key Features](#key-features)
 - [Available Services](#available-services)
-- [Getting Started](#getting-started)
+- [**Getting Started**](#getting-started)
     - [Prerequisites](#prerequisites)
     - [Infrastructure Installation](#infrastructure-installation)
     - [Adobe Commerce Installation](#adobe-commerce-installation)
+- [Versions **Upgrade/Downgrade**](#versions-upgradedowngrade)
+    - [**Node** version upgrade/downgrade](#node-version-upgradedowngrade)
+    - [**PHP** version upgrade/downgrade](#php-version-upgradedowngrade)
+    - [**Adobe Commerce** version upgrade/downgrade](#adobe-commerce-version-upgradedowngrade)
 - [Usage](#usage)
 - [Database Import/Export](#database-importexport)
 - [Accessing the DEVSTACK](#accessing-the-devstack)
 - [Default Credentials](#default-credentials)
 - [Debugging, Testing & Performance](#debugging--performance)
-    - [Xdebug](#xdebug-configuration)
+    - [**Xdebug**](#xdebug-configuration)
     - [SFTP Server, Crons & Third-Party Integrations](#sftp-server--integration-testing)
     - [Varnish and Adobe Commerce Modes](#varnish-and-varnish-modes)
 - [Project Structure](#project-structure)
@@ -355,43 +367,88 @@ if you are going to use fresh commerce ``EE/CE`` then the flow is the following.
 
 --- 
 
-### ``node`` version upgrade/downgrade
+## Versions Upgrade/Downgrade
 
-The ``web-app`` container is packed with the ``node v.20``.  If you need to ``upgrade/downgrade`` version run this command:
+This section contains information of how to **upgrade/downgrade**:
+ - `PHP` version
+- `Node` version 
+- `Adobe Commerce` version
+
+
+> [!IMPORTANT]
+>
+>  * `Node` and `PHP` versions **should only be changed using** the `make ...-set version=VERSION` command. 
+> This is due to the **layered** structure of Docker containers.
+>
+> 
+>  * The `Commerce` version `can be changed` both **inside** and **outside** the `php-app` container. It is **recommended** to
+> `upgrade/downgrade` the `Adobe Commerce` version **outside** the `php-app` container, via `make command`
+
+---
+
+### ``Node`` version upgrade/downgrade
+
+The ``web-app`` container is packed with the ``node v.22``.  If you need to ``upgrade/downgrade`` version run these commands:
 ```shell
-# see what the command do
+# OPTIONAL: run to get current node container [web-app] meta data
+make node-meta
+
+# OPTIONAL: see what the command do
 make node-set help
 
 # major node version like 16, 18, 20, etc.
 make node-set version=MAJOR_NODE_VERSION
 
-# OPTIONAL: run to get node, yarn, npx meta data
+# OPTIONAL: run to get node container [web-app] meta data
 make node-meta
 ```
 
-> [!IMPORTANT]
-> 
-> `node` version must be changed only by using ``make node-set version=MAJOR_NODE_VERSION`` command
-
 ---
 
-### ``php`` version upgrade/downgrade
+### ``PHP`` version upgrade/downgrade
 
-The ``php-app`` container is packed with the ``Adobe Comemrce`` specific `PHP version`.  If you need to ``upgrade/downgrade`` version run this command:
+The ``php-app`` container is packed with the ``Adobe Commerce`` specific `PHP version`.  If you need to ``upgrade/downgrade`` version run these commands:
 ```shell
-# see what the command do
+# OPTIONAL: run to get current php container [php-app] meta data
+make php-meta
+
+# OPTIONAL: see what the command do
 make php-set help
 
 # major php version like 8.0, 8,1, 8.2, etc.
 make php-set version=MAJOR_PHP_VERSION
 
-# OPTIONAL: run to get php, xdebug, meta data
+# OPTIONAL: run to get php container [php-app] meta data
 make php-meta
 ```
 
-> [!IMPORTANT]
->
-> `php` version must be changed only by using ``make php-set version=MAJOR_PHP_VERSION`` command
+---
+
+### ``Adobe Commerce`` version upgrade/downgrade
+
+To `upgrade/downgrade` **Adobe Commerce** follow these steps:
+
+```shell
+# check current commerce meta data
+make project-meta
+
+# OPTIONAL: make the PHP version in line with the commerce version.
+# It is expected you control the PHP version in the php-app container
+make php-set version=PHP_MAJOR_VERSION
+
+# OPTIONAL: see what the command do
+make upgdade-ee help # for Enterprise Edition [EE]
+make upgdade-ce help # for Community Edition [CE]
+
+# use this command to update Enterprise Edition [EE]
+make upgdade-ee version=x.x.x
+
+# use this command to update Community Edition [EE]
+make upgdade-ce version=x.x.x
+
+# see updated commerce meta data
+make project-meta
+```
 
 ---
 
@@ -532,8 +589,8 @@ Once the containers are running, you can access the various parts of the environ
 ### Storefronts & Backend
 | Service                  | Local URL                           | Note                                                                          |
 |:-------------------------|:------------------------------------|:------------------------------------------------------------------------------|
-| **Monolith Frontend**    | https://your-domain.localhost/      | Default Adobe Commerce storefront                                             |
-| **Adobe Commerce Admin** | https://your-domain.localhost/admin | Use your custom admin url                                                     |
+| **Monolith Frontend**    | https://your-domain.localhost/      | Default `Adobe Commerce` storefront                                           |
+| **Adobe Commerce Admin** | https://your-domain.localhost/admin | `/admin` is default uri                                                       |
 | **Vue Storefront**       | http://your-domain.localhost:3000/  | Vue storefront<br/> **NOTE:** see [this](#vsf-cors-errors) for `cors` details |
 | **PWA Studio**           | http://0.0.0.0:3000/                | PWA storefront                                                                |
 | **Hyva**                 | http://your-domain.localhost/       | **Did not tested yet**                                                        |

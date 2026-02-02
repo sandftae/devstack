@@ -82,7 +82,8 @@ To support high-concurrency and asynchronous processing, **DEVSTACK** includes R
 ### Target Audience
 
  - **newbies/trainees**: provides a safe, ``hard-to-break`` environment to learn Adobe Commerce
- - **tech leads**: a reliable, standardized tool to ensure the entire team is running the exact same configuration.
+ - **tech leads**: a reliable, standardized tool to ensure the entire team is running the exact same configuration
+ - **freelancer**: a reliable, standardized tool that can be used over the projects
  - **for the business**: faster onboarding. New developers become `run-ready-devs` in hours
 
 ---
