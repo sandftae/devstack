@@ -15,16 +15,13 @@ jobs:
     env:
       # set terminal type to avoid 'tput: No value for $TERM' warnings
       TERM: xterm
-      # enable Docker BuildKit for better performance and caching
-      DOCKER_BUILDKIT: 1
-      COMPOSE_DOCKER_CLI_BUILD: 1
+      # disable Docker BuildKit for better performance and caching
+      DOCKER_BUILDKIT: 0
+      COMPOSE_DOCKER_CLI_BUILD: 0
 
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
 
       - name: Generate Configurations
         run: |
@@ -45,9 +42,16 @@ jobs:
 
       - name: Start Infrastructure
         run: |
-          # start all services defined in the generated compose file
-          docker compose -f ./env/compose.yml up -d --build || { echo "Docker Build Failed"; exit 1; }
+          mkdir -p log/devstack && chmod -R 777 log/devstack
 
+          # start all services defined in the generated compose file
+          make up || {
+            echo "Critical failure during make up";
+            exit 1;
+          }
+
+      - name: Wait for Services
+        run: |
           echo "Waiting for containers to reach 'running' state..."
           # list of services to monitor
           SERVICES=(
@@ -61,7 +65,7 @@ jobs:
             for svc in "${SERVICES[@]}"; do
               STATUS=$(docker inspect --format='{{.State.Status}}' "$svc" 2>/dev/null || echo "missing")
               if [ "$STATUS" != "running" ]; then
-                echo "Wait: $svc is currently [$STATUS]..."
+                echo "Wait: $svc is [$STATUS]..."
                 ALL_RUNNING=false
                 break
               fi
