@@ -15,17 +15,13 @@ jobs:
     env:
       # set terminal type to avoid 'tput: No value for $TERM' warnings
       TERM: xterm
-      # enable Docker BuildKit for better performance and caching
-      DOCKER_BUILDKIT: 1
-      COMPOSE_DOCKER_CLI_BUILD: 1
+      # disable Docker BuildKit for better performance and caching
+      DOCKER_BUILDKIT: 0
+      COMPOSE_DOCKER_CLI_BUILD: 0
 
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
-
-      - name: Set up Docker Buildx
-        # buildx is required for advanced caching features
-        uses: docker/setup-buildx-action@v3
 
       - name: Generate Configurations
         run: |
@@ -46,8 +42,16 @@ jobs:
 
       - name: Start Infrastructure
         run: |
+          sudo mkdir -p log/devstack
+          sudo chmod -R 777 log
           # start all services defined in the generated compose file
-          make up
+          make up || {
+            echo "Critical failure during make up";
+            exit 1;
+          }
+
+      - name: Wait for Services
+        run: |
           echo "Waiting for containers to reach 'running' state..."
           # list of services to monitor
           SERVICES=(
@@ -55,45 +59,43 @@ jobs:
             "mysql" "mailpit" "varnish" "opensearch"
             "valkey" "sftp" "rabbitmq" "phpmyadmin" "logs"
           )
-          # polling loop: 24 iterations * 5 seconds = 120 seconds timeout
+
           for i in {1..24}; do
             ALL_RUNNING=true
             for svc in "${SERVICES[@]}"; do
-              if [ -z "$(docker ps --filter "name=$svc" --filter "status=running" -q)" ]; then
+              STATUS=$(docker inspect --format='{{.State.Status}}' "$svc" 2>/dev/null || echo "missing")
+              if [ "$STATUS" != "running" ]; then
+                echo "Wait: $svc is [$STATUS]..."
                 ALL_RUNNING=false
                 break
               fi
             done
+
             if [ "$ALL_RUNNING" = true ]; then
-              echo "Success: all containers are up and running!"
+              echo "Success: all containers are up!"
               docker ps
-              break
+              exit 0
             fi
-            echo "Still waiting... ($((i*5))s / 120s)"
             sleep 5
-            if [ $i -eq 24 ]; then
-              echo "Error: timeout reached, some containers failed to start."
-              docker ps -a
-              exit 1
-            fi
           done
+
+          echo "Error: timeout reached."
+          docker ps -a
+          exit 1
 
       - name: HTTP & SSL Health Check
         run: |
           # verify that the web server is reachable via HTTPS
           echo "Performing HTTPS reachability check..."
-          if curl -v -k --fail --retry 10 --retry-delay 10 \
+          curl -v -k --fail --retry 10 --retry-delay 5 \
                --resolve mage-dev.localhost:443:127.0.0.1 \
-               https://mage-dev.localhost/devstack/ > /dev/null 2>&1; then
-            echo "Reachability check passed!"
-          else
-            echo "Reachability check failed!"
-            exit 1
-          fi
+               https://mage-dev.localhost/devstack/ > /dev/null 2>&1 || exit 1
 
       - name: Cleanup on Failure
         # collect logs if any of the previous steps failed
         if: failure()
         run: |
           echo "Infrastructure failed. Dumping container logs..."
-          docker compose -f env/compose.yml logs --tail=100
+          if [ -f "env/compose.yml" ]; then
+            docker compose -f env/compose.yml logs --tail=100
+          fi
