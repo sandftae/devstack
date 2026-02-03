@@ -9,7 +9,7 @@
 </p>
 <p align="center">
   <img src="https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge" alt="License">
-  <img src="https://img.shields.io/badge/version-0.0.1--beta-orange.svg?style=for-the-badge" alt="Version">
+  <img src="https://img.shields.io/badge/version-0.0.2-orange.svg?style=for-the-badge" alt="Version">
   <img src="https://img.shields.io/badge/Environment-local%20only-red.svg?style=for-the-badge" alt="Environment">
   <img src="https://img.shields.io/badge/Adobe%20Commerce-%E2%89%A52.4.5-red?logo=adobe&logoColor=white&style=for-the-badge" alt="Adobe Commerce">
 </p>
@@ -188,7 +188,7 @@ The **DEVSTACK** provides a `development environment`, but you need to fill in t
 
 > [!IMPORTANT]
 > 
-> All installation-related manipulations will be performed based on the Commerce version specified during setup.
+> All installation-related manipulations will be performed **based on the Commerce version specified during setup**.
 
 ---
 
@@ -240,7 +240,7 @@ The **DEVSTACK** provides a `development environment`, but you need to fill in t
 
 > [!IMPORTANT]
 > 
-> The project's `PHP` source code **should always be cloned** directly into the `php-app` folder, not into a sub-folder.
+> The project's `PHP` source code **should always be cloned**  directly into the <span style="color:#BD3039">**php-app**</span> folder, not into a sub-folder.
 
 
 - `clone project` repository **into** `src/php-app` folder **directly**
@@ -542,9 +542,9 @@ they will have a fully populated database without any manual import steps.
 
 > [!IMPORTANT]
 >
-> **THE "SILENT" SEEDING PROCESS**
+> <span style="color:#BD3039">**THE "SILENT" SEEDING PROCESS**</span>
 >
-> The official MySQL Docker image do NOT provide a real-time progress bar or UI notifications. This may be confusing because once you run env the mysql container is
+> The official MySQL Docker image **does not provide** a real-time **progress bar** or UI notifications. This may be confusing because once you run env the mysql container is
 > up and no database import progress bar is shown. So, once you're seeding the database you need to track the process itself. Just check db size once in minute to see db size actually increasing.
 > 
 > #### Use manual import if you want to have more control over import
