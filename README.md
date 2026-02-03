@@ -37,6 +37,17 @@ Easily toggle between optional services, monitor performance, and manage your en
 
 ---
 
+<div align="center">
+    <p align="center">
+        <img src="docs/github/media/gif/demo/magma-install.gif" width="48%" alt="Demo">
+        <img src="docs/github/media/gif/demo/up-and-down.gif" width="48%" alt="UP and DOWN">
+        <img src="docs/github/media/gif/demo/php-set.gif" width="48%" alt="PHP meta">
+        <img src="docs/github/media/gif/demo/node-set.gif" width="48%" alt="NODE meta">
+    </p>
+</div>
+
+---
+
 ## Devstack gallery
 
 <details>
