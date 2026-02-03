@@ -9,7 +9,7 @@
 </p>
 <p align="center">
   <img src="https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge" alt="License">
-  <img src="https://img.shields.io/badge/version-0.0.1--beta-orange.svg?style=for-the-badge" alt="Version">
+  <img src="https://img.shields.io/badge/version-0.0.2-orange.svg?style=for-the-badge" alt="Version">
   <img src="https://img.shields.io/badge/Environment-local%20only-red.svg?style=for-the-badge" alt="Environment">
   <img src="https://img.shields.io/badge/Adobe%20Commerce-%E2%89%A52.4.5-red?logo=adobe&logoColor=white&style=for-the-badge" alt="Adobe Commerce">
 </p>
