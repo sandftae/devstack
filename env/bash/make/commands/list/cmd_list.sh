@@ -24,6 +24,8 @@ cmd_list() {
   printf "Help:\n"
   printf "  ➜ make %b<command>%b help\n" "${COLOR_CYAN}" "${C_NC}"
   printf "  ➜ make %b<command>%b h\n" "${COLOR_CYAN}" "${C_NC}"
+  printf "Full output, no spinner:\n"
+  printf "  ➜ make %b<command>%b spinner=false\n" "${COLOR_CYAN}" "${C_NC}"
 
   while IFS= read -r line || [[ -n "$line" ]]; do
     case "$line" in
