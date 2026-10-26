@@ -1,7 +1,9 @@
 #!/bin/bash
 # ============================================================
 # UTILS: spinner
-# DESCRIPTION: Executes a command with Braille animation
+# DESCRIPTION: Executes a command with Braille animation.
+#              'make <command> spinner=false' runs the command
+#              without animation and shows its full output
 # ============================================================
 
 # spinner function
@@ -11,6 +13,12 @@ spinner() {
   local MSG="$1"
   local TEMP_LOG
   shift # remove message, leaving only the command + args in "$@"
+
+  # make passes 'spinner=false' from the command line as an environment variable
+  if [[ "${spinner:-true}" == "false" ]]; then
+    _run_without_spinner "$MSG" "$@"
+    return $?
+  fi
 
   local LOG_DIR="${LOG_DIR_NAME:-./log/devstack}"
   local LOG_FILE="$LOG_DIR/$ERROR_LOG_NAME"
@@ -74,4 +82,26 @@ spinner() {
     rm -f "$TEMP_LOG"
     return 1
   fi
+}
+
+# _run_without_spinner function
+#
+# runs the command in the foreground with its full output (spinner=false)
+_run_without_spinner() {
+  local msg="$1"
+  local exit_status
+  shift # remove message, leaving only the command + args in "$@"
+
+  printf "%b➜%b %b...\n" "${COLOR_GREEN}" "${C_NC}" "$msg"
+
+  "$@"
+  exit_status=$?
+
+  if [ $exit_status -eq 0 ]; then
+    printf "%b✔%b %b %bsuccessful!%b\n" "${COLOR_GREEN}" "${C_NC}" "$msg" "${COLOR_GREEN}" "${C_NC}"
+    return 0
+  fi
+
+  printf "%b✘%b %b %bfailed!%b\n" "${COLOR_RED}" "${C_NC}" "$msg" "${COLOR_RED}" "${C_NC}"
+  return 1
 }
